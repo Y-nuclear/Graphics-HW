@@ -2,7 +2,7 @@
 import './App.css';
 import UploaderBox from './component/UploaderBox';
 import {Triangle} from './GL/BasicProperty';
-import WebGLCanvas from './component/WebGLCanvas/WebGLCanvas';
+import WebGLCanvas from './GL/WebGLCanvas/WebGLCanvas';
 function App() {
   return (
     <div className="App">
