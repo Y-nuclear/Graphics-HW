@@ -22,71 +22,72 @@ var FSHADER_SOURCE =
     '}\n';
 
 //定义三角形类
-class Triangle {
-    constructor(gl, x, y, z, r, g, b, a) {
+import Object3D from "../database/Object3D";
+class Triangle extends Object3D{
+    constructor(gl){
+        super();
         this.gl = gl;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
-
-        this.vertexBuffer = null;
-        this.colorBuffer = null;
-        this.indexBuffer = null;
-        this.vertexData = new Float32Array([
-            0.0, 0.5, 0.0,
-            -0.5, -0.5, 0.0,
-            0.5, -0.5, 0.0
-        ]);
-        this.colorData = new Float32Array([
-            r, g, b, a,
-            r, g, b, a,
-            r, g, b, a
-        ]);
-        this.indexData = new Uint8Array([
-            0, 1, 2
-        ]);
+        this.init();
     }
-
-    init() {
+    init(){
         var gl = this.gl;
-        this.vertexBuffer = gl.createBuffer();
-        this.colorBuffer = gl.createBuffer();
-        this.indexBuffer = gl.createBuffer();
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, this.vertexData, gl.STATIC_DRAW);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, this.colorData, gl.STATIC_DRAW);
-
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indexData, gl.STATIC_DRAW);
-
-        this.vertexBuffer.num = 3;
-        this.vertexBuffer.type = gl.FLOAT;
-        this.vertexBuffer.stride = 0;
-        this.vertexBuffer.offset = 0;
-
-        this.colorBuffer.num = 4;
-        this.colorBuffer.type = gl.FLOAT;
-        this.colorBuffer.stride = 0;
-        this.colorBuffer.offset = 0;
-
-        this.indexBuffer.num = 1;
-        this.indexBuffer.type = gl.UNSIGNED_BYTE;
-        this.indexBuffer.stride = 0;
-        this.indexBuffer.offset = 0;
-    }
-
-    draw() {
-        var gl = this.gl;
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+        //初始化着色器
+        if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
+            console.log('Fail to initialize shaders');
+            return;
+        }
+        //获取attribute变量的存储位置
         var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-        gl.vertexAttribPointer(a_Position, this.vertexBuffer.num, this.vertexBuffer.type, false, this.vertexBuffer.stride, this.vertexBuffer.offset);
+        var a_Color = gl.getAttribLocation(gl.program, 'a_Color');
+        //获取uniform变量的存储位置
+        var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
+        //设置顶点位置
+        var n = this.initVertexBuffers(gl,a_Position,a_Color);
+        if(n < 0){
+            console.log('Failed to set the positions of the vertices');
+            return;
+        }
+        //设置背景色
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        //设置模型矩阵
+        var modelMatrix = new Matrix4();
+        modelMatrix.setTranslate(this.position.x,this.position.y,this.position.z);
+        modelMatrix.rotate(this.rotation.x,1,0,0);
+        modelMatrix.rotate(this.rotation.y,0,1,0);
+        modelMatrix.rotate(this.rotation.z,0,0,1);
+        modelMatrix.scale(this.scale.x,this.scale.y,this.scale.z);
+        gl.uniformMatrix4fv(u_ModelMatrix,false,modelMatrix.elements);
+        //清空颜色缓冲区
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        //绘制三角形
+        gl.drawArrays(gl.TRIANGLES, 0, n);
+    }
+    initVertexBuffers(gl,a_Position,a_Color){
+        //创建顶点数据的浮点类型数组
+        var verticesColors = new Float32Array([
+            //顶点坐标和颜色
+            0.0, 0.5, 1.0, 0.0, 0.0,
+            -0.5, -0.5, 0.0, 1.0, 0.0,
+            0.5, -0.5, 0.0, 0.0, 1.0
+        ]);
+        var n = 3; //顶点数量
+        //创建缓冲区对象
+        var vertexColorBuffer = gl.createBuffer();
+        if(!vertexColorBuffer){
+            console.log('Failed to create the buffer object');
+            return -1;
+        }
+        //将顶点坐标和颜色写入缓冲区对象
+        gl.bindBuffer(gl.ARRAY_BUFFER,vertexColorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER,verticesColors,gl.STATIC_DRAW);
+        //将缓冲区对象分配给a_Position变量
+        gl.vertexAttribPointer(a_Position,2,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 5,0);
+        //连接a_Position变量与分配给它的缓冲区对象
         gl.enableVertexAttribArray(a_Position);
+        //将缓冲区对象分配给a_Color变量
+        gl.vertexAttribPointer(a_Color,3,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 5,verticesColors.BYTES_PER_ELEMENT * 2);
+        //连接a_Color变量与分配给它的缓冲区对象
+        gl.enableVertexAttribArray(a_Color);
+        return n;
     }
 }
