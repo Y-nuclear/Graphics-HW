@@ -124,7 +124,21 @@ function loadShader(gl, type, source) {
 class Triangle extends Object3D{
     constructor(gl){
         super();
+        //设置原型
+        Object.setPrototypeOf(this,Triangle.prototype);
         this.gl = gl;
+        this.vertices = [
+            [0.0, 0.5,0.0],
+            [-0.5, -0.5,0.0],
+            [0.5, -0.5,0.0]
+        ]
+        this.color = [
+            //灰色
+            [0.5,0.5,0.5],
+            [0.5,0.5,0.5],
+            [0.5,0.5,0.5]
+        ]
+        this.indices = [0,1,2];
         this.init();
     }
     init(){
@@ -145,16 +159,9 @@ class Triangle extends Object3D{
             console.log('Failed to set the positions of the vertices');
             return;
         }
-        //设置背景色
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
         //设置模型矩阵
-        var modelMatrix = new Matrix4();
-        modelMatrix.setTranslate(this.position.x,this.position.y,this.position.z);
-        modelMatrix.setRotate(this.rotation.x,1,0,0);
-        modelMatrix.setRotate(this.rotation.y,0,1,0);
-        modelMatrix.setRotate(this.rotation.z,0,0,1);
-        modelMatrix.setScale(this.scale.x,this.scale.y,this.scale.z);
-        gl.uniformMatrix4fv(u_ModelMatrix,false,modelMatrix.elements);
+
+        gl.uniformMatrix4fv(u_ModelMatrix,false,this.modelMatrix.elements);
         //清空颜色缓冲区
         gl.clear(gl.COLOR_BUFFER_BIT);
         //绘制三角形
@@ -162,13 +169,13 @@ class Triangle extends Object3D{
     }
     initVertexBuffers(gl,a_Position,a_Color){
         //创建顶点数据的浮点类型数组
-        var verticesColors = new Float32Array([
-            //顶点坐标和颜色
-            0.0, 0.5, 1.0, 0.0, 0.0,
-            -0.5, -0.5, 0.0, 1.0, 0.0,
-            0.5, -0.5, 0.0, 0.0, 1.0
-        ]);
-        var n = 3; //顶点数量
+        var verticesColors  = [];
+        for(var i = 0;i < this.vertices.length;i++){
+            verticesColors.push(this.vertices[i][0],this.vertices[i][1],this.vertices[i][2],this.color[i][0],this.color[i][1],this.color[i][2]);
+        }
+        verticesColors = new Float32Array(verticesColors);
+
+        var n = this.vertices.length;
         //创建缓冲区对象
         var vertexColorBuffer = gl.createBuffer();
         if(!vertexColorBuffer){
@@ -179,18 +186,40 @@ class Triangle extends Object3D{
         gl.bindBuffer(gl.ARRAY_BUFFER,vertexColorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER,verticesColors,gl.STATIC_DRAW);
         //将缓冲区对象分配给a_Position变量
-        gl.vertexAttribPointer(a_Position,2,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 5,0);
+        gl.vertexAttribPointer(a_Position,3,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 6,0);
         //连接a_Position变量与分配给它的缓冲区对象
         gl.enableVertexAttribArray(a_Position);
         //将缓冲区对象分配给a_Color变量
-        gl.vertexAttribPointer(a_Color,3,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 5,verticesColors.BYTES_PER_ELEMENT * 2);
+        gl.vertexAttribPointer(a_Color,3,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 6,verticesColors.BYTES_PER_ELEMENT * 3);
         //连接a_Color变量与分配给它的缓冲区对象
         gl.enableVertexAttribArray(a_Color);
         return n;
     }
+
     render(){
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, 3);
+        var gl = this.gl;
+        //初始化着色器
+        if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
+            console.log('Fail to initialize shaders');
+            return;
+        }
+        //获取attribute变量的存储位置
+        var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+        var a_Color = gl.getAttribLocation(gl.program, 'a_Color');
+        //获取uniform变量的存储位置
+        var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
+        //设置顶点位置
+        var n = this.initVertexBuffers(gl,a_Position,a_Color);
+        if(n < 0){
+            console.log('Failed to set the positions of the vertices');
+            return;
+        }
+        //设置模型矩阵
+        gl.uniformMatrix4fv(u_ModelMatrix,false,this.modelMatrix.elements);
+        //清空颜色缓冲区
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        //绘制三角形
+        gl.drawArrays(gl.TRIANGLES, 0, n);
     }
 }
 

@@ -7,11 +7,15 @@ import  Matrix4  from "../Math/Matrix";
 class Object3D extends EventDispatcher{
     constructor(){
         super();
-        this.position = new Vector3();
-        this.rotation = new Vector3();
+        this.vertices = [];
+        this.indices = [];
+        this.colors = [];
+        this.position = new Vector3(0,0,0);
+        this.rotation = new Vector3(0,0,0);
         this.scale = new Vector3(1,1,1);
         this.modelMatrix = new Matrix4();
         this.children = [];
+        this.Matrixs = [];
     }
     // 添加子对象
     add(obj){
@@ -30,11 +34,44 @@ class Object3D extends EventDispatcher{
     }
     // 更新模型矩阵
     updateModelMatrix(){
-        this.modelMatrix.setTranslate(this.position.x,this.position.y,this.position.z);
-        this.modelMatrix.setRotate(this.rotation.x,1,0,0);
-        this.modelMatrix.setRotate(this.rotation.y,0,1,0);
-        this.modelMatrix.setRotate(this.rotation.z,0,0,1);
-        this.modelMatrix.setScale(this.scale.x,this.scale.y,this.scale.z);
+        while(this.Matrixs.length > 0){
+            this.modelMatrix.multiply(this.Matrixs.pop());
+
+        }
+    }
+    // 平移
+    glTranslate(x,y,z){
+        var Matrix = new Matrix4();
+        Matrix.setTranslate(x,y,z);
+        this.Matrixs.push(Matrix);
+    }
+    // 旋转
+    glRotate(angle,x,y,z){
+        var Matrix = new Matrix4();
+        Matrix.setRotate(angle,x,y,z);
+        this.Matrixs.push(Matrix);
+    }
+    // 缩放
+    glScale(x,y,z){
+        var Matrix = new Matrix4();
+        Matrix.setScale(x,y,z);
+        this.Matrixs.push(Matrix);
+    }
+    // 设置顶点数据
+    setVertices(vertices){
+        this.vertices = vertices;
+    }
+    // 设置顶点索引
+    setIndices(indices){
+        this.indices = indices;
+    }
+    // 设置顶点颜色
+    setColors(colors){
+        this.colors = colors;
+    }
+    // 设置位置
+    setPosition(x,y,z){
+        this.position = new Vector3(x,y,z);
     }
 
     // 更新

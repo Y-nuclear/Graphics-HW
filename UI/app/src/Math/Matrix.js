@@ -161,6 +161,7 @@ class Matrix4{
                 result.elements[i * 4 + j] = sum;
             }
         }
+        this.elements = result.elements;
         return result;
     }
     // 矩阵向量相乘
