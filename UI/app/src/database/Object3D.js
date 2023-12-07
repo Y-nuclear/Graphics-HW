@@ -2,8 +2,8 @@
 // 使用WebGL
 // 定义基本的物体
 import { EventDispatcher } from "./EventDispatcher";
-import { Vector3 } from "../Math/Vector";
-import { Matrix4 } from "../Math/Matrix";
+import  {Vector3}  from "../Math/Vector";
+import  Matrix4  from "../Math/Matrix";
 class Object3D extends EventDispatcher{
     constructor(){
         super();
@@ -31,10 +31,10 @@ class Object3D extends EventDispatcher{
     // 更新模型矩阵
     updateModelMatrix(){
         this.modelMatrix.setTranslate(this.position.x,this.position.y,this.position.z);
-        this.modelMatrix.rotate(this.rotation.x,1,0,0);
-        this.modelMatrix.rotate(this.rotation.y,0,1,0);
-        this.modelMatrix.rotate(this.rotation.z,0,0,1);
-        this.modelMatrix.scale(this.scale.x,this.scale.y,this.scale.z);
+        this.modelMatrix.setRotate(this.rotation.x,1,0,0);
+        this.modelMatrix.setRotate(this.rotation.y,0,1,0);
+        this.modelMatrix.setRotate(this.rotation.z,0,0,1);
+        this.modelMatrix.setScale(this.scale.x,this.scale.y,this.scale.z);
     }
 
     // 更新

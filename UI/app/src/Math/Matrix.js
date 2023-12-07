@@ -181,63 +181,9 @@ class Matrix4{
         }
         return result;
     }
-    // 矩阵求逆 jocobi
-    inverse(){
-        var result = new Matrix4();
-        var a = [];
-        for(var i = 0;i < 4;i++){
-            a[i] = [];
-            for(var j = 0;j < 4;j++){
-                a[i][j] = this.elements[i * 4 + j];
-            }
-        }
-        var b = [];
-        for(var i = 0;i < 4;i++){
-            b[i] = [];
-            for(var j = 0;j < 4;j++){
-                b[i][j] = i === j ? 1 : 0;
-            }
-        }
-        for(var i = 0;i < 4;i++){
-            var max = a[i][i];
-            var index = i;
-            for(var j = i + 1;j < 4;j++){
-                if(Math.abs(a[j][i]) > Math.abs(max)){
-                    max = a[j][i];
-                    index = j;
-                }
-            }
-            if(index !== i){
-                var temp = [];
-                for(var j = 0;j < 4;j++){
-                    temp[j] = a[i][j];
-                    a[i][j] = a[index][j];
-                    a[index][j] = temp[j];
-                    temp[j] = b[i][j];
-                    b[i][j] = b[index][j];
-                    b[index][j] = temp[j];
-                }
-            }
-            var temp = a[i][i];
-            for(var j = 0;j < 4;j++){
-                a[i][j] /= temp;
-                b[i][j] /= temp;
-            }
-            for(var j = 0;j < 4;j++){
-                if(j !== i){
-                    temp = a[j][i];
-                    for(var k = 0;k < 4;k++){
-                        a[j][k] -= a[i][k] * temp;
-                        b[j][k] -= b[i][k] * temp;
-                    }
-                }
-            }
-        }
-        for(var i = 0;i < 4;i++){
-            for(var j = 0;j < 4;j++){
-                result.elements[i * 4 + j] = b[i][j];
-            }
-        }
-        return result;
-    }
+    // 矩阵求逆 JoccoBi迭代法
+                
+        
 }
+
+export default Matrix4;

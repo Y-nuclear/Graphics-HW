@@ -8,22 +8,22 @@ class Vector2 {
 
     // 向量加法
     add(v) {
-        return new Vector(this.x + v.x, this.y + v.y);
+        return new Vector2(this.x + v.x, this.y + v.y);
     }
 
     // 向量减法
     subtract(v) {
-        return new Vector(this.x - v.x, this.y - v.y);
+        return new Vector2(this.x - v.x, this.y - v.y);
     }
 
     // 向量数乘
     multiply(s) {
-        return new Vector(this.x * s, this.y * s);
+        return new Vector2(this.x * s, this.y * s);
     }
 
     // 向量数除
     divide(s) {
-        return new Vector(this.x / s, this.y / s);
+        return new Vector2(this.x / s, this.y / s);
     }
 
     // 向量点乘
@@ -48,12 +48,12 @@ class Vector2 {
 
     // 向量旋转
     rotate(angle) {
-        return new Vector(this.x * Math.cos(angle) - this.y * Math.sin(angle), this.x * Math.sin(angle) + this.y * Math.cos(angle));
+        return new Vector2(this.x * Math.cos(angle) - this.y * Math.sin(angle), this.x * Math.sin(angle) + this.y * Math.cos(angle));
     }
 
     // 向量反向
     negate() {
-        return new Vector(-this.x, -this.y);
+        return new Vector2(-this.x, -this.y);
     }
 
     // 向量转换为字符串
@@ -76,11 +76,6 @@ class Vector2 {
         return "M 0 0 L " + this.x + " " + this.y;
     }
 
-    // 向量转换为SVG路径
-    toPath(x, y) {
-        return "M " + x + " " + y + " L " + (x + this.x) + " " + (y + this.y);
-    }
-
 }
 
 class Vector3 {
@@ -92,22 +87,22 @@ class Vector3 {
 
     // 向量加法
     add(v) {
-        return new Vector(this.x + v.x, this.y + v.y, this.z + v.z);
+        return new Vector3(this.x + v.x, this.y + v.y, this.z + v.z);
     }
 
     // 向量减法
     subtract(v) {
-        return new Vector(this.x - v.x, this.y - v.y, this.z - v.z);
+        return new Vector3(this.x - v.x, this.y - v.y, this.z - v.z);
     }
 
     // 向量数乘
     multiply(s) {
-        return new Vector(this.x * s, this.y * s, this.z * s);
+        return new Vector3(this.x * s, this.y * s, this.z * s);
     }
 
     // 向量数除
     divide(s) {
-        return new Vector(this.x / s, this.y / s, this.z / s);
+        return new Vector3(this.x / s, this.y / s, this.z / s);
     }
 
     // 向量点乘
@@ -117,7 +112,7 @@ class Vector3 {
 
     // 向量叉乘
     cross(v) {
-        return new Vector(this.y * v.z - this.z * v.y, this.z * v.x - this.x * v.z, this.x * v.y - this.y * v.x);
+        return new Vector3(this.y * v.z - this.z * v.y, this.z * v.x - this.x * v.z, this.x * v.y - this.y * v.x);
     }
 
     // 向量模
@@ -132,12 +127,12 @@ class Vector3 {
 
     // 向量旋转
     rotate(angle) {
-        return new Vector(this.x * Math.cos(angle) - this.y * Math.sin(angle), this.x * Math.sin(angle) + this.y * Math.cos(angle), this.z);
+        return new Vector3(this.x * Math.cos(angle) - this.y * Math.sin(angle), this.x * Math.sin(angle) + this.y * Math.cos(angle), this.z);
     }
 
     // 向量反向
     negate() {
-        return new Vector(-this.x, -this.y, -this.z);
+        return new Vector3(-this.x, -this.y, -this.z);
     }
 
     // 向量转换为字符串
@@ -171,22 +166,22 @@ class Vector4 {
 
     // 向量加法
     add(v) {
-        return new Vector(this.x + v.x, this.y + v.y, this.z + v.z, this.w + v.w);
+        return new Vector4(this.x + v.x, this.y + v.y, this.z + v.z, this.w + v.w);
     }
 
     // 向量减法
     subtract(v) {
-        return new Vector(this.x - v.x, this.y - v.y, this.z - v.z, this.w - v.w);
+        return new Vector4(this.x - v.x, this.y - v.y, this.z - v.z, this.w - v.w);
     }
 
     // 向量数乘
     multiply(s) {
-        return new Vector(this.x * s, this.y * s, this.z * s, this.w * s);
+        return new Vector4(this.x * s, this.y * s, this.z * s, this.w * s);
     }
 
     // 向量数除
     divide(s) {
-        return new Vector(this.x / s, this.y / s, this.z / s, this.w / s);
+        return new Vector4(this.x / s, this.y / s, this.z / s, this.w / s);
     }
 
     // 向量点乘
@@ -196,7 +191,7 @@ class Vector4 {
 
     // 向量叉乘
     cross(v) {
-        return new Vector(this.y * v.z - this.z * v.y, this.z * v.x - this.x * v.z, this.x * v.y - this.y * v.x, 0);
+        return new Vector4(this.y * v.z - this.z * v.y, this.z * v.x - this.x * v.z, this.x * v.y - this.y * v.x, 0);
     }
 
     // 向量模
@@ -211,12 +206,12 @@ class Vector4 {
 
     // 向量旋转
     rotate(angle) {
-        return new Vector(this.x * Math.cos(angle) - this.y * Math.sin(angle), this.x * Math.sin(angle) + this.y * Math.cos(angle), this.z, this.w);
+        return new Vector4(this.x * Math.cos(angle) - this.y * Math.sin(angle), this.x * Math.sin(angle) + this.y * Math.cos(angle), this.z, this.w);
     }
 
     // 向量反向
     negate() {
-        return new Vector(-this.x, -this.y, -this.z, -this.w);
+        return new Vector4(-this.x, -this.y, -this.z, -this.w);
     }
 
     // 向量转换为字符串
