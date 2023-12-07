@@ -79,21 +79,23 @@ class Matrix4{
         this.setIdentity();
         var sinB = Math.sin(angle);
         var cosB = Math.cos(angle);
-        var sinA = x;
-        var cosA = Math.sqrt(1 - x * x);
-        var sinC = y;
-        var cosC = Math.sqrt(1 - y * y);
-        var sinD = z;
-        var cosD = Math.sqrt(1 - z * z);
-        this.elements[0] = cosA * cosD;
-        this.elements[1] = cosA * sinD;
-        this.elements[2] = -sinA;
-        this.elements[4] = sinB * sinA * cosD - cosB * sinD;
-        this.elements[5] = sinB * sinA * sinD + cosB * cosD;
-        this.elements[6] = sinB * cosA;
-        this.elements[8] = cosB * sinA * cosD + sinB * sinD;
-        this.elements[9] = cosB * sinA * sinD - sinB * cosD;
-        this.elements[10] = cosB * cosA;
+        var oneC = 1 - cosB;
+        this.elements[0] = x * x * oneC + cosB;
+        this.elements[1] = x * y * oneC + z * sinB;
+        this.elements[2] = x * z * oneC - y * sinB;
+        this.elements[3] = 0;
+        this.elements[4] = x * y * oneC - z * sinB;
+        this.elements[5] = y * y * oneC + cosB;
+        this.elements[6] = y * z * oneC + x * sinB;
+        this.elements[7] = 0;
+        this.elements[8] = x * z * oneC + y * sinB;
+        this.elements[9] = y * z * oneC - x * sinB;
+        this.elements[10] = z * z * oneC + cosB;
+        this.elements[11] = 0;
+        this.elements[12] = 0;
+        this.elements[13] = 0;
+        this.elements[14] = 0;
+        this.elements[15] = 1;
     }
     // 设置为视图矩阵
     setLookAt(eyeX,eyeY,eyeZ,atX,atY,atZ,upX,upY,upZ){

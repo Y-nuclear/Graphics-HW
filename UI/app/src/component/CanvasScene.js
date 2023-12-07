@@ -1,7 +1,7 @@
 // canvas组件，可以添加各种Object
 
 import React, { Component } from 'react';
-import {Triangle} from '../GL/BasicProperty';
+import {Triangle,Rectangle,Cube} from '../GL/BasicProperty';
 
 class CanvasScene extends Component {
     constructor(props){
@@ -19,7 +19,7 @@ class CanvasScene extends Component {
         this.setState({
             canvas: canvas,
             gl: gl,
-            objects: [new Triangle(gl)]
+            objects: [new Cube(gl)]
         });
         
     }
@@ -29,7 +29,8 @@ class CanvasScene extends Component {
         var objects = this.state.objects;
         gl.clear(gl.COLOR_BUFFER_BIT);
         for(var i = 0;i < objects.length;i++){
-            objects[i].glTranslate(0.1,0,0);
+            objects[i].glRotate(0.5,0,0,1);
+            objects[i].glTranslate(0.2,0,0);
             objects[i].update();
             console.log(objects[i].modelMatrix.elements);
 

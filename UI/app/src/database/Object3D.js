@@ -4,6 +4,9 @@
 import { EventDispatcher } from "./EventDispatcher";
 import  {Vector3}  from "../Math/Vector";
 import  Matrix4  from "../Math/Matrix";
+//Object3D作为所有3D对象的基类，提供了一些基本的属性和方法
+//包括顶点数据、顶点索引、顶点颜色、位置、旋转、缩放、模型矩阵、子对象等
+
 class Object3D extends EventDispatcher{
     constructor(){
         super();
@@ -35,7 +38,7 @@ class Object3D extends EventDispatcher{
     // 更新模型矩阵
     updateModelMatrix(){
         while(this.Matrixs.length > 0){
-            this.modelMatrix.multiply(this.Matrixs.pop());
+            this.modelMatrix.multiply(this.Matrixs.shift());
 
         }
     }
