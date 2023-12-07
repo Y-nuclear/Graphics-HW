@@ -16,7 +16,10 @@ class TG {
     }
     init(canvas) {
         this.canvas = canvas;
-        this.gl = canvas.getContext('webgl');
+        var gl= canvas.getContext('webgl');
+        this.gl =gl;
+        this.gl.viewportWidth = canvas.width;
+        this.gl.viewportHeight = canvas.height;
 
         if (!this.gl) {
             console.error('Unable to initialize WebGL.');
@@ -24,7 +27,7 @@ class TG {
         }
 
         this.initShaders();
-        this.initBuffers();
+        this.gl.enable(gl.DEPTH_TEST);
     }
     initShaders() {
         // 顶点着色器代码
@@ -77,36 +80,13 @@ class TG {
         this.shaderProgram.aColorLocation = this.gl.getAttribLocation(this.shaderProgram, 'aColor');
         this.shaderProgram.uModelViewMatrixLocation = this.gl.getUniformLocation(this.shaderProgram, 'uModelViewMatrix');
         this.shaderProgram.uProjectionMatrixLocation = this.gl.getUniformLocation(this.shaderProgram, 'uProjectionMatrix');
-    }
-    initBuffers() {
-        // 顶点坐标数据
-        const positionData = [
-            // 线段的起点和终点坐标
-            0, 0, 0,  // 起点
-            1, 1, 1   // 终点
-        ];
 
-        // 颜色数据
-        const colorData = [
-            // 线段的起点和终点颜色
-            1, 0, 0,  // 红色
-            1, 0, 0   // 红色
-        ];
-
-        // 创建顶点缓冲区
-        this.buffers.position = this.createBuffer(this.gl.ARRAY_BUFFER, new Float32Array(positionData));
-        // 将顶点缓冲区绑定到属性变量 aPosition 上
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.position);
         this.gl.enableVertexAttribArray(this.shaderProgram.aPositionLocation);
         this.gl.vertexAttribPointer(this.shaderProgram.aPositionLocation, 3, this.gl.FLOAT, false, 0, 0);
-
-        // 创建颜色缓冲区
-        this.buffers.color = this.createBuffer(this.gl.ARRAY_BUFFER, new Float32Array(colorData));
-        // 将颜色缓冲区绑定到属性变量 aColor 上
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.color);
         this.gl.enableVertexAttribArray(this.shaderProgram.aColorLocation);
         this.gl.vertexAttribPointer(this.shaderProgram.aColorLocation, 3, this.gl.FLOAT, false, 0, 0);
     }
+
 
     // 创建着色器函数
     createShader(type, source) {
@@ -122,14 +102,6 @@ class TG {
         }
 
         return shader;
-    }
-
-    // 创建缓冲区函数
-    createBuffer(target, data) {
-        const buffer = this.gl.createBuffer();
-        this.gl.bindBuffer(target, buffer);
-        this.gl.bufferData(target, data, this.gl.STATIC_DRAW);
-        return buffer;
     }
 
     /** 设置相机参数，需自定义 */
@@ -150,9 +122,12 @@ class TG {
     }
 
     rander() {
+        var gl = this.gl;
         // 清空画布
-        this.gl.clearColor(0, 0, 0, 1);
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(this.gl.COLOR_BUFFER_BIT);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // 设置相机参数
         const { modelViewMatrix, projectionMatrix } = this.camera(this.gl);
