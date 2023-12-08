@@ -282,42 +282,38 @@ class Cube extends Object3D{
         Object.setPrototypeOf(this,Cube.prototype);
         this.gl = gl;
         this.vertices = [
-            //前面
             [0.5, 0.5, 0.5],
             [-0.5, 0.5, 0.5],
-            [0.5, -0.5, 0.5],
             [-0.5, -0.5, 0.5],
-            //后面
+            [0.5, -0.5, 0.5],
             [0.5, 0.5, -0.5],
             [-0.5, 0.5, -0.5],
-            [0.5, -0.5, -0.5],
-            [-0.5, -0.5, -0.5]
+            [-0.5, -0.5, -0.5],
+            [0.5, -0.5, -0.5]
         ]
         this.color = [
-            //灰色
-            [0.5,0.5,0.5],
-            [0.5,0.5,0.5],
-            [0.5,0.5,0.5],
-            [0.5,0.5,0.5],
-            //灰色
-            [0.5,0.5,0.5],
-            [0.5,0.5,0.5],
-            [0.5,0.5,0.5],
-            [0.5,0.5,0.5]
+            [1.0, 0.0, 0.0], //红色
+            [1.0, 1.0, 0.0], //黄色
+            [0.0, 1.0, 0.0], //绿色
+            [0.0, 0.0, 1.0], //蓝色
+            [1.0, 0.0, 1.0], //紫色
+            [1.0, 1.0, 1.0], //白色
+            [0.0, 1.0, 1.0], //青色
+            [0.5, 0.5, 0.5]  //灰色
         ]
         this.indices = [
-            //前面
-            0,1,2,1,2,3,
-            //后面
-            4,5,6,5,6,7,
-            //左面
-            0,1,4,1,4,5,
-            //右面
-            2,3,6,3,6,7,
-            //上面
-            0,2,4,2,4,6,
-            //下面
-            1,3,5,3,5,7
+            0,1,2,
+            0,2,3,
+            0,5,1,
+            0,4,5,
+            0,3,7,
+            0,7,4,
+            6,7,4,
+            6,4,5,
+            6,7,3,
+            6,3,2,
+            6,5,2,
+            5,1,2
         ];
     }
     initVertexBuffers(gl,a_Position,a_Color){
@@ -338,6 +334,14 @@ class Cube extends Object3D{
         //将顶点坐标和颜色写入缓冲区对象
         gl.bindBuffer(gl.ARRAY_BUFFER,vertexColorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER,verticesColors,gl.STATIC_DRAW);
+        //将索引写入缓冲区对象
+        var indexBuffer = gl.createBuffer();
+        if(!indexBuffer){
+            console.log('Failed to create the buffer object');
+            return -1;
+        }
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint8Array(this.indices),gl.STATIC_DRAW);
         //将缓冲区对象分配给a_Position变量
         gl.vertexAttribPointer(a_Position,3,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 6,0);
         //连接a_Position变量与分配给它的缓冲区对象
@@ -346,6 +350,7 @@ class Cube extends Object3D{
         gl.vertexAttribPointer(a_Color,3,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 6,verticesColors.BYTES_PER_ELEMENT * 3);
         //连接a_Color变量与分配给它的缓冲区对象
         gl.enableVertexAttribArray(a_Color);
+
         return n;
     }
     render(){
@@ -371,7 +376,7 @@ class Cube extends Object3D{
         //清空颜色缓冲区
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         //绘制立方体
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+        gl.drawElements(gl.TRIANGLE_STRIP, this.indices.length, gl.UNSIGNED_BYTE, 0);
     }
 }
 
