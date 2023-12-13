@@ -4,7 +4,7 @@ import UploaderBox from './component/UploaderBox';
 import CanvasScene from './component/CanvasScene';
 function App() {
   return (
-    <div className="App">
+    <div className="App" width='100%' height='100%'>
       <CanvasScene />
         <UploaderBox />
     </div>

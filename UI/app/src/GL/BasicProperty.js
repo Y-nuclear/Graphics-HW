@@ -4,6 +4,7 @@
 //定义三角形类
 import Object3D from "../database/Object3D";
 import Matrix4 from "../Math/Matrix";
+
 //定义顶点着色器
 const VSHADER_SOURCE =
     'attribute vec4 a_Position;\n' + //声明attribute变量
@@ -54,7 +55,6 @@ function initShaders(gl, vshader, fshader) {
  */
 function createProgram(gl, vshader, fshader) {
     // 创建着色器对象
-    console.log(typeof(vshader))
     var vertexShader = loadShader(gl, gl.VERTEX_SHADER, vshader);
     var fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fshader);
     if (!vertexShader || !fragmentShader) {
@@ -121,6 +121,8 @@ function loadShader(gl, type, source) {
     return shader;
 }
 
+
+
 class Triangle extends Object3D{
     constructor(gl){
         super();
@@ -171,6 +173,7 @@ class Triangle extends Object3D{
 
     render(){
         var gl = this.gl;
+        gl.enable(gl.DEPTH_TEST);
         //初始化着色器
         if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
             console.log('Fail to initialize shaders');
@@ -382,3 +385,4 @@ class Cube extends Object3D{
 
 
 export {Triangle,Rectangle,Cube};
+export {initShaders,createProgram,loadShader,VSHADER_SOURCE,FSHADER_SOURCE};

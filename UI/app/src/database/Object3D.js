@@ -39,7 +39,6 @@ class Object3D extends EventDispatcher{
     updateModelMatrix(){
         while(this.Matrixs.length > 0){
             this.modelMatrix.multiply(this.Matrixs.shift());
-
         }
     }
     // 平移

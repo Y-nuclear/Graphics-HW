@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import {Triangle,Rectangle,Cube} from '../GL/BasicProperty';
+import OBJobject from '../GL/OBJobject';
 import Camera from '../GL/Camera';
 class CanvasScene extends Component {
     constructor(props){
@@ -17,10 +18,13 @@ class CanvasScene extends Component {
     componentDidMount(){
         var canvas = document.getElementById('canvas');
         var gl = canvas.getContext('webgl');
+        var obj3d = new OBJobject(gl);
+        console.log(obj3d)
+        obj3d.loadOBJ('./3d.obj');
         this.setState({
             canvas: canvas,
             gl: gl,
-            objects: [new Cube(gl)]
+            objects: [obj3d]
         });
         
     }
@@ -30,17 +34,17 @@ class CanvasScene extends Component {
         var objects = this.state.objects;
         gl.clear(gl.COLOR_BUFFER_BIT);
         for(var i = 0;i < objects.length;i++){
-            objects[i].glRotate(0.5,0,0,1);
-            objects[i].glRotate(0.5,0,1,0);
-            objects[i].glTranslate(0.2,0,0);
-            this.state.Camera.setPerspective(45,1,0.1,100);
-            this.state.Camera.setPosition(0,0,2.5);
-            this.state.Camera.updateModelMatrix();
-            this.state.Camera.setViewMatrix();
-            objects[i].modelMatrix.multiply(this.state.Camera.viewMatrix);
-            objects[i].update();
+            // objects[i].glRotate(0.5,0,0,1);
+            // objects[i].glRotate(0.5,0,1,0);
+            // objects[i].glTranslate(0.2,0,0);
+            // this.state.Camera.setPerspective(45,1,0.1,100);
+            // this.state.Camera.setPosition(0,0,2.5);
+            // this.state.Camera.updateModelMatrix();
+            // this.state.Camera.setViewMatrix();
+            // objects[i].modelMatrix.multiply(this.state.Camera.viewMatrix);
+            // objects[i].update();
 
-            console.log(objects[i].modelMatrix.elements);
+            // console.log(objects[i].modelMatrix.elements);
 
             objects[i].render();
         }
@@ -77,7 +81,7 @@ class CanvasScene extends Component {
     render() {
         return (
             <div>
-                <canvas id="canvas" width={500} height={500} style={
+                <canvas id="canvas" width={720} height={480} style={
                     {
                         border: '1px solid #000',
                         margin: '10px auto',
