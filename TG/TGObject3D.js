@@ -35,6 +35,8 @@ const TGObject3D = {
             ];
             this.colorBuffer = gl.createBuffer();
 
+            this.normalData = [0, 0, 0, 0, 0, 0];
+            this.normalBuffer = gl.createBuffer();
         }
         display(tg) {
             var gl = tg.gl;
@@ -49,15 +51,19 @@ const TGObject3D = {
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.colorData), gl.STATIC_DRAW);
             gl.vertexAttribPointer(shaderProgram.aColorLocation, 3, gl.FLOAT, false, 0, 0);
 
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normalData), gl.STATIC_DRAW);
+            gl.vertexAttribPointer(shaderProgram.aNormalLocation, 3, gl.FLOAT, false, 0, 0);
+
             gl.drawArrays(gl.LINES, 0, 2);
         }
         apply(mat) {
-            var point = vec3.fromValues(this.startPoint[0],this.startPoint[1],this.startPoint[2]);
+            var point = vec3.fromValues(this.startPoint[0], this.startPoint[1], this.startPoint[2]);
             vec3.transformMat4(point, point, mat);
-            this.startPoint = [point[0],point[1],point[2]];
-            point = vec3.fromValues(this.endPoint[0],this.endPoint[1],this.endPoint[2]);
+            this.startPoint = [point[0], point[1], point[2]];
+            point = vec3.fromValues(this.endPoint[0], this.endPoint[1], this.endPoint[2]);
             vec3.transformMat4(point, point, mat);
-            this.endPoint = [point[0],point[1],point[2]];
+            this.endPoint = [point[0], point[1], point[2]];
         }
     },
     XYZ: class {
@@ -72,7 +78,7 @@ const TGObject3D = {
         display(tg) {
             this.set.display(tg);
         }
-        apply(mat) {    
+        apply(mat) {
             this.set.apply(mat);
         }
     },
@@ -97,6 +103,7 @@ const TGObject3D = {
 
             this.vertices = vertices;
             this.colors = colors;
+            this.calNormal();
 
             this.triangleVertexPositionBuffer = gl.createBuffer();
             this.triangleVertexPositionBuffer.itemSize = 3;
@@ -105,10 +112,39 @@ const TGObject3D = {
             this.triangleVertexColorBuffer = gl.createBuffer();
             this.triangleVertexColorBuffer.itemSize = 3;
             this.triangleVertexColorBuffer.numItems = 3;
+
+            this.triangleNormalBuffer = gl.createBuffer();
+            this.triangleNormalBuffer.itemSize = 3;
+            this.triangleNormalBuffer.numItems = 3;
+        }
+        calNormal() {
+            var vertices = this.vertices;
+            this.normals = [];
+            var v1 = vec3.fromValues(vertices[0], vertices[1], vertices[2]);
+            var v2 = vec3.fromValues(vertices[3], vertices[4], vertices[5]);
+            var v3 = vec3.fromValues(vertices[6], vertices[7], vertices[8]);
+            var v12 = vec3.create();
+            var v13 = vec3.create();
+            vec3.subtract(v12, v2, v1);
+            vec3.subtract(v13, v3, v1);
+            var normal = vec3.create();
+            vec3.cross(normal, v12, v13);
+            vec3.normalize(normal, normal);
+            this.normals.push(normal[0]);
+            this.normals.push(normal[1]);
+            this.normals.push(normal[2]);
+            this.normals.push(normal[0]);
+            this.normals.push(normal[1]);
+            this.normals.push(normal[2]);
+            this.normals.push(normal[0]);
+            this.normals.push(normal[1]);
+            this.normals.push(normal[2]);
         }
         display(tg) {
             var gl = tg.gl;
             var shaderProgram = tg.shaderProgram;
+
+            this.calNormal();
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this.triangleVertexPositionBuffer);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
@@ -117,6 +153,10 @@ const TGObject3D = {
             gl.bindBuffer(gl.ARRAY_BUFFER, this.triangleVertexColorBuffer);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.colors), gl.STATIC_DRAW);
             gl.vertexAttribPointer(shaderProgram.aColorLocation, this.triangleVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.triangleNormalBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW);
+            gl.vertexAttribPointer(shaderProgram.aNormalLocation, this.triangleNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
             gl.drawArrays(gl.TRIANGLES, 0, this.triangleVertexPositionBuffer.numItems);
         }

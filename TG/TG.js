@@ -16,8 +16,8 @@ class TG {
     }
     init(canvas) {
         this.canvas = canvas;
-        var gl= canvas.getContext('webgl');
-        this.gl =gl;
+        var gl = canvas.getContext('webgl');
+        this.gl = gl;
         this.gl.viewportWidth = canvas.width;
         this.gl.viewportHeight = canvas.height;
 
@@ -33,23 +33,53 @@ class TG {
         // 顶点着色器代码
         this.vertexShaderSource = `
         attribute vec3 aPosition;
+        attribute vec3 aNormal;
         attribute vec3 aColor;
+
         varying vec3 vColor;
+        varying vec3 vNormal;
+        varying vec3 vFragPos;
+
         uniform mat4 uModelViewMatrix;
         uniform mat4 uProjectionMatrix;
 
         void main() {
             gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
             vColor = aColor;
+            vNormal = aNormal;
+            vFragPos = aPosition;
         }
         `;
+
         // 片段着色器代码
         this.fragmentShaderSource = `
         precision mediump float;
+
+        uniform int uLightModel;
+        uniform vec3 uLightPos;
+        uniform vec3 uLightDir;
+        uniform vec3 uViewPos;
+        uniform vec3 uLightColor;
+
         varying vec3 vColor;
+        varying vec3 vNormal;
+        varying vec3 vFragPos;
 
         void main() {
-            gl_FragColor = vec4(vColor, 1.0);
+            if (uLightModel == 0) {
+                gl_FragColor = vec4(vColor, 1.0);
+            } else if (uLightModel == 1) {
+                // 平行光，漫反射
+                vec3 Kd = vec3(0.9, 0.9, 0.9); // 漫反射系数
+                float diffuseIntensity = abs(dot(normalize(uLightDir), normalize(vNormal)));
+
+                if (length(vNormal) == 0.0) { // 检查法线是否有效
+                    gl_FragColor = vec4(vColor, 1.0); // 如果法线无效，直接输出颜色
+                } else {
+                    vec3 diffuse = Kd * vColor * diffuseIntensity; // 计算漫反射颜色
+                    gl_FragColor = vec4(diffuse, 1.0); // 输出漫反射颜色
+                }
+            }
         }
         `;
 
@@ -77,14 +107,23 @@ class TG {
 
         // 获取着色器程序中的属性和 uniform 变量的位置
         this.shaderProgram.aPositionLocation = this.gl.getAttribLocation(this.shaderProgram, 'aPosition');
-        this.shaderProgram.aColorLocation = this.gl.getAttribLocation(this.shaderProgram, 'aColor');
-        this.shaderProgram.uModelViewMatrixLocation = this.gl.getUniformLocation(this.shaderProgram, 'uModelViewMatrix');
-        this.shaderProgram.uProjectionMatrixLocation = this.gl.getUniformLocation(this.shaderProgram, 'uProjectionMatrix');
-
         this.gl.enableVertexAttribArray(this.shaderProgram.aPositionLocation);
         this.gl.vertexAttribPointer(this.shaderProgram.aPositionLocation, 3, this.gl.FLOAT, false, 0, 0);
+        this.shaderProgram.aColorLocation = this.gl.getAttribLocation(this.shaderProgram, 'aColor');
         this.gl.enableVertexAttribArray(this.shaderProgram.aColorLocation);
         this.gl.vertexAttribPointer(this.shaderProgram.aColorLocation, 3, this.gl.FLOAT, false, 0, 0);
+        this.shaderProgram.aNormalLocation = this.gl.getAttribLocation(this.shaderProgram, 'aNormal');
+        this.gl.enableVertexAttribArray(this.shaderProgram.aNormalLocation);
+        this.gl.vertexAttribPointer(this.shaderProgram.aNormalLocation, 3, this.gl.FLOAT, false, 0, 0);
+
+        this.shaderProgram.uModelViewMatrixLocation = this.gl.getUniformLocation(this.shaderProgram, 'uModelViewMatrix');
+        this.shaderProgram.uProjectionMatrixLocation = this.gl.getUniformLocation(this.shaderProgram, 'uProjectionMatrix');
+        this.shaderProgram.uLightModel = this.gl.getUniformLocation(this.shaderProgram, 'uLightModel');
+        this.shaderProgram.uLightPos = this.gl.getUniformLocation(this.shaderProgram, 'uLightPos');
+        this.shaderProgram.uLightDir = this.gl.getUniformLocation(this.shaderProgram, 'uLightDir');
+        this.shaderProgram.uViewPos = this.gl.getUniformLocation(this.shaderProgram, 'uViewPos');
+        this.shaderProgram.uLightColor = this.gl.getUniformLocation(this.shaderProgram, 'uLightColor');
+
     }
 
 
