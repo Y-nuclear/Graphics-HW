@@ -35,70 +35,239 @@ class OBJobject extends Object3D{
         var normals = [];
         var uvs = [];
         var indices = [];
-        for(var i = 0;i < objTextLines.length;i++){
-            var line = objTextLines[i];
-            var lineData = line.split(" ");
-            //删除lineData中的空字符串
-            for(var j = 0;j < lineData.length;j++){
-                if(lineData[j] === ""){
-                    lineData.splice(j,1);
-                    j--;
-                }
+        function parseOBJ(text) {
+          // because indices are base 1 let's just fill in the 0th data
+          const objPositions = [[0, 0, 0]];
+          const objTexcoords = [[0, 0]];
+          const objNormals = [[0, 0, 0]];
+          const objColors = [[0, 0, 0]];
+        
+          // same order as `f` indices
+          const objVertexData = [
+            objPositions,
+            objTexcoords,
+            objNormals,
+            objColors,
+          ];
+        
+          // same order as `f` indices
+          let webglVertexData = [
+            [],   // positions
+            [],   // texcoords
+            [],   // normals
+            [],   // colors
+          ];
+        
+          const materialLibs = [];
+          const geometries = [];
+          let geometry;
+          let groups = ['default'];
+          let material = 'default';
+          let object = 'default';
+        
+          const noop = () => {};
+        
+          function newGeometry() {
+            // If there is an existing geometry and it's
+            // not empty then start a new one.
+            if (geometry && geometry.data.position.length) {
+              geometry = undefined;
             }
-            if(lineData[0] === "v"){
-                positions.push(parseFloat(lineData[1])/10);
-                positions.push(parseFloat(lineData[2])/10);
-                positions.push(parseFloat(lineData[3])/10);
-            }else if(lineData[0] === "vn"){
-                normals.push(parseFloat(lineData[1]));
-                normals.push(parseFloat(lineData[2]));
-                normals.push(parseFloat(lineData[3]));
-            }else if(lineData[0] === "vt"){
-                uvs.push(parseFloat(lineData[1]));
-                uvs.push(parseFloat(lineData[2]));
-            }else if(lineData[0] === "f"){
-                for(var j = 1;j < lineData.length;j++){
-                    var indexData = lineData[j].split("/");
-                    if(indexData.length!=3){
-                        continue;
-                    }
-                    indices.push(parseInt(indexData[0]) - 1);
-                    indices.push(parseInt(indexData[1]) - 1);
-                    indices.push(parseInt(indexData[2]) - 1);
-                }
+          }
+        
+          function setGeometry() {
+            if (!geometry) {
+              const position = [];
+              const texcoord = [];
+              const normal = [];
+              const color = [];
+              webglVertexData = [
+                position,
+                texcoord,
+                normal,
+                color,
+              ];
+              geometry = {
+                object,
+                groups,
+                material,
+                data: {
+                  position,
+                  texcoord,
+                  normal,
+                  color,
+                },
+              };
+              geometries.push(geometry);
+            }
+          }
+        
+          function addVertex(vert) {
+            const ptn = vert.split('/');
+            ptn.forEach((objIndexStr, i) => {
+              if (!objIndexStr) {
+                return;
+              }
+              const objIndex = parseInt(objIndexStr);
+              const index = objIndex + (objIndex >= 0 ? 0 : objVertexData[i].length);
+              webglVertexData[i].push(...objVertexData[i][index]);
+              // if this is the position index (index 0) and we parsed
+              // vertex colors then copy the vertex colors to the webgl vertex color data
+              if (i === 0 && objColors.length > 1) {
+                geometry.data.color.push(...objColors[index]);
+              }
+            });
+          }
+        
+          const keywords = {
+            v(parts) {
+              // if there are more than 3 values here they are vertex colors
+              if (parts.length > 3) {
+                objPositions.push(parts.slice(0, 3).map(parseFloat));
+                objColors.push(parts.slice(3).map(parseFloat));
+              } else {
+                objPositions.push(parts.map(parseFloat));
+              }
+            },
+            vn(parts) {
+              objNormals.push(parts.map(parseFloat));
+            },
+            vt(parts) {
+              // should check for missing v and extra w?
+              objTexcoords.push(parts.map(parseFloat));
+            },
+            f(parts) {
+              setGeometry();
+              const numTriangles = parts.length - 2;
+              for (let tri = 0; tri < numTriangles; ++tri) {
+                addVertex(parts[0]);
+                addVertex(parts[tri + 1]);
+                addVertex(parts[tri + 2]);
+              }
+            },
+            s: noop,    // smoothing group
+            mtllib(parts, unparsedArgs) {
+              // the spec says there can be multiple filenames here
+              // but many exist with spaces in a single filename
+              materialLibs.push(unparsedArgs);
+            },
+            usemtl(parts, unparsedArgs) {
+              material = unparsedArgs;
+              newGeometry();
+            },
+            g(parts) {
+              groups = parts;
+              newGeometry();
+            },
+            o(parts, unparsedArgs) {
+              object = unparsedArgs;
+              newGeometry();
+            },
+          };
+        
+          const keywordRE = /(\w*)(?: )*(.*)/;
+          const lines = text.split('\n');
+          for (let lineNo = 0; lineNo < lines.length; ++lineNo) {
+            const line = lines[lineNo].trim();
+            if (line === '' || line.startsWith('#')) {
+              continue;
+            }
+            const m = keywordRE.exec(line);
+            if (!m) {
+              continue;
+            }
+            const [, keyword, unparsedArgs] = m;
+            const parts = line.split(/\s+/).slice(1);
+            const handler = keywords[keyword];
+            if (!handler) {
+              console.warn('unhandled keyword:', keyword);  // eslint-disable-line no-console
+              continue;
+            }
+            handler(parts, unparsedArgs);
+          }
+        
+          // remove any arrays that have no entries.
+          for (const geometry of geometries) {
+            geometry.data = Object.fromEntries(
+                Object.entries(geometry.data).filter(([, array]) => array.length > 0));
+          }
+        
+          return {
+            geometries,
+            materialLibs,
+          };
+        }
+        var objData = parseOBJ(objText);
+        console.log(objData);
+        function GetExtent(vertices){
+            var min = [Number.MAX_VALUE,Number.MAX_VALUE,Number.MAX_VALUE];
+            var max = [Number.MIN_VALUE,Number.MIN_VALUE,Number.MIN_VALUE];
+            for(var i = 0;i < vertices.length;i+=3){
+                vertices[i+0] < min[0] ? min[0] = vertices[i+0] : min[0] = min[0];
+                vertices[i+1] < min[1] ? min[1] = vertices[i+1] : min[1] = min[1];
+                vertices[i+2] < min[2] ? min[2] = vertices[i+2] : min[2] = min[2];
+                vertices[i+0] > max[0] ? max[0] = vertices[i+0] : max[0] = max[0];
+                vertices[i+1] > max[1] ? max[1] = vertices[i+1] : max[1] = max[1];
+                vertices[i+2] > max[2] ? max[2] = vertices[i+2] : max[2] = max[2];
+
+            }
+            return [min,max];
+        }
+        var extent = GetExtent(objData.geometries[0].data.position);
+        function GetCenter(extent){
+            var min = extent[0];
+            var max = extent[1];
+            var center = [(min[0] + max[0]) / 2,(min[1] + max[1]) / 2,(min[2] + max[2]) / 2];
+            return center;
+        }
+        var center = GetCenter(extent);
+        function GetScale(extent){
+            var min = extent[0];
+            var max = extent[1];
+            var scale = [max[0] - min[0],max[1] - min[1],max[2] - min[2]];
+            return scale;
+        }
+        var scale = GetScale(extent);
+        function fscale(vertices,scale){
+            for (var i = 0;i < vertices.length;i+=3){
+                vertices[i+0] = (vertices[i+0] - center[0]) / scale[0];
+                vertices[i+1] = (vertices[i+1] - center[1]) / scale[1];
+                vertices[i+2] = (vertices[i+2] - center[2]) / scale[2];
             }
         }
-        this.vertices = positions;
-        console.log(this.vertices);
-        this.indices = indices;
-        console.log(this.indices)
-        this.colors = [];
+
+  
+        this.vertices = objData.geometries[0].data.position;
+        fscale(this.vertices,scale);
+        // this.indices = objData.geometries[0].data.position;
+        this.colors = objData.geometries[0].data.color;
+
     }
     // 缓冲区
     initVertexBuffers(gl,a_Position,a_Color){
         var vertices = new Float32Array(this.vertices);
-        var indices = new Uint16Array(this.indices);
+
         var colors = new Float32Array(this.colors);
         var vertexBuffer = gl.createBuffer();
-        var indexBuffer = gl.createBuffer();
+
         var colorBuffer = gl.createBuffer();
-        if(!vertexBuffer || !indexBuffer || !colorBuffer){
+        if(!vertexBuffer || !colorBuffer){
             return -1;
         }
         gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);
         gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.STATIC_DRAW);
-        gl.vertexAttribPointer(a_Position,3,gl.FLOAT,false,Float32Array.BYTES_PER_ELEMENT * 8,0);
+        gl.vertexAttribPointer(a_Position,3,gl.FLOAT,false,Float32Array.BYTES_PER_ELEMENT * 4,0);
         gl.enableVertexAttribArray(a_Position);
         gl.bindBuffer(gl.ARRAY_BUFFER,colorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER,colors,gl.STATIC_DRAW);
-        gl.vertexAttribPointer(a_Color,3,gl.FLOAT,false,Float32Array.BYTES_PER_ELEMENT * 8,0);
+        gl.vertexAttribPointer(a_Color,3,gl.FLOAT,false,Float32Array.BYTES_PER_ELEMENT * 4,0);
         gl.enableVertexAttribArray(a_Color);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,indices,gl.STATIC_DRAW);
-        return indices.length;
+
+        return vertices.length;
     }
     render(){
         var gl = this.gl;
+        gl.enable(gl.DEPTH_TEST);
         if(!initShaders(gl,VSHADER_SOURCE,FSHADER_SOURCE)){
             return -1;
         }
@@ -110,12 +279,13 @@ class OBJobject extends Object3D{
             return;
         }
         gl.uniformMatrix4fv(u_ModelMatrix,false,this.modelMatrix.elements);
-        gl.drawElements(gl.TRIANGLE_STRIP,n,gl.UNSIGNED_SHORT,0);
+        gl.drawArrays(gl.TRIANGLES,0,n);
         for(var i = 0;i < this.children.length;i++){
             this.children[i].render();
         }
     }
 
 }
+
 
 export default OBJobject;

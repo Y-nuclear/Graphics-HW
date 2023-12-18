@@ -7,12 +7,12 @@ import Matrix4 from "../Math/Matrix";
 
 //定义顶点着色器
 const VSHADER_SOURCE =
-    'attribute vec4 a_Position;\n' + //声明attribute变量
+    'attribute vec3 a_Position;\n' + //声明attribute变量
     'attribute vec4 a_Color;\n' +    //声明attribute变量
     'uniform mat4 u_ModelMatrix;\n' + //声明uniform变量
     'varying vec4 v_Color;\n' +      //声明varying变量
     'void main() {\n' +
-    '   gl_Position = u_ModelMatrix * a_Position;\n' + //设置坐标
+    '   gl_Position = u_ModelMatrix * vec4(a_Position,1.0);\n' + //设置坐标
     '   v_Color = a_Color;\n' +       //将数据传给片元着色器
     '}\n';
 

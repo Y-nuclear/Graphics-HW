@@ -20,7 +20,7 @@ class CanvasScene extends Component {
         var gl = canvas.getContext('webgl');
         var obj3d = new OBJobject(gl);
         console.log(obj3d)
-        obj3d.loadOBJ('./3d.obj');
+        obj3d.loadOBJ('./shuibei.obj');
         this.setState({
             canvas: canvas,
             gl: gl,
@@ -34,7 +34,7 @@ class CanvasScene extends Component {
         var objects = this.state.objects;
         gl.clear(gl.COLOR_BUFFER_BIT);
         for(var i = 0;i < objects.length;i++){
-            // objects[i].glRotate(0.5,0,0,1);
+            objects[i].glRotate(0.5,0,0,1);
             // objects[i].glRotate(0.5,0,1,0);
             // objects[i].glTranslate(0.2,0,0);
             // this.state.Camera.setPerspective(45,1,0.1,100);
@@ -46,8 +46,17 @@ class CanvasScene extends Component {
 
             // console.log(objects[i].modelMatrix.elements);
 
+            this.state.Camera.setPerspective(45,1,0.1,100);
+            this.state.Camera.setPosition(0,0,2.5);
+            this.state.Camera.updateModelMatrix();
+            this.state.Camera.setViewMatrix();
+            objects[i].modelMatrix.multiply(this.state.Camera.viewMatrix);
+            objects[i].update();
+
+
             objects[i].render();
         }
+    
     }
     // 添加物体
     addObject(object){
