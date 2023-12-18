@@ -79,21 +79,23 @@ class Matrix4{
         this.setIdentity();
         var sinB = Math.sin(angle);
         var cosB = Math.cos(angle);
-        var sinA = x;
-        var cosA = Math.sqrt(1 - x * x);
-        var sinC = y;
-        var cosC = Math.sqrt(1 - y * y);
-        var sinD = z;
-        var cosD = Math.sqrt(1 - z * z);
-        this.elements[0] = cosA * cosD;
-        this.elements[1] = cosA * sinD;
-        this.elements[2] = -sinA;
-        this.elements[4] = sinB * sinA * cosD - cosB * sinD;
-        this.elements[5] = sinB * sinA * sinD + cosB * cosD;
-        this.elements[6] = sinB * cosA;
-        this.elements[8] = cosB * sinA * cosD + sinB * sinD;
-        this.elements[9] = cosB * sinA * sinD - sinB * cosD;
-        this.elements[10] = cosB * cosA;
+        var oneC = 1 - cosB;
+        this.elements[0] = x * x * oneC + cosB;
+        this.elements[1] = x * y * oneC + z * sinB;
+        this.elements[2] = x * z * oneC - y * sinB;
+        this.elements[3] = 0;
+        this.elements[4] = x * y * oneC - z * sinB;
+        this.elements[5] = y * y * oneC + cosB;
+        this.elements[6] = y * z * oneC + x * sinB;
+        this.elements[7] = 0;
+        this.elements[8] = x * z * oneC + y * sinB;
+        this.elements[9] = y * z * oneC - x * sinB;
+        this.elements[10] = z * z * oneC + cosB;
+        this.elements[11] = 0;
+        this.elements[12] = 0;
+        this.elements[13] = 0;
+        this.elements[14] = 0;
+        this.elements[15] = 1;
     }
     // 设置为视图矩阵
     setLookAt(eyeX,eyeY,eyeZ,atX,atY,atZ,upX,upY,upZ){
@@ -161,6 +163,7 @@ class Matrix4{
                 result.elements[i * 4 + j] = sum;
             }
         }
+        this.elements = result.elements;
         return result;
     }
     // 矩阵向量相乘
@@ -181,63 +184,9 @@ class Matrix4{
         }
         return result;
     }
-    // 矩阵求逆 jocobi
-    inverse(){
-        var result = new Matrix4();
-        var a = [];
-        for(var i = 0;i < 4;i++){
-            a[i] = [];
-            for(var j = 0;j < 4;j++){
-                a[i][j] = this.elements[i * 4 + j];
-            }
-        }
-        var b = [];
-        for(var i = 0;i < 4;i++){
-            b[i] = [];
-            for(var j = 0;j < 4;j++){
-                b[i][j] = i === j ? 1 : 0;
-            }
-        }
-        for(var i = 0;i < 4;i++){
-            var max = a[i][i];
-            var index = i;
-            for(var j = i + 1;j < 4;j++){
-                if(Math.abs(a[j][i]) > Math.abs(max)){
-                    max = a[j][i];
-                    index = j;
-                }
-            }
-            if(index !== i){
-                var temp = [];
-                for(var j = 0;j < 4;j++){
-                    temp[j] = a[i][j];
-                    a[i][j] = a[index][j];
-                    a[index][j] = temp[j];
-                    temp[j] = b[i][j];
-                    b[i][j] = b[index][j];
-                    b[index][j] = temp[j];
-                }
-            }
-            var temp = a[i][i];
-            for(var j = 0;j < 4;j++){
-                a[i][j] /= temp;
-                b[i][j] /= temp;
-            }
-            for(var j = 0;j < 4;j++){
-                if(j !== i){
-                    temp = a[j][i];
-                    for(var k = 0;k < 4;k++){
-                        a[j][k] -= a[i][k] * temp;
-                        b[j][k] -= b[i][k] * temp;
-                    }
-                }
-            }
-        }
-        for(var i = 0;i < 4;i++){
-            for(var j = 0;j < 4;j++){
-                result.elements[i * 4 + j] = b[i][j];
-            }
-        }
-        return result;
-    }
+    // 矩阵求逆 JoccoBi迭代法
+                
+        
 }
+
+export default Matrix4;
