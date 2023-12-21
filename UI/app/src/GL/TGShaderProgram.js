@@ -155,31 +155,60 @@ function FaceShaderProgram(gl) {
 
     var shaderProgram = createProgram(gl, vertexShaderSource, fragmentShaderSource);
 
-    function setShaderProgram(
+    var uModelMatrixLocation = gl.getUniformLocation(shaderProgram, 'uModelMatrix');
+    var uViewMatrixLocation = gl.getUniformLocation(shaderProgram, 'uViewMatrix');
+    var uProjectionMatrixLocation = gl.getUniformLocation(shaderProgram, 'uProjectionMatrix');
+
+    var uLightModelLocation = gl.getUniformLocation(shaderProgram, 'uLightModel');
+    var uLightPosLocation = gl.getUniformLocation(shaderProgram, 'uLightPos');
+    var uLightDirLocation = gl.getUniformLocation(shaderProgram, 'uLightDir');
+    var uViewPosLocation = gl.getUniformLocation(shaderProgram, 'uViewPos');
+    var uLightColorLocation = gl.getUniformLocation(shaderProgram, 'uLightColor');
+
+
+    function setShaderProgram(gl,
         modelMatrix, viewMatrix, projectionMatrix,
-        vertices, colors, normals,
+        vertices, normals, colors,
+        lightModel, lightPos, lightDir, viewPos, lightColor,
     ) {
-        gl.useProgram(shaderProgram);
-
-        gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, 'uModelMatrix'), false, modelMatrix);
-        gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, 'uViewMatrix'), false, viewMatrix);
-        gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'), false, projectionMatrix);
-
         var vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        gl.vertexAttribPointer(gl.getAttribLocation(shaderProgram, 'aPosition'), 3, gl.FLOAT, false, 0, 0);
 
-        var colorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-        gl.vertexAttribPointer(gl.getAttribLocation(shaderProgram, 'aColor'), 3, gl.FLOAT, false, 0, 0);
+        var aPositionLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
+        gl.vertexAttribPointer(aPositionLocation, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(aPositionLocation);
 
         var normalBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
-        gl.vertexAttribPointer(gl.getAttribLocation(shaderProgram, 'aNormal'), 3, gl.FLOAT, false, 0, 0);
+
+        var aNormalLocation = gl.getAttribLocation(shaderProgram, 'aNormal');
+        gl.vertexAttribPointer(aNormalLocation, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(aNormalLocation);
+
+        var colorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+
+        var aColorLocation = gl.getAttribLocation(shaderProgram, 'aColor');
+        gl.vertexAttribPointer(aColorLocation, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(aColorLocation);
+
+        gl.useProgram(shaderProgram);
+
+        gl.uniformMatrix4fv(uModelMatrixLocation, false, modelMatrix);
+        gl.uniformMatrix4fv(uViewMatrixLocation, false, viewMatrix);
+        gl.uniformMatrix4fv(uProjectionMatrixLocation, false, projectionMatrix);
+
+        gl.uniform1i(uLightModelLocation, lightModel);
+        gl.uniform3fv(uLightPosLocation, lightPos);
+        gl.uniform3fv(uLightDirLocation, lightDir);
+        gl.uniform3fv(uViewPosLocation, viewPos);
+        gl.uniform3fv(uLightColorLocation, lightColor);
     }
+
+    return setShaderProgram;
 }
 
 export { BasicShaderProgram, FaceShaderProgram };

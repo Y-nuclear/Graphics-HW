@@ -43,6 +43,7 @@ class CanvasScene extends Component {
     componentDidUpdate() {
         // 60帧刷新
         // console.log(this.state.frame);
+        var frame = this.state.frame;
 
         var tg = this.state.tg;
         var camera = this.state.camera;
@@ -50,9 +51,28 @@ class CanvasScene extends Component {
 
         tg.clear();
         tg.setCamera(camera);
-        tg.drawLine([0, 0, 0], [1, 0, 0], [1, 0, 0]);
-        tg.drawLine([0, 0, 0], [0, 1, 0], [0, 1, 0]);
-        tg.drawLine([0, 0, 0], [0, 0, 1], [0, 0, 1]);
+        tg.drawXYZ();
+
+        var vertices = [
+            0.0, 0.0, 0.0,
+            0.7, 0.3, 0.0,
+            -0.6, 0.3, 0.4
+        ];
+        var colors = [
+            1.0, 0.0, 0.0,
+            0.0, 1.0, 0.0,
+            0.0, 0.0, 1.0,
+        ];
+
+        tg.pushModelMatrix();
+        {
+            tg.rotate(frame / 100, 0, 1, 0);
+            tg.translate(0.5, 0, 0);
+            var scalef = 1 + 0.9 * Math.cos(frame / 80);
+            tg.scale(scalef, scalef, scalef);
+            tg.drawTriangle(vertices, colors);
+        }
+        tg.popModelMatrix();
 
         // for (var i = 0; i < objects.length; i++) {
         //     objects[i].glRotate(0.5, 0, 0, 1);

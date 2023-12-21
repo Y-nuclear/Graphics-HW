@@ -1,6 +1,6 @@
 import { mat4, vec3 } from 'gl-matrix';
-import { BasicShaderProgram } from './TGShaderProgram';
-import { drawLine } from './TGDraw';
+import * as TGShaderProgram from './TGShaderProgram';
+import * as TGDraw from './TGDraw';
 
 class TG {
     constructor() {
@@ -25,8 +25,10 @@ class TG {
             return;
         }
 
-        this.setBasicShaderProgram = BasicShaderProgram(gl);
-        this.drawLine = (...args) => drawLine(this, ...args);
+        this.setBasicShaderProgram = TGShaderProgram.BasicShaderProgram(gl);
+        this.drawLine = (...args) => TGDraw.drawLine(this, ...args);
+        this.drawXYZ = (...args) => TGDraw.drawXYZ(this, ...args);
+        this.drawTriangle = (...args) => TGDraw.drawTriangle(this, ...args);
 
         this.gl.enable(gl.DEPTH_TEST);
     }
@@ -38,9 +40,7 @@ class TG {
         gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     }
     pushModelMatrix() {
-        var copy = mat4.create();
-        mat4.set(this.modelMatrix, copy);
-        this.modelMatrixStack.push(copy);
+        this.modelMatrixStack.push(mat4.clone(this.modelMatrix));
     }
     popModelMatrix() {
         if (this.modelMatrixStack.length == 0) {
@@ -62,6 +62,17 @@ class TG {
         this.setViewMatrix(viewMatrix);
         this.setProjectionMatrix(projectionMatrix);
     }
+
+    translate(x,y,z){
+        mat4.translate(this.modelMatrix,this.modelMatrix,[x,y,z]);
+    }
+    rotate(angle,x,y,z){
+        mat4.rotate(this.modelMatrix,this.modelMatrix,angle,[x,y,z]);
+    }
+    scale(x,y,z){
+        mat4.scale(this.modelMatrix,this.modelMatrix,[x,y,z]);
+    }
+
 
 };
 
