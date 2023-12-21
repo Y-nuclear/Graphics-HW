@@ -1,0 +1,185 @@
+
+function createShader(gl, type, source) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+
+    // 检查着色器是否编译成功
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+    }
+    return shader;
+}
+
+function createProgram(gl, vertexShaderSource, fragmentShaderSource) {
+    // 创建顶点着色器
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+    // 创建片段着色器
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+    // 创建着色器程序
+    const shaderProgram = gl.createProgram();
+    // 将顶点着色器和片段着色器附加到着色器程序上
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+    // 链接着色器程序
+    gl.linkProgram(shaderProgram);
+
+    // 检查着色器程序是否链接成功
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+        console.error('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram));
+        return null;
+    }
+
+    return shaderProgram;
+}
+
+function BasicShaderProgram(gl) {
+    var vertexShaderSource = `
+        attribute vec3 aPosition;
+        attribute vec3 aColor;
+
+        varying vec3 vColor;
+
+        uniform mat4 uModelMatrix;
+        uniform mat4 uViewMatrix;
+        uniform mat4 uProjectionMatrix;
+
+        void main() {
+            gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aPosition, 1.0);
+            vColor = aColor;
+        }
+        `;
+    var fragmentShaderSource = `
+        precision mediump float;
+
+        varying vec3 vColor;
+
+        void main() {
+            gl_FragColor = vec4(vColor, 1.0);
+        }
+        `;
+
+    var shaderProgram = createProgram(gl, vertexShaderSource, fragmentShaderSource);
+
+    var uModelMatrixLocation = gl.getUniformLocation(shaderProgram, 'uModelMatrix');
+    var uViewMatrixLocation = gl.getUniformLocation(shaderProgram, 'uViewMatrix');
+    var uProjectionMatrixLocation = gl.getUniformLocation(shaderProgram, 'uProjectionMatrix');
+
+
+    function setShaderProgram(gl,
+        modelMatrix, viewMatrix, projectionMatrix,
+        vertices, colors,
+    ) {
+        var vertexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+
+        var aPositionLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
+        gl.vertexAttribPointer(aPositionLocation, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(aPositionLocation);
+
+        var colorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+
+        var aColorLocation = gl.getAttribLocation(shaderProgram, 'aColor');
+        gl.vertexAttribPointer(aColorLocation, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(aColorLocation);
+
+        gl.useProgram(shaderProgram);
+
+        gl.uniformMatrix4fv(uModelMatrixLocation, false, modelMatrix);
+        gl.uniformMatrix4fv(uViewMatrixLocation, false, viewMatrix);
+        gl.uniformMatrix4fv(uProjectionMatrixLocation, false, projectionMatrix);
+
+    }
+
+    return setShaderProgram;
+}
+
+function FaceShaderProgram(gl) {
+    var vertexShaderSource = `
+        attribute vec3 aPosition;
+        attribute vec3 aNormal;
+        attribute vec3 aColor;
+
+        varying vec3 vColor;
+        varying vec3 vNormal;
+        varying vec3 vFragPos;
+
+        uniform mat4 uModelMatrix;
+        uniform mat4 uViewMatrix;
+        uniform mat4 uProjectionMatrix;
+
+        void main() {
+            gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aPosition, 1.0);
+            vColor = aColor;
+            vNormal = aNormal;
+            vFragPos = aPosition;
+        }
+        `;
+
+    var fragmentShaderSource = `
+        precision mediump float;
+
+        uniform int uLightModel;
+        uniform vec3 uLightPos;
+        uniform vec3 uLightDir;
+        uniform vec3 uViewPos;
+        uniform vec3 uLightColor;
+
+        varying vec3 vColor;
+        varying vec3 vNormal;
+        varying vec3 vFragPos;
+
+        void main() {
+            if (uLightModel == 0) {
+                gl_FragColor = vec4(vColor, 1.0);
+            } else if (uLightModel == 1) {
+                // 平行光，漫反射
+                vec3 Kd = vec3(0.9, 0.9, 0.9); // 漫反射系数
+                float diffuseIntensity = abs(dot(normalize(uLightDir), normalize(vNormal)));
+
+                if (length(vNormal) == 0.0) { // 检查法线是否有效
+                    gl_FragColor = vec4(vColor, 1.0); // 如果法线无效，直接输出颜色
+                } else {
+                    vec3 diffuse = Kd * vColor * diffuseIntensity; // 计算漫反射颜色
+                    gl_FragColor = vec4(diffuse, 1.0); // 输出漫反射颜色
+                }
+            }
+        }
+        `;
+
+    var shaderProgram = createProgram(gl, vertexShaderSource, fragmentShaderSource);
+
+    function setShaderProgram(
+        modelMatrix, viewMatrix, projectionMatrix,
+        vertices, colors, normals,
+    ) {
+        gl.useProgram(shaderProgram);
+
+        gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, 'uModelMatrix'), false, modelMatrix);
+        gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, 'uViewMatrix'), false, viewMatrix);
+        gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'), false, projectionMatrix);
+
+        var vertexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        gl.vertexAttribPointer(gl.getAttribLocation(shaderProgram, 'aPosition'), 3, gl.FLOAT, false, 0, 0);
+
+        var colorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+        gl.vertexAttribPointer(gl.getAttribLocation(shaderProgram, 'aColor'), 3, gl.FLOAT, false, 0, 0);
+
+        var normalBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+        gl.vertexAttribPointer(gl.getAttribLocation(shaderProgram, 'aNormal'), 3, gl.FLOAT, false, 0, 0);
+    }
+}
+
+export { BasicShaderProgram, FaceShaderProgram };
