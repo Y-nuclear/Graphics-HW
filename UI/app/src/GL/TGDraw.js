@@ -17,11 +17,7 @@ function drawLine(tg, start, end, color) {
         color[0], color[1], color[2],
     ];
 
-    tg.setBasicShaderProgram(
-        gl,
-        tg.modelMatrix, tg.viewMatrix, tg.projectionMatrix,
-        vertices, colors,
-    );
+    tg.setBasicShaderProgram(vertices, colors);
 
     gl.drawArrays(gl.LINES, 0, 2);
 }
@@ -39,13 +35,15 @@ function drawXYZ(tg) {
 function drawTriangle(tg, vertices, colors) {
     var gl = tg.gl;
 
-    tg.setBasicShaderProgram(
-        gl,
-        tg.modelMatrix, tg.viewMatrix, tg.projectionMatrix,
-        vertices, colors,
-    );
+    tg.setBasicShaderProgram(vertices, colors);
 
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
 
-export { drawLine, drawXYZ, drawTriangle };
+function drawImageTexture(tg, vertices, texCoords, image) {
+    var gl = tg.gl;
+    tg.setTextureShaderProgram(vertices, texCoords, image);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+}
+
+export { drawLine, drawXYZ, drawTriangle, drawImageTexture };

@@ -3,20 +3,16 @@ import * as TGShaderProgram from './TGShaderProgram';
 import * as TGDraw from './TGDraw';
 
 class TG {
-    constructor() {
-        this.canvas = null;
-        this.gl = null;
-
+    constructor(canvas) {
         this.modelMatrixStack = [];
         this.modelMatrix = mat4.create();
         this.viewMatrix = mat4.create();
         this.projectionMatrix = mat4.create();
-    }
-    init(canvas) {
-        console.log('TG init');
+
         this.canvas = canvas;
         var gl = canvas.getContext('webgl');
         this.gl = gl;
+
         this.gl.viewportWidth = canvas.width;
         this.gl.viewportHeight = canvas.height;
 
@@ -25,10 +21,12 @@ class TG {
             return;
         }
 
-        this.setBasicShaderProgram = TGShaderProgram.BasicShaderProgram(gl);
+        this.setBasicShaderProgram = TGShaderProgram.BasicShaderProgram(this);
+        this.setTextureShaderProgram = TGShaderProgram.TextureShaderProgram(this);
         this.drawLine = (...args) => TGDraw.drawLine(this, ...args);
         this.drawXYZ = (...args) => TGDraw.drawXYZ(this, ...args);
         this.drawTriangle = (...args) => TGDraw.drawTriangle(this, ...args);
+        this.drawImageTexture = (...args) => TGDraw.drawImageTexture(this, ...args);
 
         this.gl.enable(gl.DEPTH_TEST);
     }
@@ -63,14 +61,14 @@ class TG {
         this.setProjectionMatrix(projectionMatrix);
     }
 
-    translate(x,y,z){
-        mat4.translate(this.modelMatrix,this.modelMatrix,[x,y,z]);
+    translate(x, y, z) {
+        mat4.translate(this.modelMatrix, this.modelMatrix, [x, y, z]);
     }
-    rotate(angle,x,y,z){
-        mat4.rotate(this.modelMatrix,this.modelMatrix,angle,[x,y,z]);
+    rotate(angle, x, y, z) {
+        mat4.rotate(this.modelMatrix, this.modelMatrix, angle, [x, y, z]);
     }
-    scale(x,y,z){
-        mat4.scale(this.modelMatrix,this.modelMatrix,[x,y,z]);
+    scale(x, y, z) {
+        mat4.scale(this.modelMatrix, this.modelMatrix, [x, y, z]);
     }
 
 
