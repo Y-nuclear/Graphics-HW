@@ -7,12 +7,12 @@ import Matrix4 from "../Math/Matrix";
 
 //定义顶点着色器
 const VSHADER_SOURCE =
-    'attribute vec3 a_Position;\n' + //声明attribute变量
+    'attribute vec4 a_Position;\n' + //声明attribute变量
     'attribute vec4 a_Color;\n' +    //声明attribute变量
     'uniform mat4 u_ModelMatrix;\n' + //声明uniform变量
     'varying vec4 v_Color;\n' +      //声明varying变量
     'void main() {\n' +
-    '   gl_Position = u_ModelMatrix * vec4(a_Position,1.0);\n' + //设置坐标
+    '   gl_Position = u_ModelMatrix * a_Position;\n' + //设置坐标
     '   v_Color = a_Color;\n' +       //将数据传给片元着色器
     '}\n';
 
@@ -199,92 +199,12 @@ class Triangle extends Object3D{
     }
 }
 
-//rectangle
-
-class Rectangle extends Object3D{
-    constructor(gl){
-        super();
-        //设置原型
-        Object.setPrototypeOf(this,Rectangle.prototype);
-        this.gl = gl;
-        this.vertices = [
-            [0.5, 0.5,0.0],
-            [-0.5, 0.5,0.0],
-            [0.5, -0.5,0.0],
-            [-0.5, -0.5,0.0]
-        ]
-        this.color = [
-            //灰色
-            [0.5,0.5,0.5],
-            [0.5,0.5,0.5],
-            [0.5,0.5,0.5],
-            [0.5,0.5,0.5]
-        ]
-        this.indices = [0,1,2,1,2,3];
-    }
-    initVertexBuffers(gl,a_Position,a_Color){
-        //创建顶点数据的浮点类型数组
-        var verticesColors  = [];
-        for(var i = 0;i < this.vertices.length;i++){
-            verticesColors.push(this.vertices[i][0],this.vertices[i][1],this.vertices[i][2],this.color[i][0],this.color[i][1],this.color[i][2]);
-        }
-        verticesColors = new Float32Array(verticesColors);
-
-        var n = this.vertices.length;
-        //创建缓冲区对象
-        var vertexColorBuffer = gl.createBuffer();
-        if(!vertexColorBuffer){
-            console.log('Failed to create the buffer object');
-            return -1;
-        }
-        //将顶点坐标和颜色写入缓冲区对象
-        gl.bindBuffer(gl.ARRAY_BUFFER,vertexColorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER,verticesColors,gl.STATIC_DRAW);
-        //将缓冲区对象分配给a_Position变量
-        gl.vertexAttribPointer(a_Position,3,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 6,0);
-        //连接a_Position变量与分配给它的缓冲区对象
-        gl.enableVertexAttribArray(a_Position);
-        //将缓冲区对象分配给a_Color变量
-        gl.vertexAttribPointer(a_Color,3,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 6,verticesColors.BYTES_PER_ELEMENT * 3);
-        //连接a_Color变量与分配给它的缓冲区对象
-        gl.enableVertexAttribArray(a_Color);
-        return n;
-    }
-    render(){
-        var gl = this.gl;
-        //初始化着色器
-        if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
-            console.log('Fail to initialize shaders');
-            return;
-        }
-        //获取attribute变量的存储位置
-        var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-        var a_Color = gl.getAttribLocation(gl.program, 'a_Color');
-        //获取uniform变量的存储位置
-        var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
-        //设置顶点位置
-        var n = this.initVertexBuffers(gl,a_Position,a_Color);
-        if(n < 0){
-            console.log('Failed to set the positions of the vertices');
-            return;
-        }
-        //设置模型矩阵
-        gl.uniformMatrix4fv(u_ModelMatrix,false,this.modelMatrix.elements);
-        //清空颜色缓冲区
-        gl.clear(gl.COLOR_BUFFER_BIT);
-        //绘制矩形
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
-    }
-}
-
 // cube
 class Cube extends Object3D{
-    constructor(gl){
+    constructor(){
         super();
-        //设置原型
-        Object.setPrototypeOf(this,Cube.prototype);
-        this.gl = gl;
-        this.vertices = [
+        console.log(this);
+        var vertices = [
             [0.5, 0.5, 0.5],
             [-0.5, 0.5, 0.5],
             [-0.5, -0.5, 0.5],
@@ -294,7 +214,7 @@ class Cube extends Object3D{
             [-0.5, -0.5, -0.5],
             [0.5, -0.5, -0.5]
         ]
-        this.color = [
+        var colors = [
             [1.0, 0.0, 0.0], //红色
             [1.0, 1.0, 0.0], //黄色
             [0.0, 1.0, 0.0], //绿色
@@ -304,7 +224,7 @@ class Cube extends Object3D{
             [0.0, 1.0, 1.0], //青色
             [0.5, 0.5, 0.5]  //灰色
         ]
-        this.indices = [
+        let indices = [
             0,1,2,
             0,2,3,
             0,5,1,
@@ -318,50 +238,56 @@ class Cube extends Object3D{
             6,5,2,
             5,1,2
         ];
+        for (let i = 0; i < indices.length; i++) {
+            for (let j = 0; j < 3; j++) {
+                this.vertices.push(vertices[indices[i]][j]);
+                this.colors.push(colors[indices[i]][j]);
+            }
+        }
     }
     initVertexBuffers(gl,a_Position,a_Color){
-        //创建顶点数据的浮点类型数组
-        var verticesColors  = [];
-        for(var i = 0;i < this.vertices.length;i++){
-            verticesColors.push(this.vertices[i][0],this.vertices[i][1],this.vertices[i][2],this.color[i][0],this.color[i][1],this.color[i][2]);
-        }
-        verticesColors = new Float32Array(verticesColors);
-        gl.enable(gl.DEPTH_TEST);
-        var n = this.vertices.length;
-        //创建缓冲区对象
-        var vertexColorBuffer = gl.createBuffer();
-        if(!vertexColorBuffer){
+        // 创建顶点缓冲区对象
+        var vertexBuffer = gl.createBuffer();
+        if(!vertexBuffer){
             console.log('Failed to create the buffer object');
             return -1;
         }
-        //将顶点坐标和颜色写入缓冲区对象
-        gl.bindBuffer(gl.ARRAY_BUFFER,vertexColorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER,verticesColors,gl.STATIC_DRAW);
-        //将索引写入缓冲区对象
-        var indexBuffer = gl.createBuffer();
-        if(!indexBuffer){
-            console.log('Failed to create the buffer object');
-            return -1;
-        }
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint8Array(this.indices),gl.STATIC_DRAW);
+        //将顶点坐标写入缓冲区对象
+        gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(this.vertices),gl.STATIC_DRAW);
         //将缓冲区对象分配给a_Position变量
-        gl.vertexAttribPointer(a_Position,3,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 6,0);
+        gl.vertexAttribPointer(a_Position,3,gl.FLOAT,false,0,0);
         //连接a_Position变量与分配给它的缓冲区对象
         gl.enableVertexAttribArray(a_Position);
+
+        // 创建颜色缓冲区对象
+        var colorBuffer = gl.createBuffer();
+        if(!colorBuffer){
+            console.log('Failed to create the buffer object');
+            return -1;
+        }
+        //将顶点颜色写入缓冲区对象
+        gl.bindBuffer(gl.ARRAY_BUFFER,colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(this.colors),gl.STATIC_DRAW);
         //将缓冲区对象分配给a_Color变量
-        gl.vertexAttribPointer(a_Color,3,gl.FLOAT,false,verticesColors.BYTES_PER_ELEMENT * 6,verticesColors.BYTES_PER_ELEMENT * 3);
+        gl.vertexAttribPointer(a_Color,3,gl.FLOAT,false,0,0);
         //连接a_Color变量与分配给它的缓冲区对象
         gl.enableVertexAttribArray(a_Color);
-
-        return n;
+        return this.vertices.length;
     }
-    render(){
-        var gl = this.gl;
+    render(gl,camera=null,light=null){
+        var gl = gl;
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        var Matrix = this.modelMatrix;
         //初始化着色器
         if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
             console.log('Fail to initialize shaders');
             return;
+        }
+        if (camera != null) {
+            console.log("camera",camera.viewMatrix.elements);
+            if (camera.viewMatrix.inverse()!==undefined)
+            {Matrix = camera.viewMatrix.inverse().multiply(this.modelMatrix);}
         }
         //获取attribute变量的存储位置
         var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
@@ -375,14 +301,16 @@ class Cube extends Object3D{
             return;
         }
         //设置模型矩阵
-        gl.uniformMatrix4fv(u_ModelMatrix,false,this.modelMatrix.elements);
+        gl.uniformMatrix4fv(u_ModelMatrix,false,Matrix.elements);
+        console.log("Model",Matrix);
         //清空颜色缓冲区
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         //绘制立方体
-        gl.drawElements(gl.TRIANGLE_STRIP, this.indices.length, gl.UNSIGNED_BYTE, 0);
+
+        gl.drawArrays(gl.TRIANGLES, 0, n);
     }
 }
 
 
-export {Triangle,Rectangle,Cube};
+export {Triangle,Cube};
 export {initShaders,createProgram,loadShader,VSHADER_SOURCE,FSHADER_SOURCE};
