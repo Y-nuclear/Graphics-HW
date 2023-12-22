@@ -68,9 +68,12 @@ class CanvasScene extends Component {
 
             tg.pushModelMatrix();
             {
+                objects[0].glRotate(1*Math.PI/180,1,0,1);
 
-                var vertices = this.state.objects[0].vertices;
-                var colors = this.state.objects[0].colors
+                
+
+                var vertices = objects[0].updateVertices() //用该函数获取对象变换后的点
+                var colors = objects[0].colors
 
                 tg.rotate(frame / 100, 0, 1, 0);
                 tg.translate(0.5, 0, 0);

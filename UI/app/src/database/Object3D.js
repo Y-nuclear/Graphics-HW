@@ -2,12 +2,12 @@
 // 使用WebGL
 // 定义基本的物体
 import { EventDispatcher } from "./EventDispatcher";
-import { mat4 } from "gl-matrix";
+import { mat4, vec3 } from "gl-matrix";
 
 //Object3D作为所有3D对象的基类，提供了一些基本的属性和方法
 //包括顶点数据、顶点索引、顶点颜色、位置、旋转、缩放、模型矩阵、子对象等
 function IdentityMat4(){
-    return mat4.fromValues(1,0,0,0, 0,1,0,0,0,0,1,0,0,0,0,1);
+    return mat4.create();
 }
 class Object3D extends EventDispatcher{
     constructor(){
@@ -19,22 +19,23 @@ class Object3D extends EventDispatcher{
         this.normals = [];
         this.materials = [];
 
-        this.modelMatrix = IdentityMat4();
+        this.modelMatrix = mat4.create();
+        this.save_modelMatrix = mat4.create();
         this.box = null;
         this.sphere = null;
     }
 
     // 平移
     glTranslate(x,y,z){
-        mat4.fromTranslation(this.modelMatrix,this.modelMatrix,[x,y,z])
+        mat4.translate(this.modelMatrix,this.modelMatrix,[x,y,z])
     }
     // 旋转
     glRotate(angle,x,y,z){
-        mat4.fromRotation(this.modelMatrix,this.modelMatrix,angle,[x,y,z])
+        mat4.rotate(this.modelMatrix,this.modelMatrix,angle,[x,y,z])
     }
     // 缩放
     glScale(x,y,z){
-        mat4.fromScaling(this.modelMatrix,this.modelMatrix,[x,y,z])
+        mat4.scale(this.modelMatrix,this.modelMatrix,[x,y,z])
     }
     // 设置顶点数据
     setVertices(vertices){
@@ -51,6 +52,23 @@ class Object3D extends EventDispatcher{
     // 设置材质
     setMaterials(materials){
         this.materials = materials;
+    }
+    // 保存modelMatrix
+    saveModelMatrix(){
+        this.save_modelMatrix = this.modelMatrix;
+    }
+    // 对对象进行更新
+    updateVertices(){
+        let vertex_temp = [];
+        for(let i=0;i<this.vertices.length;i+=3){
+            var Vertex = vec3.fromValues(this.vertices[i],this.vertices[i+1],this.vertices[i+2])
+            vec3.transformMat4(Vertex,Vertex,this.modelMatrix);
+            vertex_temp.push(Vertex[0])
+            vertex_temp.push(Vertex[1])
+            vertex_temp.push(Vertex[2])
+        }
+        this.modelMatrix = this.save_modelMatrix;
+        return vertex_temp;
     }
 
 
