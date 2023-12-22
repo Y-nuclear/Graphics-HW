@@ -3,20 +3,19 @@ import * as TGShaderProgram from './TGShaderProgram';
 import * as TGDraw from './TGDraw';
 
 class TG {
-    constructor() {
-        this.canvas = null;
-        this.gl = null;
-
+    constructor(canvas) {
         this.modelMatrixStack = [];
         this.modelMatrix = mat4.create();
         this.viewMatrix = mat4.create();
         this.projectionMatrix = mat4.create();
-    }
-    init(canvas) {
-        console.log('TG init');
+
+        this.lightDir = null;
+        this.lightColor = null;
+
         this.canvas = canvas;
         var gl = canvas.getContext('webgl');
         this.gl = gl;
+
         this.gl.viewportWidth = canvas.width;
         this.gl.viewportHeight = canvas.height;
 
@@ -25,10 +24,15 @@ class TG {
             return;
         }
 
-        this.setBasicShaderProgram = TGShaderProgram.BasicShaderProgram(gl);
+        this.setBasicShaderProgram = TGShaderProgram.BasicShaderProgram(this);
+        this.setTextureShaderProgram = TGShaderProgram.TextureShaderProgram(this);
+        this.setBasicLightShaderProgram = TGShaderProgram.BasicLightShaderProgram(this);
+
         this.drawLine = (...args) => TGDraw.drawLine(this, ...args);
         this.drawXYZ = (...args) => TGDraw.drawXYZ(this, ...args);
         this.drawTriangle = (...args) => TGDraw.drawTriangle(this, ...args);
+        this.drawImageTexture = (...args) => TGDraw.drawImageTexture(this, ...args);
+        this.drawLightTriangle = (...args) => TGDraw.drawLightTriangle(this, ...args);
 
         this.gl.enable(gl.DEPTH_TEST);
     }
@@ -63,17 +67,30 @@ class TG {
         this.setProjectionMatrix(projectionMatrix);
     }
 
-    translate(x,y,z){
-        mat4.translate(this.modelMatrix,this.modelMatrix,[x,y,z]);
+    translate(x, y, z) {
+        mat4.translate(this.modelMatrix, this.modelMatrix, [x, y, z]);
     }
-    rotate(angle,x,y,z){
-        mat4.rotate(this.modelMatrix,this.modelMatrix,angle,[x,y,z]);
+    rotate(angle, x, y, z) {
+        mat4.rotate(this.modelMatrix, this.modelMatrix, angle, [x, y, z]);
     }
-    scale(x,y,z){
-        mat4.scale(this.modelMatrix,this.modelMatrix,[x,y,z]);
+    scale(x, y, z) {
+        mat4.scale(this.modelMatrix, this.modelMatrix, [x, y, z]);
     }
 
+    /**
+     * 设置光照, 目前只支持平行光
+     */
+    setLight(lightDir, lightColor) {
+        this.lightDir = vec3.create();
+        this.lightDir[0] = lightDir[0];
+        this.lightDir[1] = lightDir[1];
+        this.lightDir[2] = lightDir[2];
 
+        this.lightColor = vec3.create();
+        this.lightColor[0] = lightColor[0];
+        this.lightColor[1] = lightColor[1];
+        this.lightColor[2] = lightColor[2];
+    }
 };
 
 export { TG };

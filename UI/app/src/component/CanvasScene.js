@@ -21,8 +21,7 @@ class CanvasScene extends Component {
     }
     componentDidMount() {
         var canvas = document.getElementById('canvas');
-        var tg = new TG();
-        tg.init(canvas);
+        var tg = new TG(canvas);
         var camera = new ACamera(canvas);
         var objects = []
 
@@ -30,6 +29,15 @@ class CanvasScene extends Component {
             // var obj3d = new OBJobject(gl);
             // obj3d.loadOBJ('./shuibei.obj');
             // objects.push(obj3d);
+
+            var image = new Image();
+            image.onload = () => {
+                objects.push({
+                    type: 'image',
+                    data: image,
+                });
+            }
+            image.src = './goutou.png';
         }
 
         this.setState({
@@ -42,38 +50,109 @@ class CanvasScene extends Component {
     }
     componentDidUpdate() {
         // 60帧刷新
-        // console.log(this.state.frame);
         var frame = this.state.frame;
 
         var tg = this.state.tg;
         var camera = this.state.camera;
         var objects = this.state.objects;
 
-        tg.clear();
-        tg.setCamera(camera);
-        tg.drawXYZ();
+        var flag = 3;
 
-        var vertices = [
-            0.0, 0.0, 0.0,
-            0.7, 0.3, 0.0,
-            -0.6, 0.3, 0.4
-        ];
-        var colors = [
-            1.0, 0.0, 0.0,
-            0.0, 1.0, 0.0,
-            0.0, 0.0, 1.0,
-        ];
+        if (flag == 1) { // case 1
+            tg.clear();
+            tg.setCamera(camera);
+            tg.drawXYZ();
 
-        tg.pushModelMatrix();
-        {
-            tg.rotate(frame / 100, 0, 1, 0);
-            tg.translate(0.5, 0, 0);
-            var scalef = 1 + 0.9 * Math.cos(frame / 80);
-            tg.scale(scalef, scalef, scalef);
-            tg.drawTriangle(vertices, colors);
+            tg.pushModelMatrix();
+            {
+                var vertices = [
+                    0.0, 0.0, 0.0,
+                    0.7, 0.3, 0.0,
+                    -0.6, 0.3, 0.4
+                ];
+                var colors = [
+                    1.0, 0.0, 0.0,
+                    0.0, 1.0, 0.0,
+                    0.0, 0.0, 1.0,
+                ];
+
+                tg.rotate(frame / 100, 0, 1, 0);
+                tg.translate(0.5, 0, 0);
+                var scalef = 1 + 0.9 * Math.cos(frame / 80);
+                tg.scale(scalef, scalef, scalef);
+                tg.drawTriangle(vertices, colors);
+            }
+            tg.popModelMatrix();
         }
-        tg.popModelMatrix();
+        else if (flag == 2) { // case 2
+            tg.clear();
+            tg.setCamera(camera);
+            tg.drawXYZ();
 
+            for (var i = 0; i < objects.length; i++) {
+
+                if (objects[i].type == 'image') {
+                    var image = objects[i].data;
+
+                    var vertices = [
+                        -0.5, 0.5, 0.0,  // 左上角
+                        -0.5, -0.5, 0.0,  // 左下角
+                        0.5, 0.5, 0.0,  // 右上角
+                        0.5, -0.5, 0.0,   // 右下角
+                    ];
+
+                    var texCoords = [
+                        0.0, 0.0,  // 左上角
+                        0.0, 1.0,  // 左下角
+                        1.0, 0.0,  // 右上角
+                        1.0, 1.0,   // 右下角
+                    ];
+                    tg.pushModelMatrix();
+                    {
+                        tg.translate(0.2, 0.5, 0.2);
+                        tg.rotate(45, 0, 1, 0);
+                        tg.drawImageTexture(vertices, texCoords, image);
+                    }
+                    tg.popModelMatrix();
+                }
+            }
+        } else if (flag == 3) { // case 3
+            tg.clear();
+            tg.setCamera(camera);
+            tg.setLight([0.0, 0.0, -1.0], [1.0, 1.0, 1.0]);
+            tg.drawXYZ();
+
+            tg.pushModelMatrix();
+            {
+                var vertices = [
+                    -0.5, 0.5, 0.0,  // 左上角
+                    -0.5, -0.5, 0.0,  // 左下角
+                    0.5, 0.5, 0.0,  // 右上角
+                    0.5, -0.5, 0.0,   // 右下角
+                ];
+
+                var colors = [
+                    1.0, 0.0, 0.0,  // 左上角
+                    0.0, 1.0, 0.0,  // 左下角
+                    0.0, 0.0, 1.0,  // 右上角
+                    1.0, 1.0, 1.0,   // 右下角
+                ];
+
+                var normals = [
+                    0.0, 0.0, 1.0,  // 左上角
+                    0.0, 0.0, 1.0,  // 左下角
+                    0.0, 0.0, 1.0,  // 右上角
+                    0.0, 0.0, 1.0,   // 右下角
+                ];
+
+                tg.rotate(frame / 50, 0, 1, 0);
+                // tg.translate(0.2, 0.5, 0.2);
+                tg.drawLightTriangle(vertices, colors,normals);
+            }
+            tg.popModelMatrix();
+        }
+
+        // old case
         // for (var i = 0; i < objects.length; i++) {
         //     objects[i].glRotate(0.5, 0, 0, 1);
         //     // objects[i].glRotate(0.5,0,1,0);
