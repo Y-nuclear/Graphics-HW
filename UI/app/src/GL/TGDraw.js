@@ -30,20 +30,29 @@ function drawXYZ(tg) {
 
 /**
  * 画线
- * 三个参数都是9维数组
  */
 function drawTriangle(tg, vertices, colors) {
     var gl = tg.gl;
-
     tg.setBasicShaderProgram(vertices, colors);
-
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
 }
 
+/**
+ * 纹理
+ */
 function drawImageTexture(tg, vertices, texCoords, image) {
     var gl = tg.gl;
     tg.setTextureShaderProgram(vertices, texCoords, image);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
 }
 
-export { drawLine, drawXYZ, drawTriangle, drawImageTexture };
+/**
+ * 光照绘制
+ */
+function drawLightTriangle(tg, vertices, colors, normals) {
+    var gl = tg.gl;
+    tg.setBasicLightShaderProgram(vertices, colors, normals);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
+}
+
+export { drawLine, drawXYZ, drawTriangle, drawImageTexture, drawLightTriangle };

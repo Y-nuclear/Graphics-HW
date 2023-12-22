@@ -56,26 +56,26 @@ class CanvasScene extends Component {
         var camera = this.state.camera;
         var objects = this.state.objects;
 
-        var flag = 2;
+        var flag = 3;
 
         if (flag == 1) { // case 1
             tg.clear();
             tg.setCamera(camera);
             tg.drawXYZ();
 
-            var vertices = [
-                0.0, 0.0, 0.0,
-                0.7, 0.3, 0.0,
-                -0.6, 0.3, 0.4
-            ];
-            var colors = [
-                1.0, 0.0, 0.0,
-                0.0, 1.0, 0.0,
-                0.0, 0.0, 1.0,
-            ];
-
             tg.pushModelMatrix();
             {
+                var vertices = [
+                    0.0, 0.0, 0.0,
+                    0.7, 0.3, 0.0,
+                    -0.6, 0.3, 0.4
+                ];
+                var colors = [
+                    1.0, 0.0, 0.0,
+                    0.0, 1.0, 0.0,
+                    0.0, 0.0, 1.0,
+                ];
+
                 tg.rotate(frame / 100, 0, 1, 0);
                 tg.translate(0.5, 0, 0);
                 var scalef = 1 + 0.9 * Math.cos(frame / 80);
@@ -94,19 +94,19 @@ class CanvasScene extends Component {
                 if (objects[i].type == 'image') {
                     var image = objects[i].data;
 
-                    var vertices = new Float32Array([
+                    var vertices = [
                         -0.5, 0.5, 0.0,  // 左上角
                         -0.5, -0.5, 0.0,  // 左下角
                         0.5, 0.5, 0.0,  // 右上角
-                        0.5, -0.5, 0.0   // 右下角
-                    ]);
+                        0.5, -0.5, 0.0,   // 右下角
+                    ];
 
-                    var texCoords = new Float32Array([
+                    var texCoords = [
                         0.0, 0.0,  // 左上角
                         0.0, 1.0,  // 左下角
                         1.0, 0.0,  // 右上角
-                        1.0, 1.0   // 右下角
-                    ]);
+                        1.0, 1.0,   // 右下角
+                    ];
                     tg.pushModelMatrix();
                     {
                         tg.translate(0.2, 0.5, 0.2);
@@ -115,8 +115,41 @@ class CanvasScene extends Component {
                     }
                     tg.popModelMatrix();
                 }
-
             }
+        } else if (flag == 3) { // case 3
+            tg.clear();
+            tg.setCamera(camera);
+            tg.setLight([0.0, 0.0, -1.0], [1.0, 1.0, 1.0]);
+            tg.drawXYZ();
+
+            tg.pushModelMatrix();
+            {
+                var vertices = [
+                    -0.5, 0.5, 0.0,  // 左上角
+                    -0.5, -0.5, 0.0,  // 左下角
+                    0.5, 0.5, 0.0,  // 右上角
+                    0.5, -0.5, 0.0,   // 右下角
+                ];
+
+                var colors = [
+                    1.0, 0.0, 0.0,  // 左上角
+                    0.0, 1.0, 0.0,  // 左下角
+                    0.0, 0.0, 1.0,  // 右上角
+                    1.0, 1.0, 1.0,   // 右下角
+                ];
+
+                var normals = [
+                    0.0, 0.0, 1.0,  // 左上角
+                    0.0, 0.0, 1.0,  // 左下角
+                    0.0, 0.0, 1.0,  // 右上角
+                    0.0, 0.0, 1.0,   // 右下角
+                ];
+
+                tg.rotate(frame / 50, 0, 1, 0);
+                // tg.translate(0.2, 0.5, 0.2);
+                tg.drawLightTriangle(vertices, colors,normals);
+            }
+            tg.popModelMatrix();
         }
 
         // old case

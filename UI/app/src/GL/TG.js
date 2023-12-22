@@ -9,6 +9,9 @@ class TG {
         this.viewMatrix = mat4.create();
         this.projectionMatrix = mat4.create();
 
+        this.lightDir = null;
+        this.lightColor = null;
+
         this.canvas = canvas;
         var gl = canvas.getContext('webgl');
         this.gl = gl;
@@ -23,10 +26,13 @@ class TG {
 
         this.setBasicShaderProgram = TGShaderProgram.BasicShaderProgram(this);
         this.setTextureShaderProgram = TGShaderProgram.TextureShaderProgram(this);
+        this.setBasicLightShaderProgram = TGShaderProgram.BasicLightShaderProgram(this);
+
         this.drawLine = (...args) => TGDraw.drawLine(this, ...args);
         this.drawXYZ = (...args) => TGDraw.drawXYZ(this, ...args);
         this.drawTriangle = (...args) => TGDraw.drawTriangle(this, ...args);
         this.drawImageTexture = (...args) => TGDraw.drawImageTexture(this, ...args);
+        this.drawLightTriangle = (...args) => TGDraw.drawLightTriangle(this, ...args);
 
         this.gl.enable(gl.DEPTH_TEST);
     }
@@ -71,7 +77,20 @@ class TG {
         mat4.scale(this.modelMatrix, this.modelMatrix, [x, y, z]);
     }
 
+    /**
+     * 设置光照, 目前只支持平行光
+     */
+    setLight(lightDir, lightColor) {
+        this.lightDir = vec3.create();
+        this.lightDir[0] = lightDir[0];
+        this.lightDir[1] = lightDir[1];
+        this.lightDir[2] = lightDir[2];
 
+        this.lightColor = vec3.create();
+        this.lightColor[0] = lightColor[0];
+        this.lightColor[1] = lightColor[1];
+        this.lightColor[2] = lightColor[2];
+    }
 };
 
 export { TG };
