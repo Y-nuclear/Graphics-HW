@@ -1,4 +1,4 @@
-
+import React from 'react';
 import './App.css';
 import UploaderBox from './component/UploaderBox';
 import CanvasScene from './component/CanvasScene';

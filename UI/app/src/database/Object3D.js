@@ -2,11 +2,13 @@
 // 使用WebGL
 // 定义基本的物体
 import { EventDispatcher } from "./EventDispatcher";
-import  {Vector3, Vector4}  from "../Math/Vector";
-import  Matrix4  from "../Math/Matrix";
+import { mat4 } from "gl-matrix";
+
 //Object3D作为所有3D对象的基类，提供了一些基本的属性和方法
 //包括顶点数据、顶点索引、顶点颜色、位置、旋转、缩放、模型矩阵、子对象等
-
+function IdentityMat4(){
+    return mat4.fromValues(1,0,0,0, 0,1,0,0,0,0,1,0,0,0,0,1);
+}
 class Object3D extends EventDispatcher{
     constructor(){
         super();
@@ -17,28 +19,22 @@ class Object3D extends EventDispatcher{
         this.normals = [];
         this.materials = [];
 
-        this.modelMatrix = new Matrix4();
+        this.modelMatrix = IdentityMat4();
         this.box = null;
         this.sphere = null;
     }
 
     // 平移
     glTranslate(x,y,z){
-        var Matrix = new Matrix4();
-        Matrix.setTranslate(x,y,z);
-        this.modelMatrix = this.modelMatrix.multiply(Matrix);
+        mat4.fromTranslation(this.modelMatrix,this.modelMatrix,[x,y,z])
     }
     // 旋转
     glRotate(angle,x,y,z){
-        var Matrix = new Matrix4();
-        Matrix.setRotate(angle,x,y,z);
-        this.modelMatrix = this.modelMatrix.multiply(Matrix);
+        mat4.fromRotation(this.modelMatrix,this.modelMatrix,angle,[x,y,z])
     }
     // 缩放
     glScale(x,y,z){
-        var Matrix = new Matrix4();
-        Matrix.setScale(x,y,z);
-        this.modelMatrix = this.modelMatrix.multiply(Matrix);
+        mat4.fromScaling(this.modelMatrix,this.modelMatrix,[x,y,z])
     }
     // 设置顶点数据
     setVertices(vertices){
@@ -109,14 +105,6 @@ class Object3D extends EventDispatcher{
             y: y,
             z: z,
             r: r
-        }
-    }
-    
-    // 渲染
-    render(){
-        this.dispatchEvent({type:'render'});
-        for(var i=0;i<this.children.length;i++){
-            this.children[i].render();
         }
     }
 

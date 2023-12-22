@@ -7,10 +7,12 @@ import { vec3, mat4 } from 'gl-matrix';
 
 import { TG } from '../GL/TG';
 import { ACamera } from '../GL/Camera';
+import { Cube } from '../GL/BasicProperty';
 
 class CanvasScene extends Component {
     constructor(props) {
         super(props);
+        
         this.state = {
             frame: 0,
             canvas: null,
@@ -23,7 +25,8 @@ class CanvasScene extends Component {
         var canvas = document.getElementById('canvas');
         var tg = new TG(canvas);
         var camera = new ACamera(canvas);
-        var objects = []
+        var cube = new Cube();
+        var objects = [cube]
 
         {// 临时
             // var obj3d = new OBJobject(gl);
@@ -56,7 +59,7 @@ class CanvasScene extends Component {
         var camera = this.state.camera;
         var objects = this.state.objects;
 
-        var flag = 3;
+        var flag = 1;
 
         if (flag == 1) { // case 1
             tg.clear();
@@ -65,16 +68,9 @@ class CanvasScene extends Component {
 
             tg.pushModelMatrix();
             {
-                var vertices = [
-                    0.0, 0.0, 0.0,
-                    0.7, 0.3, 0.0,
-                    -0.6, 0.3, 0.4
-                ];
-                var colors = [
-                    1.0, 0.0, 0.0,
-                    0.0, 1.0, 0.0,
-                    0.0, 0.0, 1.0,
-                ];
+
+                var vertices = this.state.objects[0].vertices;
+                var colors = this.state.objects[0].colors
 
                 tg.rotate(frame / 100, 0, 1, 0);
                 tg.translate(0.5, 0, 0);
