@@ -12,7 +12,7 @@ import { Cube } from '../GL/BasicProperty';
 class CanvasScene extends Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             frame: 0,
             canvas: null,
@@ -59,7 +59,7 @@ class CanvasScene extends Component {
         var camera = this.state.camera;
         var objects = this.state.objects;
 
-        var flag = 1;
+        var flag = 4;
 
         if (flag == 1) { // case 1
             tg.clear();
@@ -68,9 +68,7 @@ class CanvasScene extends Component {
 
             tg.pushModelMatrix();
             {
-                objects[0].glRotate(1*Math.PI/180,1,0,1);
-
-                
+                objects[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
 
                 var vertices = objects[0].updateVertices() //用该函数获取对象变换后的点
                 var colors = objects[0].colors
@@ -82,8 +80,7 @@ class CanvasScene extends Component {
                 tg.drawTriangle(vertices, colors);
             }
             tg.popModelMatrix();
-        }
-        else if (flag == 2) { // case 2
+        } else if (flag == 2) { // case 2
             tg.clear();
             tg.setCamera(camera);
             tg.drawXYZ();
@@ -146,9 +143,19 @@ class CanvasScene extends Component {
 
                 tg.rotate(frame / 50, 0, 1, 0);
                 // tg.translate(0.2, 0.5, 0.2);
-                tg.drawLightTriangle(vertices, colors,normals);
+                tg.drawLightTriangle(vertices, colors, normals);
             }
             tg.popModelMatrix();
+        } else if (flag == 4) { // case 4
+            tg.clear();
+            tg.setCamera(camera);
+            tg.drawXYZ();
+
+            tg.drawLine2D([-1, 0], [-0.5, 0.5], [1, 0, 0]);
+            tg.drawArrow([0, 0, 0], [0.5, 0.5, 0], [1, 1, 0]);
+
+        } else if (flag == 5) { // case 5
+        } else if (flag == 6) { // case 6
         }
 
         // old case

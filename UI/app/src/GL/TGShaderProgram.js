@@ -35,6 +35,53 @@ function createProgram(gl, vertexShaderSource, fragmentShaderSource) {
     return shaderProgram;
 }
 
+function BasicShaderProgram2D(tg){
+    var gl = tg.gl;
+    var vertexShaderSource = `
+        attribute vec2 aPosition;
+        attribute vec3 aColor;
+
+        varying vec3 vColor;
+
+        void main() {
+            gl_Position = vec4(aPosition, 0.0, 1.0);
+            vColor = aColor;
+        }
+        `;
+    var fragmentShaderSource = `
+        precision mediump float;
+
+        varying vec3 vColor;
+
+        void main() {
+            gl_FragColor = vec4(vColor, 1.0);
+        }
+        `;
+    var shaderProgram = createProgram(gl, vertexShaderSource, fragmentShaderSource);
+
+    function setShaderProgram(vertices, colors) {
+
+        var vertexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+
+        var aPositionLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
+        gl.vertexAttribPointer(aPositionLocation, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(aPositionLocation);
+
+        var colorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+
+        var aColorLocation = gl.getAttribLocation(shaderProgram, 'aColor');
+        gl.vertexAttribPointer(aColorLocation, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(aColorLocation);
+
+        gl.useProgram(shaderProgram);
+    }
+    return setShaderProgram;
+}
+
 function BasicShaderProgram(tg) {
     var gl = tg.gl;
     var vertexShaderSource = `
@@ -274,4 +321,4 @@ function BasicLightShaderProgram(tg) {
     return setShaderProgram;
 }
 
-export { BasicShaderProgram, TextureShaderProgram, BasicLightShaderProgram };
+export { BasicShaderProgram,BasicShaderProgram2D, TextureShaderProgram, BasicLightShaderProgram };
