@@ -32,6 +32,7 @@ class TG {
         this.setTextureShaderProgram = TGShaderProgram.TextureShaderProgram(this);
         this.setTextureShaderProgram2D = TGShaderProgram.TextureShaderProgram2D(this);
         this.setBasicLightShaderProgram = TGShaderProgram.BasicLightShaderProgram(this);
+        this.setTextureLightShaderProgram = TGShaderProgram.TextureLightShaderProgram(this);
 
         this.drawLine = (...args) => TGDraw.drawLine(this, ...args);
         this.drawLine2D = (...args) => TGDraw.drawLine2D(this, ...args);
@@ -45,6 +46,7 @@ class TG {
         this.drawImageTextureFaces = (...args) => TGDraw.drawImageTextureFaces(this, ...args);
 
         this.drawLightColorFaces = (...args) => TGDraw.drawLightColorFaces(this, ...args);
+        this.drawLightTextureFaces = (...args) => TGDraw.drawLightTextureFaces(this, ...args);
 
         this.drawTriangle = (...args) => TGDraw.drawTriangle(this, ...args);
         this.drawLightTriangle = (...args) => TGDraw.drawLightTriangle(this, ...args);

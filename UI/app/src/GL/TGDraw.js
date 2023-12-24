@@ -207,6 +207,19 @@ function drawLightColorFaces(tg, vertices, colors, normals, indices) {
     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 }
 
+function drawLightTextureFaces(tg, vertices, texCoords, normals, texture, indices) {
+    var gl = tg.gl;
+
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    tg.setTextureLightShaderProgram(vertices, texCoords, normals);
+
+    var indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+}
+
 function drawTriangle(tg, vertices, colors) {
     var gl = tg.gl;
     tg.setBasicShaderProgram(vertices, colors);
@@ -240,6 +253,6 @@ function drawLightTriangle(tg, vertices, colors, normals) {
 export {
     drawLine, drawLine2D, drawXYZ, drawArrow, drawText,
     drawColorFaces, image2texture, drawTextureFaces, drawImageTextureFaces,
-    drawLightColorFaces,
+    drawLightColorFaces, drawLightTextureFaces,
     drawTriangle, drawLightTriangle,
 };
