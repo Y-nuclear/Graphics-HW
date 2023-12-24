@@ -12,7 +12,7 @@ function drawLine(tg, start, end, color) {
         color[0], color[1], color[2],
     ];
 
-    tg.setBasicShaderProgram(vertices, colors);
+    tg.setColorShaderProgram(vertices, colors);
 
     gl.drawArrays(gl.LINES, 0, 2);
 }
@@ -29,7 +29,7 @@ function drawLine2D(tg, start, end, color) {
         color[0], color[1], color[2],
     ];
 
-    tg.setBasicShaderProgram2D(vertices, colors);
+    tg.setColorShaderProgram2D(vertices, colors);
 
     gl.drawArrays(gl.LINES, 0, 2);
 }
@@ -155,7 +155,7 @@ function drawText(tg, text, position, fontColor, renderHeight, scale) {
 
 function drawColorFaces(tg, vertices, colors, indices) {
     var gl = tg.gl;
-    tg.setBasicShaderProgram(vertices, colors);
+    tg.setColorShaderProgram(vertices, colors);
 
     var indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -198,7 +198,20 @@ function drawImageTextureFaces(tg, vertices, texCoords, image, indices) {
 
 function drawLightColorFaces(tg, vertices, colors, normals, indices) {
     var gl = tg.gl;
-    tg.setBasicLightShaderProgram(vertices, colors, normals);
+    tg.setColorLightShaderProgram(vertices, colors, normals);
+
+    var indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+}
+
+function drawLightTextureFaces(tg, vertices, texCoords, normals, texture, indices) {
+    var gl = tg.gl;
+
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    tg.setTextureLightShaderProgram(vertices, texCoords, normals);
 
     var indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -209,14 +222,14 @@ function drawLightColorFaces(tg, vertices, colors, normals, indices) {
 
 function drawTriangle(tg, vertices, colors) {
     var gl = tg.gl;
-    tg.setBasicShaderProgram(vertices, colors);
+    tg.setColorShaderProgram(vertices, colors);
     gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
 }
 
 function drawLightTriangle(tg, vertices, colors, normals) {
     var gl = tg.gl;
-    tg.setBasicLightShaderProgram(vertices, colors, normals);
-    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
+    tg.setColorLightShaderProgram(vertices, colors, normals);
+    gl.drawArrays(gl.TRIANGLE, 0, vertices.length / 3);
 }
 
 function drawMaterialTriangle(tg, vertices, colors, normals, material) {
@@ -225,28 +238,30 @@ function drawMaterialTriangle(tg, vertices, colors, normals, material) {
     gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
 }
 
-function drawImageTexture(tg, vertices, texCoords, image) {
-    var gl = tg.gl;
+// function drawImageTexture(tg, vertices, texCoords, image) {
+//     var gl = tg.gl;
 
-    var texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+//     var texture = gl.createTexture();
+//     gl.bindTexture(gl.TEXTURE_2D, texture);
+//     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+//     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+//     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+//     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+//     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-    tg.setTextureShaderProgram(vertices, texCoords);
+//     tg.setTextureShaderProgram(vertices, texCoords);
 
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
-}
+//     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
+// }
 
 
 
 export {
     drawLine, drawLine2D, drawXYZ, drawArrow, drawText,
-    drawColorFaces, image2texture, drawTextureFaces, drawImageTextureFaces,
+    drawColorFaces,
+    image2texture, drawTextureFaces, drawImageTextureFaces,
     drawLightColorFaces,
+    drawLightTextureFaces,
     drawTriangle, drawLightTriangle,
     drawMaterialTriangle
     // drawImageTexture,

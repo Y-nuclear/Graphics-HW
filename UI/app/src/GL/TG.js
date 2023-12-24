@@ -1,4 +1,4 @@
-import { mat4, vec3 } from 'gl-matrix';
+import { mat4, mat3, vec3 } from 'gl-matrix';
 import * as TGShaderProgram from './TGShaderProgram';
 import * as TGDraw from './TGDraw';
 
@@ -8,6 +8,9 @@ class TG {
         this.modelMatrix = mat4.create();
         this.viewMatrix = mat4.create();
         this.projectionMatrix = mat4.create();
+
+        this.normalMatrix = null;
+        this.cameraPosition = null;
 
         this.lightDir = null;
         this.lightColor = null;
@@ -24,12 +27,14 @@ class TG {
             return;
         }
 
-        this.setBasicShaderProgram = TGShaderProgram.BasicShaderProgram(this);
-        this.setBasicShaderProgram2D = TGShaderProgram.BasicShaderProgram2D(this);
+        this.setColorShaderProgram = TGShaderProgram.ColorShaderProgram(this);
+        this.setColorShaderProgram2D = TGShaderProgram.ColorShaderProgram2D(this);
         this.setTextureShaderProgram = TGShaderProgram.TextureShaderProgram(this);
         this.setTextureShaderProgram2D = TGShaderProgram.TextureShaderProgram2D(this);
         this.setBasicLightShaderProgram = TGShaderProgram.BasicLightShaderProgram(this);
         this.setMaterialShaderProgram = TGShaderProgram.MaterialShaderProgram(this);
+        this.setColorLightShaderProgram = TGShaderProgram.ColorLightShaderProgram(this);
+        this.setTextureLightShaderProgram = TGShaderProgram.TextureLightShaderProgram(this);
 
         this.drawLine = (...args) => TGDraw.drawLine(this, ...args);
         this.drawLine2D = (...args) => TGDraw.drawLine2D(this, ...args);
@@ -43,6 +48,7 @@ class TG {
         this.drawImageTextureFaces = (...args) => TGDraw.drawImageTextureFaces(this, ...args);
 
         this.drawLightColorFaces = (...args) => TGDraw.drawLightColorFaces(this, ...args);
+        this.drawLightTextureFaces = (...args) => TGDraw.drawLightTextureFaces(this, ...args);
 
         this.drawTriangle = (...args) => TGDraw.drawTriangle(this, ...args);
         this.drawLightTriangle = (...args) => TGDraw.drawLightTriangle(this, ...args);
@@ -89,6 +95,10 @@ class TG {
 
     setModelMatrix(m) {
         this.modelMatrix = mat4.clone(m);
+
+        var normalMatrix = mat3.create();
+        mat3.normalFromMat4(normalMatrix, this.modelMatrix);
+        this.normalMatrix = normalMatrix;
     }
     setViewMatrix(m) {
         this.viewMatrix = mat4.clone(m);
@@ -98,6 +108,7 @@ class TG {
     }
 
     setCamera(position, target, mode, fov, near, far) {
+        this.cameraPosition = position;
         var gl = this.gl;
 
         var viewMatrix = mat4.create();
@@ -119,6 +130,20 @@ class TG {
         this.lightColor[0] = lightColor[0];
         this.lightColor[1] = lightColor[1];
         this.lightColor[2] = lightColor[2];
+
+        var normalMatrix = mat3.create();
+        mat3.normalFromMat4(normalMatrix, this.modelMatrix);
+        this.normalMatrix = normalMatrix;
+    }
+
+    shot() {
+        const image = new Image();
+        image.src = this.canvas.toDataURL('image/png');
+
+        const a = document.createElement('a');
+        a.href = image.src;
+        a.download = 'webgl_scene.png';
+        a.click();
     }
 };
 
