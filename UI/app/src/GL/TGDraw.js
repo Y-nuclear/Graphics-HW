@@ -210,7 +210,7 @@ function drawLightColorFaces(tg, vertices, colors, normals, indices) {
 function drawTriangle(tg, vertices, colors) {
     var gl = tg.gl;
     tg.setBasicShaderProgram(vertices, colors);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
+    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
 }
 
 function drawLightTriangle(tg, vertices, colors, normals) {
