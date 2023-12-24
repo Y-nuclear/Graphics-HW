@@ -1,9 +1,9 @@
 
 function case1Init(tg) {
-    tg.goutouImage = null;
+    tg.goutouTexture = null;
     var image = new Image();
     image.onload = () => {
-        tg.goutouImage = image;
+        tg.goutouTexture = tg.image2texture(image);
     }
     image.src = './goutou.png';
 }
@@ -11,7 +11,7 @@ function case1Animate(tg, frame) {
     tg.clear();
     tg.drawXYZ();
 
-    if (tg.goutouImage) {
+    if (tg.goutouTexture) {
         tg.pushModelMatrix();
         {
             var vertices = [
@@ -37,7 +37,7 @@ function case1Animate(tg, frame) {
             tg.scale(scale, scale, scale);
 
             tg.translate(-0.5, -0.5, 0);
-            tg.drawImageTextureFaces(vertices, texCoords, tg.goutouImage, indices);
+            tg.drawTextureFaces(vertices, texCoords, tg.goutouTexture, indices);
             tg.drawText("狗头", [-0.2, -0.8, 0], "#ffff00", 0.1, 1);
         }
         tg.popModelMatrix();

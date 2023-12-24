@@ -36,8 +36,9 @@ class TG {
         this.drawXYZ = (...args) => TGDraw.drawXYZ(this, ...args);
         this.drawText = (...args) => TGDraw.drawText(this, ...args);
         this.drawColorFaces = (...args) => TGDraw.drawColorFaces(this, ...args);
+        this.image2texture = (...args) => TGDraw.image2texture(this, ...args);
+        this.drawTextureFaces = (...args) => TGDraw.drawTextureFaces(this, ...args);
         this.drawImageTextureFaces = (...args) => TGDraw.drawImageTextureFaces(this, ...args);
-
 
         // this.drawTriangle = (...args) => TGDraw.drawTriangle(this, ...args);
         // this.drawImageTexture = (...args) => TGDraw.drawImageTexture(this, ...args);
