@@ -35,7 +35,7 @@ function createProgram(gl, vertexShaderSource, fragmentShaderSource) {
     return shaderProgram;
 }
 
-function BasicShaderProgram2D(tg) {
+function ColorShaderProgram2D(tg) {
     var gl = tg.gl;
     var vertexShaderSource = `
         attribute vec3 aPosition;
@@ -78,7 +78,7 @@ function BasicShaderProgram2D(tg) {
     return setShaderProgram;
 }
 
-function BasicShaderProgram(tg) {
+function ColorShaderProgram(tg) {
     var gl = tg.gl;
     var vertexShaderSource = `
         attribute vec3 aPosition;
@@ -247,7 +247,7 @@ function TextureShaderProgram(tg) {
     return setShaderProgram;
 }
 
-function BasicLightShaderProgram(tg) {
+function ColorLightShaderProgram(tg) {
     var gl = tg.gl;
 
     var vertexShaderSource = `
@@ -511,10 +511,10 @@ function TextureLightShaderProgram(tg) {
 
 
 export {
-    BasicShaderProgram,
-    BasicShaderProgram2D,
+    ColorShaderProgram,
+    ColorShaderProgram2D,
     TextureShaderProgram,
     TextureShaderProgram2D,
-    BasicLightShaderProgram,
+    ColorLightShaderProgram,
     TextureLightShaderProgram,
 };

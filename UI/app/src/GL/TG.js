@@ -27,11 +27,11 @@ class TG {
             return;
         }
 
-        this.setBasicShaderProgram = TGShaderProgram.BasicShaderProgram(this);
-        this.setBasicShaderProgram2D = TGShaderProgram.BasicShaderProgram2D(this);
+        this.setColorShaderProgram = TGShaderProgram.ColorShaderProgram(this);
+        this.setColorShaderProgram2D = TGShaderProgram.ColorShaderProgram2D(this);
         this.setTextureShaderProgram = TGShaderProgram.TextureShaderProgram(this);
         this.setTextureShaderProgram2D = TGShaderProgram.TextureShaderProgram2D(this);
-        this.setBasicLightShaderProgram = TGShaderProgram.BasicLightShaderProgram(this);
+        this.setColorLightShaderProgram = TGShaderProgram.ColorLightShaderProgram(this);
         this.setTextureLightShaderProgram = TGShaderProgram.TextureLightShaderProgram(this);
 
         this.drawLine = (...args) => TGDraw.drawLine(this, ...args);
@@ -131,6 +131,16 @@ class TG {
         var normalMatrix = mat3.create();
         mat3.normalFromMat4(normalMatrix, this.modelMatrix);
         this.normalMatrix = normalMatrix;
+    }
+
+    shot() {
+        const image = new Image();
+        image.src = this.canvas.toDataURL('image/png');
+
+        const a = document.createElement('a');
+        a.href = image.src;
+        a.download = 'webgl_scene.png';
+        a.click();
     }
 };
 
