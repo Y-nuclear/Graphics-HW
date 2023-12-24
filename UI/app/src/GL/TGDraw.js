@@ -163,7 +163,7 @@ function drawText(tg, text, position, fontColor, renderHeight, scale) {
 function drawTriangle(tg, vertices, colors) {
     var gl = tg.gl;
     tg.setBasicShaderProgram(vertices, colors);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
+    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
 }
 
 function drawImageTexture(tg, vertices, texCoords, image) {
