@@ -26,8 +26,8 @@ function drawLine2D(tg, start, end, color) {
     var gl = tg.gl;
 
     var vertices = [
-        start[0], start[1],
-        end[0], end[1],
+        start[0], start[1], start[2],
+        end[0], end[1], end[2],
     ];
     var colors = [
         color[0], color[1], color[2],
@@ -74,15 +74,85 @@ function drawArrow(tg, start, end, color) {
     left[1] *= arrowLen;
 
     drawLine(tg, start, end, color);
-    drawLine2D(tg, endScreen, [endScreen[0] + right[0], endScreen[1] + right[1]], color);
-    drawLine2D(tg, endScreen, [endScreen[0] + left[0], endScreen[1] + left[1]], color);
+    drawLine2D(tg, endScreen, [endScreen[0] + right[0], endScreen[1] + right[1], endScreen[2]], color);
+    drawLine2D(tg, endScreen, [endScreen[0] + left[0], endScreen[1] + left[1], endScreen[2]], color);
 }
 
 function drawXYZ(tg) {
-    drawLine(tg, [0, 0, 0], [1, 0, 0], [1, 0, 0]);
-    drawLine(tg, [0, 0, 0], [0, 1, 0], [0, 1, 0]);
-    drawLine(tg, [0, 0, 0], [0, 0, 1], [0, 0, 1]);
+    drawArrow(tg, [0, 0, 0], [1, 0, 0], [1, 0, 0]);
+    drawArrow(tg, [0, 0, 0], [0, 1, 0], [0, 1, 0]);
+    drawArrow(tg, [0, 0, 0], [0, 0, 1], [0, 0, 1]);
 }
+
+
+function drawText(tg, text, position, fontColor, renderHeight, scale) {
+    var gl = tg.gl;
+    var fontSize = 32 * scale; // 字体大小
+
+    var modelMatrix = tg.modelMatrix;
+    var viewMatrix = tg.viewMatrix;
+    var projectionMatrix = tg.projectionMatrix;
+    var TMat = mat4.create();
+    mat4.mul(TMat, projectionMatrix, viewMatrix);
+    mat4.mul(TMat, TMat, modelMatrix);
+
+    var positionScreen = vec3.create();
+    vec3.transformMat4(positionScreen, position, TMat);
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // 设置透明背景
+
+    // 设置文字样式
+    ctx.font = fontSize + "px Arial";
+    ctx.fillStyle = fontColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    ctx.canvas.width = ctx.measureText(text).width;
+    ctx.canvas.height = fontSize;
+
+    // 设置文字样式
+    ctx.font = fontSize + "px Arial";
+    ctx.fillStyle = fontColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+    var renderWidth = renderHeight * ctx.canvas.width / ctx.canvas.height;
+
+    // 创建和配置纹理
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ctx.canvas);
+
+    // 启用透明度混合
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.enable(gl.BLEND);
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    // 准备顶点和纹理坐标
+    var vertices = [
+        positionScreen[0], positionScreen[1], positionScreen[2],
+        positionScreen[0] + renderWidth, positionScreen[1], positionScreen[2],
+        positionScreen[0], positionScreen[1] + renderHeight, positionScreen[2],
+        positionScreen[0] + renderWidth, positionScreen[1] + renderHeight, positionScreen[2],
+    ];
+    var texCoords = [
+        0, 1,
+        1, 1,
+        0, 0,
+        1, 0,
+    ];
+    tg.setTextureShaderProgram2D(vertices, texCoords);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
+}
+
 
 /**
  * 画线
@@ -93,12 +163,19 @@ function drawTriangle(tg, vertices, colors) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
 }
 
-/**
- * 纹理
- */
 function drawImageTexture(tg, vertices, texCoords, image) {
     var gl = tg.gl;
-    tg.setTextureShaderProgram(vertices, texCoords, image);
+
+    var texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    tg.setTextureShaderProgram(vertices, texCoords);
+
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
 }
 
@@ -111,4 +188,8 @@ function drawLightTriangle(tg, vertices, colors, normals) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
 }
 
-export { drawLine, drawLine2D, drawXYZ, drawArrow, drawTriangle, drawImageTexture, drawLightTriangle };
+export {
+    drawLine, drawLine2D, drawXYZ, drawArrow,
+    drawText,
+    drawTriangle, drawImageTexture, drawLightTriangle,
+};

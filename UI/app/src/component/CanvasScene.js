@@ -103,6 +103,7 @@ class CanvasScene extends Component {
                         1.0, 0.0,  // 右上角
                         1.0, 1.0,   // 右下角
                     ];
+
                     tg.pushModelMatrix();
                     {
                         tg.translate(0.2, 0.5, 0.2);
@@ -151,8 +152,9 @@ class CanvasScene extends Component {
             tg.setCamera(camera);
             tg.drawXYZ();
 
-            tg.drawLine2D([-1, 0], [-0.5, 0.5], [1, 0, 0]);
+            tg.drawLine2D([-1, 0, -1], [-0.5, 0.5, -1], [1, 0, 0]);
             tg.drawArrow([0, 0, 0], [0.5, 0.5, 0], [1, 1, 0]);
+            tg.drawText("Hallo World", [-0.5, 0.5, 0], "#ffffff", 0.05, 1);
 
         } else if (flag == 5) { // case 5
         } else if (flag == 6) { // case 6
