@@ -76,6 +76,7 @@ class CanvasScene extends Component {
                 objects[1].geometries[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
                 objects[1].geometries[0].updateVertices();
                 var vertices = objects[1].geometries[0].vertices;
+                var texcoords = objects[1].geometries[0].uvs;
                 var colors = objects[1].geometries[0].colors;
                 var normals = objects[1].geometries[0].normals;
 
@@ -83,13 +84,15 @@ class CanvasScene extends Component {
                 tg.translate(0.5, 0, 0);
                 var scalef = 1 + 0.9 * Math.cos(frame / 80);
                 // tg.scale(scalef, scalef, scalef);
-                tg.drawMaterialTriangle(vertices, colors, normals,{
-                    ambient: [0.4, 0.4, 0.4],
-                    diffuse: [0.5, 0.5, 0.5],
-                    specular: [1.0, 1.0, 1.0],
-                    shininess: 5.0,
-                    strength: 10.0,
-                });
+                tg.drawMaterialTextureTriangle(vertices, texcoords, normals,{
+                    ambient: [0.2, 0.2, 0.2],
+                    diffuse: [1.0, 1.0, 1.0],
+                    specular: [0.5, 0.5, 0.5],
+                    shininess: 1,
+                    strength: 1,
+                },tg.goutouTexture
+                
+                );
             }
             tg.popModelMatrix();
         // } else if (flag == 2) { // case 2
