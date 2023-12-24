@@ -1,10 +1,5 @@
 import { mat4, vec3 } from 'gl-matrix';
-import { BasicShaderProgram } from './TGShaderProgram';
 
-/**
- * 画线
- * 三个参数都是3维数组
- */
 function drawLine(tg, start, end, color) {
     var gl = tg.gl;
 
@@ -87,7 +82,6 @@ function drawXYZ(tg) {
     drawText(tg, "Z", [0, 0, 1], "#ffffff", 0.04, 1);
 }
 
-
 function drawText(tg, text, position, fontColor, renderHeight, scale) {
     var gl = tg.gl;
     var fontSize = 32 * scale; // 字体大小
@@ -156,10 +150,49 @@ function drawText(tg, text, position, fontColor, renderHeight, scale) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
 }
 
+function drawColorFaces(tg, vertices, colors, indices) {
+    var gl = tg.gl;
+    tg.setBasicShaderProgram(vertices, colors);
 
-/**
- * 画线
- */
+    var indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+}
+
+function image2texture(tg, image) {
+    var gl = tg.gl;
+
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    return texture;
+}
+
+function drawTextureFaces(tg, vertices, texCoords, texture, indices) {
+    var gl = tg.gl;
+
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    tg.setTextureShaderProgram(vertices, texCoords);
+
+    var indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+}
+
+function drawImageTextureFaces(tg, vertices, texCoords, image, indices) {
+    var texture = image2texture(tg, image);
+    drawTextureFaces(tg, vertices, texCoords, texture, indices);
+}
+
 function drawTriangle(tg, vertices, colors) {
     var gl = tg.gl;
     tg.setBasicShaderProgram(vertices, colors);
@@ -182,9 +215,6 @@ function drawImageTexture(tg, vertices, texCoords, image) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
 }
 
-/**
- * 光照绘制
- */
 function drawLightTriangle(tg, vertices, colors, normals) {
     var gl = tg.gl;
     tg.setBasicLightShaderProgram(vertices, colors, normals);
@@ -192,7 +222,7 @@ function drawLightTriangle(tg, vertices, colors, normals) {
 }
 
 export {
-    drawLine, drawLine2D, drawXYZ, drawArrow,
-    drawText,
-    drawTriangle, drawImageTexture, drawLightTriangle,
+    drawLine, drawLine2D, drawXYZ, drawArrow, drawText,
+    drawColorFaces, image2texture, drawTextureFaces, drawImageTextureFaces,
+    // drawTriangle, drawImageTexture, drawLightTriangle,
 };

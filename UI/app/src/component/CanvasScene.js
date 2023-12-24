@@ -36,6 +36,8 @@ class CanvasScene extends Component {
             objects.push(obj3d);
 
             TGCase.case1Init(tg);
+            TGCase.case2Init(tg);
+            TGCase.case3Init(tg);
         }
 
         this.setState({
@@ -57,7 +59,9 @@ class CanvasScene extends Component {
         var { position, target, mode, fov, near, far } = camera.getParams();
         tg.setCamera(position, target, mode, fov, near, far);
 
-        // TGCase.case1Animate(tg, frame);
+        TGCase.case1Animate(tg, frame);
+        // TGCase.case2Animate(tg, frame);
+        // TGCase.case3Animate(tg, frame);
 
 
         // var flag = 4;
@@ -65,22 +69,22 @@ class CanvasScene extends Component {
         // if (flag == 1) { // case 1
             // tg.clear();
             // tg.setCamera(camera);
-            tg.drawXYZ();
+            // tg.drawXYZ();
 
-            tg.pushModelMatrix();
-            {
-                objects[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
+            // tg.pushModelMatrix();
+            // {
+            //     objects[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
 
-                var vertices = objects[1].geometries[0].vertices;
-                var colors = []
+            //     var vertices = objects[1].geometries[0].vertices;
+            //     var colors = []
 
-                // tg.rotate(frame / 100, 0, 1, 0);
-                tg.translate(0.5, 0, 0);
-                var scalef = 1 + 0.9 * Math.cos(frame / 80);
-                // tg.scale(scalef, scalef, scalef);
-                tg.drawTriangle(vertices, colors);
-            }
-            tg.popModelMatrix();
+            //     // tg.rotate(frame / 100, 0, 1, 0);
+            //     tg.translate(0.5, 0, 0);
+            //     var scalef = 1 + 0.9 * Math.cos(frame / 80);
+            //     // tg.scale(scalef, scalef, scalef);
+            //     tg.drawTriangle(vertices, colors);
+            // }
+            // tg.popModelMatrix();
         // } else if (flag == 2) { // case 2
         //     tg.clear();
         //     tg.setCamera(camera);
