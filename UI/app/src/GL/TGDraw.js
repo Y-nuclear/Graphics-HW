@@ -80,8 +80,11 @@ function drawArrow(tg, start, end, color) {
 
 function drawXYZ(tg) {
     drawArrow(tg, [0, 0, 0], [1, 0, 0], [1, 0, 0]);
+    drawText(tg, "X", [1, 0, 0], "#ffffff", 0.04, 1);
     drawArrow(tg, [0, 0, 0], [0, 1, 0], [0, 1, 0]);
+    drawText(tg, "Y", [0, 1, 0], "#ffffff", 0.04, 1);
     drawArrow(tg, [0, 0, 0], [0, 0, 1], [0, 0, 1]);
+    drawText(tg, "Z", [0, 0, 1], "#ffffff", 0.04, 1);
 }
 
 

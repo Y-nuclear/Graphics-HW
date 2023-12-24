@@ -59,106 +59,112 @@ class CanvasScene extends Component {
         var camera = this.state.camera;
         var objects = this.state.objects;
 
-        var flag = 4;
+        tg.clear();
+        var { position, target, mode, fov, near, far } = camera.getParams();
+        tg.setCamera(position, target, mode, fov, near, far);
 
-        if (flag == 1) { // case 1
-            tg.clear();
-            tg.setCamera(camera);
-            tg.drawXYZ();
+        tg.drawXYZ();
 
-            tg.pushModelMatrix();
-            {
-                objects[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
+        // var flag = 4;
 
-                var vertices = objects[0].updateVertices() //用该函数获取对象变换后的点
-                var colors = objects[0].colors
+        // if (flag == 1) { // case 1
+        //     tg.clear();
+        //     tg.setCamera(camera);
+        //     tg.drawXYZ();
 
-                tg.rotate(frame / 100, 0, 1, 0);
-                tg.translate(0.5, 0, 0);
-                var scalef = 1 + 0.9 * Math.cos(frame / 80);
-                tg.scale(scalef, scalef, scalef);
-                tg.drawTriangle(vertices, colors);
-            }
-            tg.popModelMatrix();
-        } else if (flag == 2) { // case 2
-            tg.clear();
-            tg.setCamera(camera);
-            tg.drawXYZ();
+        //     tg.pushModelMatrix();
+        //     {
+        //         objects[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
 
-            for (var i = 0; i < objects.length; i++) {
+        //         var vertices = objects[0].updateVertices() //用该函数获取对象变换后的点
+        //         var colors = objects[0].colors
 
-                if (objects[i].type == 'image') {
-                    var image = objects[i].data;
+        //         tg.rotate(frame / 100, 0, 1, 0);
+        //         tg.translate(0.5, 0, 0);
+        //         var scalef = 1 + 0.9 * Math.cos(frame / 80);
+        //         tg.scale(scalef, scalef, scalef);
+        //         tg.drawTriangle(vertices, colors);
+        //     }
+        //     tg.popModelMatrix();
+        // } else if (flag == 2) { // case 2
+        //     tg.clear();
+        //     tg.setCamera(camera);
+        //     tg.drawXYZ();
 
-                    var vertices = [
-                        -0.5, 0.5, 0.0,  // 左上角
-                        -0.5, -0.5, 0.0,  // 左下角
-                        0.5, 0.5, 0.0,  // 右上角
-                        0.5, -0.5, 0.0,   // 右下角
-                    ];
+        //     for (var i = 0; i < objects.length; i++) {
 
-                    var texCoords = [
-                        0.0, 0.0,  // 左上角
-                        0.0, 1.0,  // 左下角
-                        1.0, 0.0,  // 右上角
-                        1.0, 1.0,   // 右下角
-                    ];
+        //         if (objects[i].type == 'image') {
+        //             var image = objects[i].data;
 
-                    tg.pushModelMatrix();
-                    {
-                        tg.translate(0.2, 0.5, 0.2);
-                        tg.rotate(45, 0, 1, 0);
-                        tg.drawImageTexture(vertices, texCoords, image);
-                    }
-                    tg.popModelMatrix();
-                }
-            }
-        } else if (flag == 3) { // case 3
-            tg.clear();
-            tg.setCamera(camera);
-            tg.setLight([0.0, 0.0, -1.0], [1.0, 1.0, 1.0]);
-            tg.drawXYZ();
+        //             var vertices = [
+        //                 -0.5, 0.5, 0.0,  // 左上角
+        //                 -0.5, -0.5, 0.0,  // 左下角
+        //                 0.5, 0.5, 0.0,  // 右上角
+        //                 0.5, -0.5, 0.0,   // 右下角
+        //             ];
 
-            tg.pushModelMatrix();
-            {
-                var vertices = [
-                    -0.5, 0.5, 0.0,  // 左上角
-                    -0.5, -0.5, 0.0,  // 左下角
-                    0.5, 0.5, 0.0,  // 右上角
-                    0.5, -0.5, 0.0,   // 右下角
-                ];
+        //             var texCoords = [
+        //                 0.0, 0.0,  // 左上角
+        //                 0.0, 1.0,  // 左下角
+        //                 1.0, 0.0,  // 右上角
+        //                 1.0, 1.0,   // 右下角
+        //             ];
 
-                var colors = [
-                    1.0, 0.0, 0.0,  // 左上角
-                    0.0, 1.0, 0.0,  // 左下角
-                    0.0, 0.0, 1.0,  // 右上角
-                    1.0, 1.0, 1.0,   // 右下角
-                ];
+        //             tg.pushModelMatrix();
+        //             {
+        //                 tg.translate(0.2, 0.5, 0.2);
+        //                 tg.rotate(45, 0, 1, 0);
+        //                 tg.drawImageTexture(vertices, texCoords, image);
+        //             }
+        //             tg.popModelMatrix();
+        //         }
+        //     }
+        // } else if (flag == 3) { // case 3
+        //     tg.clear();
+        //     tg.setCamera(camera);
+        //     tg.setLight([0.0, 0.0, -1.0], [1.0, 1.0, 1.0]);
+        //     tg.drawXYZ();
 
-                var normals = [
-                    0.0, 0.0, 1.0,  // 左上角
-                    0.0, 0.0, 1.0,  // 左下角
-                    0.0, 0.0, 1.0,  // 右上角
-                    0.0, 0.0, 1.0,   // 右下角
-                ];
+        //     tg.pushModelMatrix();
+        //     {
+        //         var vertices = [
+        //             -0.5, 0.5, 0.0,  // 左上角
+        //             -0.5, -0.5, 0.0,  // 左下角
+        //             0.5, 0.5, 0.0,  // 右上角
+        //             0.5, -0.5, 0.0,   // 右下角
+        //         ];
 
-                tg.rotate(frame / 50, 0, 1, 0);
-                // tg.translate(0.2, 0.5, 0.2);
-                tg.drawLightTriangle(vertices, colors, normals);
-            }
-            tg.popModelMatrix();
-        } else if (flag == 4) { // case 4
-            tg.clear();
-            tg.setCamera(camera);
-            tg.drawXYZ();
+        //         var colors = [
+        //             1.0, 0.0, 0.0,  // 左上角
+        //             0.0, 1.0, 0.0,  // 左下角
+        //             0.0, 0.0, 1.0,  // 右上角
+        //             1.0, 1.0, 1.0,   // 右下角
+        //         ];
 
-            tg.drawLine2D([-1, 0, -1], [-0.5, 0.5, -1], [1, 0, 0]);
-            tg.drawArrow([0, 0, 0], [0.5, 0.5, 0], [1, 1, 0]);
-            tg.drawText("Hallo World", [-0.5, 0.5, 0], "#ffffff", 0.05, 1);
+        //         var normals = [
+        //             0.0, 0.0, 1.0,  // 左上角
+        //             0.0, 0.0, 1.0,  // 左下角
+        //             0.0, 0.0, 1.0,  // 右上角
+        //             0.0, 0.0, 1.0,   // 右下角
+        //         ];
 
-        } else if (flag == 5) { // case 5
-        } else if (flag == 6) { // case 6
-        }
+        //         tg.rotate(frame / 50, 0, 1, 0);
+        //         // tg.translate(0.2, 0.5, 0.2);
+        //         tg.drawLightTriangle(vertices, colors, normals);
+        //     }
+        //     tg.popModelMatrix();
+        // } else if (flag == 4) { // case 4
+        //     tg.clear();
+        //     tg.setCamera(camera);
+        //     tg.drawXYZ();
+
+        //     tg.drawLine2D([-1, 0, -1], [-0.5, 0.5, -1], [1, 0, 0]);
+        //     tg.drawArrow([0, 0, 0], [0.5, 0.5, 0], [1, 1, 0]);
+        //     tg.drawText("Hallo World", [-0.5, 0.5, 0], "#ffffff", 0.05, 1);
+
+        // } else if (flag == 5) { // case 5
+        // } else if (flag == 6) { // case 6
+        // }
 
         // old case
         // for (var i = 0; i < objects.length; i++) {

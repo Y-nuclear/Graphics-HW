@@ -66,10 +66,23 @@ class TG {
     setProjectionMatrix(m) {
         this.projectionMatrix = m;
     }
-    setCamera(camera) {
-        var { viewMatrix, projectionMatrix } = camera.getViewPprojectionMatrix(this.gl);
+
+    setCamera(position, target, mode, fov, near, far) {
+        var gl = this.gl;
+
+        var vpos = vec3.create();
+        vpos[0] = position[0];
+        vpos[1] = position[1];
+        vpos[2] = position[2];
+
+        var viewMatrix = mat4.create();
+        mat4.lookAt(viewMatrix, position, target, [0, 1, 0]);
+        var projectionMatrix = mat4.create();
+        mat4.perspective(projectionMatrix, fov * Math.PI / 180, gl.canvas.width / gl.canvas.height, near, far);
+
         this.setViewMatrix(viewMatrix);
         this.setProjectionMatrix(projectionMatrix);
+
     }
 
     translate(x, y, z) {
