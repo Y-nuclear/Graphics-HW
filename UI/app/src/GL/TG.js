@@ -35,6 +35,7 @@ class TG {
         this.drawArrow = (...args) => TGDraw.drawArrow(this, ...args);
         this.drawXYZ = (...args) => TGDraw.drawXYZ(this, ...args);
         this.drawText = (...args) => TGDraw.drawText(this, ...args);
+        this.drawColorFaces = (...args) => TGDraw.drawColorFaces(this, ...args);
         this.drawTriangle = (...args) => TGDraw.drawTriangle(this, ...args);
         this.drawImageTexture = (...args) => TGDraw.drawImageTexture(this, ...args);
         this.drawLightTriangle = (...args) => TGDraw.drawLightTriangle(this, ...args);
@@ -48,6 +49,7 @@ class TG {
         gl.clearColor(0, 0, 0, 1);
         gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     }
+
     pushModelMatrix() {
         this.modelMatrixStack.push(mat4.clone(this.modelMatrix));
     }
@@ -57,23 +59,37 @@ class TG {
         }
         this.setModelMatrix(this.modelMatrixStack.pop());
     }
+    translate(x, y, z) {
+        mat4.translate(this.modelMatrix, this.modelMatrix, [x, y, z]);
+    }
+    rotate(angle, x, y, z) {
+        mat4.rotate(this.modelMatrix, this.modelMatrix, angle, [x, y, z]);
+    }
+    rotateX(angle) {
+        this.rotate(angle, 1, 0, 0);
+    }
+    rotateY(angle) {
+        this.rotate(angle, 0, 1, 0);
+    }
+    rotateZ(angle) {
+        this.rotate(angle, 0, 0, 1);
+    }
+    scale(x, y, z) {
+        mat4.scale(this.modelMatrix, this.modelMatrix, [x, y, z]);
+    }
+
     setModelMatrix(m) {
-        this.modelMatrix = m;
+        this.modelMatrix = mat4.clone(m);
     }
     setViewMatrix(m) {
-        this.viewMatrix = m;
+        this.viewMatrix = mat4.clone(m);
     }
     setProjectionMatrix(m) {
-        this.projectionMatrix = m;
+        this.projectionMatrix = mat4.clone(m);
     }
 
     setCamera(position, target, mode, fov, near, far) {
         var gl = this.gl;
-
-        var vpos = vec3.create();
-        vpos[0] = position[0];
-        vpos[1] = position[1];
-        vpos[2] = position[2];
 
         var viewMatrix = mat4.create();
         mat4.lookAt(viewMatrix, position, target, [0, 1, 0]);
@@ -82,22 +98,8 @@ class TG {
 
         this.setViewMatrix(viewMatrix);
         this.setProjectionMatrix(projectionMatrix);
-
     }
 
-    translate(x, y, z) {
-        mat4.translate(this.modelMatrix, this.modelMatrix, [x, y, z]);
-    }
-    rotate(angle, x, y, z) {
-        mat4.rotate(this.modelMatrix, this.modelMatrix, angle, [x, y, z]);
-    }
-    scale(x, y, z) {
-        mat4.scale(this.modelMatrix, this.modelMatrix, [x, y, z]);
-    }
-
-    /**
-     * 设置光照, 目前只支持平行光
-     */
     setLight(lightDir, lightColor) {
         this.lightDir = vec3.create();
         this.lightDir[0] = lightDir[0];

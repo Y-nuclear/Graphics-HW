@@ -7,7 +7,6 @@ function case1Init(tg) {
     }
     image.src = './goutou.png';
 }
-
 function case1Animate(tg, frame) {
     tg.clear();
     tg.drawXYZ();
@@ -40,4 +39,44 @@ function case1Animate(tg, frame) {
     }
 }
 
-export { case1Init, case1Animate };
+function case2Init(tg) {
+}
+function case2Animate(tg, frame) {
+    tg.clear();
+    // tg.drawXYZ();
+
+    var vertices = [
+        0.0, 0.0, 0.0,  // 0
+        1.0, 0.0, 0.0,  // 1
+        1.0, 1.0, 0.0,  // 2
+        0.0, 1.0, 0.0,  // 3
+    ];
+    var colors = [
+        1.0, 0.0, 0.0,  // 0
+        0.0, 1.0, 0.0,  // 1
+        0.0, 0.0, 1.0,  // 2
+        1.0, 1.0, 1.0,  // 3
+    ];
+    var indices = [
+        0, 1, 2,
+        0, 2, 3,
+    ];
+
+    tg.pushModelMatrix();
+    {
+        tg.translate(-0.5, -0.5, 0);
+        tg.drawColorFaces(vertices, colors, indices);
+    }
+    tg.popModelMatrix();
+}
+
+function case3Init(tg) {
+}
+function case3Animate(tg, frame) {
+}
+
+export {
+    case1Init, case1Animate,
+    case2Init, case2Animate,
+    case3Init, case3Animate,
+};

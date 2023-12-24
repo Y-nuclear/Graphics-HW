@@ -1,10 +1,5 @@
 import { mat4, vec3 } from 'gl-matrix';
-import { BasicShaderProgram } from './TGShaderProgram';
 
-/**
- * 画线
- * 三个参数都是3维数组
- */
 function drawLine(tg, start, end, color) {
     var gl = tg.gl;
 
@@ -87,7 +82,6 @@ function drawXYZ(tg) {
     drawText(tg, "Z", [0, 0, 1], "#ffffff", 0.04, 1);
 }
 
-
 function drawText(tg, text, position, fontColor, renderHeight, scale) {
     var gl = tg.gl;
     var fontSize = 32 * scale; // 字体大小
@@ -156,10 +150,18 @@ function drawText(tg, text, position, fontColor, renderHeight, scale) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
 }
 
+function drawColorFaces(tg, vertices, colors, indices) {
+    var gl = tg.gl;
+    tg.setBasicShaderProgram(vertices, colors);
 
-/**
- * 画线
- */
+    var indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+}
+
+
 function drawTriangle(tg, vertices, colors) {
     var gl = tg.gl;
     tg.setBasicShaderProgram(vertices, colors);
@@ -182,9 +184,6 @@ function drawImageTexture(tg, vertices, texCoords, image) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
 }
 
-/**
- * 光照绘制
- */
 function drawLightTriangle(tg, vertices, colors, normals) {
     var gl = tg.gl;
     tg.setBasicLightShaderProgram(vertices, colors, normals);
@@ -192,7 +191,7 @@ function drawLightTriangle(tg, vertices, colors, normals) {
 }
 
 export {
-    drawLine, drawLine2D, drawXYZ, drawArrow,
-    drawText,
+    drawLine, drawLine2D, drawXYZ, drawArrow, drawText,
+    drawColorFaces,
     drawTriangle, drawImageTexture, drawLightTriangle,
 };
