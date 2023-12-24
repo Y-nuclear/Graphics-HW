@@ -1,4 +1,4 @@
-import { mat4, vec3 } from 'gl-matrix';
+import { mat4, mat3, vec3 } from 'gl-matrix';
 import * as TGShaderProgram from './TGShaderProgram';
 import * as TGDraw from './TGDraw';
 
@@ -8,6 +8,9 @@ class TG {
         this.modelMatrix = mat4.create();
         this.viewMatrix = mat4.create();
         this.projectionMatrix = mat4.create();
+
+        this.normalMatrix = null;
+        this.cameraPosition = null;
 
         this.lightDir = null;
         this.lightColor = null;
@@ -87,6 +90,10 @@ class TG {
 
     setModelMatrix(m) {
         this.modelMatrix = mat4.clone(m);
+
+        var normalMatrix = mat3.create();
+        mat3.normalFromMat4(normalMatrix, this.modelMatrix);
+        this.normalMatrix = normalMatrix;
     }
     setViewMatrix(m) {
         this.viewMatrix = mat4.clone(m);
@@ -96,6 +103,7 @@ class TG {
     }
 
     setCamera(position, target, mode, fov, near, far) {
+        this.cameraPosition = position;
         var gl = this.gl;
 
         var viewMatrix = mat4.create();
@@ -117,6 +125,10 @@ class TG {
         this.lightColor[0] = lightColor[0];
         this.lightColor[1] = lightColor[1];
         this.lightColor[2] = lightColor[2];
+
+        var normalMatrix = mat3.create();
+        mat3.normalFromMat4(normalMatrix, this.modelMatrix);
+        this.normalMatrix = normalMatrix;
     }
 };
 

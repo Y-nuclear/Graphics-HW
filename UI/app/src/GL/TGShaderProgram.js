@@ -253,66 +253,92 @@ function BasicLightShaderProgram(tg) {
 
     var vertexShaderSource = `
         attribute vec3 aPosition;
-        attribute vec3 aNormal;
         attribute vec3 aColor;
-
+        attribute vec3 aNormal;
+        
         uniform mat4 uModelMatrix;
         uniform mat4 uViewMatrix;
         uniform mat4 uProjectionMatrix;
-
-        uniform vec3 uLightDir;
-        uniform vec3 uLightColor;
-
+        uniform mat3 uNormalMatrix;
+        
+        uniform vec3 uLightDirection;
+        uniform vec3 uViewPosition;
+        
+        varying vec3 vNormal;
+        varying vec3 vLightRay;
+        varying vec3 vViewRay;
         varying vec3 vColor;
-
+        
         void main() {
-            gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aPosition, 1.0);
-
-            vec3 viewDir = -normalize((uViewMatrix * uModelMatrix * vec4(aPosition, 1.0)).xyz);
-            vec3 normal = normalize((uViewMatrix * uModelMatrix * vec4(aNormal, 1.0)).xyz);
-            vec3 lightDir = normalize((uViewMatrix * vec4(uLightDir, 1.0)).xyz);
-
-            vec3 specular;
-            if (dot(normal, lightDir) > 0.0) { // BUG
-                vec3 reflectDir = reflect(lightDir, normal);
-
-                float specularStrength = 1.11; // 镜面高光强度
-                float spec = pow(max(dot(viewDir, reflectDir), 0.0), 2.7); // 反射高光的粗糙度
-                // float spec = max(dot(viewDir, reflectDir), 0.0);
-
-                specular = uLightColor * specularStrength * spec * aColor;
-            } else {
-                specular = vec3(0.0, 0.0, 0.0);
-            }
-
-            vec3 ambient = vec3(0.1, 0.1, 0.1);
-            vColor = ambient + specular;
+            vec4 vertexPosition = uModelMatrix * vec4(aPosition, 1.0);
+            gl_Position = uProjectionMatrix * uViewMatrix * vertexPosition;
+        
+            // Transform the normal to the eye space
+            vNormal = uNormalMatrix * aNormal;
+        
+            // Since it's a directional light, the light ray is constant everywhere
+            vLightRay = normalize(uLightDirection);
+        
+            // Calculate the view direction
+            vec3 viewDirection = uViewPosition - vertexPosition.xyz;
+            vViewRay = normalize(viewDirection);
+            vColor = aColor;
         }
         `;
 
     var fragmentShaderSource = `
         precision mediump float;
 
+        varying vec3 vNormal;
+        varying vec3 vLightRay;
+        varying vec3 vViewRay;
         varying vec3 vColor;
-
+        
+        uniform vec3 uLightColor;
+        
         void main() {
-            gl_FragColor = vec4(vColor, 1.0);
+            float uShininess = 2.33;
+            vec3 norm = normalize(vNormal);
+            vec3 viewDir = normalize(vViewRay);
+            vec3 reflectDir = reflect(vLightRay, norm);  
+
+            // 环境光
+            float ambientStrength = 0.1;
+            vec3 ambient = ambientStrength * uLightColor;
+        
+            // 漫反射光
+            float diff = max(dot(norm, vLightRay), 0.0);
+            vec3 diffuse = diff * uLightColor;
+        
+            // 镜面高光
+            float specularStrength = 0.9;
+            float spec = pow(max(dot(viewDir, reflectDir), 0.0), uShininess);
+            vec3 specular = specularStrength * spec * uLightColor;
+        
+            vec3 result = (ambient + diffuse + specular) * vColor;
+            gl_FragColor = vec4(result, 1.0);
         }
         `;
-
     var shaderProgram = createProgram(gl, vertexShaderSource, fragmentShaderSource);
 
     var uModelMatrixLocation = gl.getUniformLocation(shaderProgram, 'uModelMatrix');
     var uViewMatrixLocation = gl.getUniformLocation(shaderProgram, 'uViewMatrix');
     var uProjectionMatrixLocation = gl.getUniformLocation(shaderProgram, 'uProjectionMatrix');
+    var uNormalMatrixLocation = gl.getUniformLocation(shaderProgram, 'uNormalMatrix');
 
-    var uLightDirLocation = gl.getUniformLocation(shaderProgram, 'uLightDir');
+    var uLightDirectionLocation = gl.getUniformLocation(shaderProgram, 'uLightDirection');
     var uLightColorLocation = gl.getUniformLocation(shaderProgram, 'uLightColor');
+    var uViewPositionLocation = gl.getUniformLocation(shaderProgram, 'uViewPosition');
 
     function setShaderProgram(vertices, colors, normals) {
         var modelMatrix = tg.modelMatrix;
         var viewMatrix = tg.viewMatrix;
         var projectionMatrix = tg.projectionMatrix;
+        var normalMatrix = tg.normalMatrix;
+
+        var lightDirection = tg.lightDir;
+        var lightColor = tg.lightColor;
+        var viewPosition = tg.cameraPosition;
 
         var vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -343,9 +369,11 @@ function BasicLightShaderProgram(tg) {
         gl.uniformMatrix4fv(uModelMatrixLocation, false, modelMatrix);
         gl.uniformMatrix4fv(uViewMatrixLocation, false, viewMatrix);
         gl.uniformMatrix4fv(uProjectionMatrixLocation, false, projectionMatrix);
+        gl.uniformMatrix3fv(uNormalMatrixLocation, false, normalMatrix);
 
-        gl.uniform3fv(uLightDirLocation, tg.lightDir);
-        gl.uniform3fv(uLightColorLocation, tg.lightColor);
+        gl.uniform3fv(uLightDirectionLocation, lightDirection);
+        gl.uniform3fv(uLightColorLocation, lightColor);
+        gl.uniform3fv(uViewPositionLocation, viewPosition);
     }
     return setShaderProgram;
 }

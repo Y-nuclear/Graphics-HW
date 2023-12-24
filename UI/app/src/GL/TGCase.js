@@ -89,6 +89,8 @@ function case2Animate(tg, frame) {
             0, 2, 3,
         ];
 
+        tg.rotateY(frame / 50);
+
         tg.translate(-0.5, -0.5, 0);
         // tg.drawColorFaces(vertices, colors, indices);
         tg.drawLightColorFaces(vertices, colors, normals, indices);

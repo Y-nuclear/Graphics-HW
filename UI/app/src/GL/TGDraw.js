@@ -216,24 +216,24 @@ function drawTriangle(tg, vertices, colors) {
 function drawLightTriangle(tg, vertices, colors, normals) {
     var gl = tg.gl;
     tg.setBasicLightShaderProgram(vertices, colors, normals);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
+    gl.drawArrays(gl.TRIANGLE, 0, vertices.length / 3);
 }
 
-function drawImageTexture(tg, vertices, texCoords, image) {
-    var gl = tg.gl;
+// function drawImageTexture(tg, vertices, texCoords, image) {
+//     var gl = tg.gl;
 
-    var texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+//     var texture = gl.createTexture();
+//     gl.bindTexture(gl.TEXTURE_2D, texture);
+//     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+//     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+//     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+//     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+//     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-    tg.setTextureShaderProgram(vertices, texCoords);
+//     tg.setTextureShaderProgram(vertices, texCoords);
 
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
-}
+//     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
+// }
 
 
 
@@ -242,5 +242,4 @@ export {
     drawColorFaces, image2texture, drawTextureFaces, drawImageTextureFaces,
     drawLightColorFaces,
     drawTriangle, drawLightTriangle,
-    // drawImageTexture,
 };
