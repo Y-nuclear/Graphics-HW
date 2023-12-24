@@ -28,7 +28,7 @@ class Triangle extends Object3D{
 class Cube extends Object3D{
     constructor(){
         super();
-        console.log(this);
+        // console.log(this);
         var vertices = [
             [0.5, 0.5, 0.5],
             [-0.5, 0.5, 0.5],

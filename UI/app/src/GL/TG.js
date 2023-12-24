@@ -25,11 +25,16 @@ class TG {
         }
 
         this.setBasicShaderProgram = TGShaderProgram.BasicShaderProgram(this);
+        this.setBasicShaderProgram2D = TGShaderProgram.BasicShaderProgram2D(this);
         this.setTextureShaderProgram = TGShaderProgram.TextureShaderProgram(this);
+        this.setTextureShaderProgram2D = TGShaderProgram.TextureShaderProgram2D(this);
         this.setBasicLightShaderProgram = TGShaderProgram.BasicLightShaderProgram(this);
 
         this.drawLine = (...args) => TGDraw.drawLine(this, ...args);
+        this.drawLine2D = (...args) => TGDraw.drawLine2D(this, ...args);
+        this.drawArrow = (...args) => TGDraw.drawArrow(this, ...args);
         this.drawXYZ = (...args) => TGDraw.drawXYZ(this, ...args);
+        this.drawText = (...args) => TGDraw.drawText(this, ...args);
         this.drawTriangle = (...args) => TGDraw.drawTriangle(this, ...args);
         this.drawImageTexture = (...args) => TGDraw.drawImageTexture(this, ...args);
         this.drawLightTriangle = (...args) => TGDraw.drawLightTriangle(this, ...args);
@@ -61,10 +66,23 @@ class TG {
     setProjectionMatrix(m) {
         this.projectionMatrix = m;
     }
-    setCamera(camera) {
-        var { viewMatrix, projectionMatrix } = camera.getViewPprojectionMatrix(this.gl);
+
+    setCamera(position, target, mode, fov, near, far) {
+        var gl = this.gl;
+
+        var vpos = vec3.create();
+        vpos[0] = position[0];
+        vpos[1] = position[1];
+        vpos[2] = position[2];
+
+        var viewMatrix = mat4.create();
+        mat4.lookAt(viewMatrix, position, target, [0, 1, 0]);
+        var projectionMatrix = mat4.create();
+        mat4.perspective(projectionMatrix, fov * Math.PI / 180, gl.canvas.width / gl.canvas.height, near, far);
+
         this.setViewMatrix(viewMatrix);
         this.setProjectionMatrix(projectionMatrix);
+
     }
 
     translate(x, y, z) {
