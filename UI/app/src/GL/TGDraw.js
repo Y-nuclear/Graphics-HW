@@ -216,7 +216,13 @@ function drawTriangle(tg, vertices, colors) {
 function drawLightTriangle(tg, vertices, colors, normals) {
     var gl = tg.gl;
     tg.setBasicLightShaderProgram(vertices, colors, normals);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
+    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
+}
+
+function drawMaterialTriangle(tg, vertices, colors, normals, material) {
+    var gl = tg.gl;
+    tg.setMaterialShaderProgram(vertices, colors, normals, material);
+    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
 }
 
 function drawImageTexture(tg, vertices, texCoords, image) {
@@ -242,5 +248,6 @@ export {
     drawColorFaces, image2texture, drawTextureFaces, drawImageTextureFaces,
     drawLightColorFaces,
     drawTriangle, drawLightTriangle,
+    drawMaterialTriangle
     // drawImageTexture,
 };

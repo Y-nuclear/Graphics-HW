@@ -166,38 +166,6 @@ class OBJobject{
       console.log(this);
       this.materialLibs = materialLibs;
       this.name = name;
-      // for(let i=0;i<this.geometries.length;i++){
-      //   // 展平vertices
-      //     let vertices = this.geometries[i].vertices;
-      //     this.geometries[i].vertices = [];
-      //     for(let j=0;j<vertices.length;j++){
-      //         this.geometries[i].vertices.push(vertices[j][0]);
-      //         this.geometries[i].vertices.push(vertices[j][1]);
-      //         this.geometries[i].vertices.push(vertices[j][2]);
-      //     }
-      //     let colors = this.geometries[i].colors;
-      //     this.geometries[i].colors = [];
-      //     for(let j=0;j<colors.length;j++){
-      //         this.geometries[i].colors.push(colors[j][0]);
-      //         this.geometries[i].colors.push(colors[j][1]);
-      //         this.geometries[i].colors.push(colors[j][2]);
-      //     }
-      //     let uvs = this.geometries[i].uvs;
-      //     this.geometries[i].uvs = [];
-      //     for(let j=0;j<uvs.length;j++){
-      //         this.geometries[i].uvs.push(uvs[j][0]);
-      //         this.geometries[i].uvs.push(uvs[j][1]);
-      //     }
-      //     let normals = this.geometries[i].normals;
-      //     this.geometries[i].normals = [];
-      //     for(let j=0;j<normals.length;j++){
-      //         this.geometries[i].normals.push(normals[j][0]);
-      //         this.geometries[i].normals.push(normals[j][1]);
-      //         this.geometries[i].normals.push(normals[j][2]);
-      //     }
-      //     this.geometries[i].vertices = this.geometries[i].updateVertices();
-
-      // }
       // 获取范围
 
       let minX = 0;
@@ -246,7 +214,13 @@ class OBJobject{
           this.geometries[i].glTranslate(-centerX,-centerY,-centerZ);
           this.geometries[i].vertices = this.geometries[i].updateVertices();
       }
-
+      for(let i=0;i<this.geometries.length;i++){
+        if(this.geometries[i].colors.length <= 0){
+          for(let j=0;j<this.geometries[i].vertices.length;j++){
+            this.geometries[i].colors.push(0.5);
+          }
+        }
+      }
       console.log(this);
     }
     getGeometries(){
@@ -254,6 +228,30 @@ class OBJobject{
     }
     getMaterials(){
         return this.materialLibs;
+    }
+    saveOBJ(){
+        // 保存为obj文件
+        var objText = "";
+        for(let i=0;i<this.geometries.length;i++){
+            objText += "o " + this.name + "\n";
+            
+            for(let j=0;j<this.geometries[i].vertices.length;j+=3){
+                objText += "v " + this.geometries[i].vertices[j] + " " + this.geometries[i].vertices[j+1] + " " + this.geometries[i].vertices[j+2] + "\n";
+            }
+            for(let j=0;j<this.geometries[i].normals.length;j+=3){
+                objText += "vn " + this.geometries[i].normals[j] + " " + this.geometries[i].normals[j+1] + " " + this.geometries[i].normals[j+2] + "\n";
+            }
+            for(let j=0;j<this.geometries[i].uvs.length;j+=2){
+                objText += "vt " + this.geometries[i].uvs[j] + " " + this.geometries[i].uvs[j+1] + "\n";
+            }
+            for(let j=0;j<this.geometries[i].vertices.length/3;j++){
+                objText += "f " + (j+1) + "/" + (j+1) + "/" + (j+1) + " " + (j+2) + "/" + (j+2) + "/" + (j+2) + " " + (j+3) + "/" + (j+3) + "/" + (j+3) + "\n";
+            }
+        }
+      for (let i = 0; i < this.materialLibs.length; i++) {
+        objText += "mtllib " + this.materialLibs[i] + "\n";
+      }
+        return objText;
     }
 }
 

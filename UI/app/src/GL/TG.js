@@ -29,6 +29,7 @@ class TG {
         this.setTextureShaderProgram = TGShaderProgram.TextureShaderProgram(this);
         this.setTextureShaderProgram2D = TGShaderProgram.TextureShaderProgram2D(this);
         this.setBasicLightShaderProgram = TGShaderProgram.BasicLightShaderProgram(this);
+        this.setMaterialShaderProgram = TGShaderProgram.MaterialShaderProgram(this);
 
         this.drawLine = (...args) => TGDraw.drawLine(this, ...args);
         this.drawLine2D = (...args) => TGDraw.drawLine2D(this, ...args);
@@ -45,6 +46,7 @@ class TG {
 
         this.drawTriangle = (...args) => TGDraw.drawTriangle(this, ...args);
         this.drawLightTriangle = (...args) => TGDraw.drawLightTriangle(this, ...args);
+        this.drawMaterialTriangle = (...args) => TGDraw.drawMaterialTriangle(this, ...args);
         // this.drawImageTexture = (...args) => TGDraw.drawImageTexture(this, ...args);
 
         this.gl.enable(gl.DEPTH_TEST);

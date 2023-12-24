@@ -17,7 +17,6 @@ class Object3D extends EventDispatcher{
         this.materials = [];
 
         this.modelMatrix = mat4.create();
-        this.save_modelMatrix = mat4.create();
         this.box = null;
         this.sphere = null;
     }
@@ -50,10 +49,7 @@ class Object3D extends EventDispatcher{
     setMaterials(materials){
         this.materials = materials;
     }
-    // 保存modelMatrix
-    saveModelMatrix(){
-        this.save_modelMatrix = this.modelMatrix;
-    }
+
     // 对对象进行更新
     updateVertices(){
         let vertex_temp = [];
@@ -64,7 +60,17 @@ class Object3D extends EventDispatcher{
             vertex_temp.push(Vertex[1])
             vertex_temp.push(Vertex[2])
         }
-        this.modelMatrix = this.save_modelMatrix;
+        this.vertices = vertex_temp;
+        let normal_temp = [];
+        for(let i=0;i<this.normals.length;i+=3){
+            var normal = vec3.fromValues(this.normals[i],this.normals[i+1],this.normals[i+2])
+            vec3.transformMat4(normal,normal,mat4.invert(mat4.create(),this.modelMatrix));
+            normal_temp.push(normal[0])
+            normal_temp.push(normal[1])
+            normal_temp.push(normal[2])
+        }
+        this.normals = normal_temp;
+        this.modelMatrix = mat4.create();
         return vertex_temp;
     }
 

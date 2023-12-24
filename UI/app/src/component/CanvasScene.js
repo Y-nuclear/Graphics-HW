@@ -69,22 +69,29 @@ class CanvasScene extends Component {
         // if (flag == 1) { // case 1
             // tg.clear();
             // tg.setCamera(camera);
-            // tg.drawXYZ();
+            tg.drawXYZ();
 
-            // tg.pushModelMatrix();
-            // {
-            //     objects[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
+            tg.pushModelMatrix();
+            {
+                objects[1].geometries[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
+                objects[1].geometries[0].updateVertices();
+                var vertices = objects[1].geometries[0].vertices;
+                var colors = objects[1].geometries[0].colors;
+                var normals = objects[1].geometries[0].normals;
 
-            //     var vertices = objects[1].geometries[0].vertices;
-            //     var colors = []
-
-            //     // tg.rotate(frame / 100, 0, 1, 0);
-            //     tg.translate(0.5, 0, 0);
-            //     var scalef = 1 + 0.9 * Math.cos(frame / 80);
-            //     // tg.scale(scalef, scalef, scalef);
-            //     tg.drawTriangle(vertices, colors);
-            // }
-            // tg.popModelMatrix();
+                // tg.rotate(frame / 100, 0, 1, 0);
+                tg.translate(0.5, 0, 0);
+                var scalef = 1 + 0.9 * Math.cos(frame / 80);
+                // tg.scale(scalef, scalef, scalef);
+                tg.drawMaterialTriangle(vertices, colors, normals,{
+                    ambient: [0.4, 0.4, 0.4],
+                    diffuse: [0.5, 0.5, 0.5],
+                    specular: [0.0, 0.0, 0.0],
+                    shininess: 1.0,
+                    strength: 10.0,
+                });
+            }
+            tg.popModelMatrix();
         // } else if (flag == 2) { // case 2
         //     tg.clear();
         //     tg.setCamera(camera);
