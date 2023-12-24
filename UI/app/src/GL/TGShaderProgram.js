@@ -515,17 +515,49 @@ function MaterialShaderProgram(tg) {
 
     var vertexShaderSource = `
     attribute vec3 aPosition;
+    attribute vec2 aTexCoord;
     attribute vec3 aNormal;
-    attribute vec3 aColor;
-
+    
     uniform mat4 uModelMatrix;
     uniform mat4 uViewMatrix;
     uniform mat4 uProjectionMatrix;
+    uniform mat3 uNormalMatrix;
+    
+    uniform vec3 uLightDirection;
+    uniform vec3 uViewPosition;
+    
+    varying vec3 vNormal;
+    varying vec3 vLightRay;
+    varying vec3 vViewRay;
+    varying vec2 vTexCoord;
+    
+    void main() {
+        vec4 vertexPosition = uModelMatrix * vec4(aPosition, 1.0);
+        gl_Position = uProjectionMatrix * uViewMatrix * vertexPosition;
+    
+        // Transform the normal to the eye space
+        vNormal = uNormalMatrix * aNormal;
+    
+        // Since it's a directional light, the light ray is constant everywhere
+        vLightRay = normalize(uLightDirection);
+    
+        // Calculate the view direction
+        vec3 viewDirection = uViewPosition - vertexPosition.xyz;
+        vViewRay = normalize(viewDirection);
+        vTexCoord = aTexCoord;
+    }
+    `;
 
-    uniform vec3 uLightDir;
+var fragmentShaderSource = `
+    precision mediump float;
+
+    varying vec3 vNormal;
+    varying vec3 vLightRay;
+    varying vec3 vViewRay;
+    varying vec2 vTexCoord;
+
+    uniform sampler2D uSampler;
     uniform vec3 uLightColor;
-
-    varying vec3 vColor;
 
     uniform vec3 uAmbient;
     uniform vec3 uDiffuse;
@@ -534,37 +566,24 @@ function MaterialShaderProgram(tg) {
     uniform float uStrength;
 
     void main() {
-        gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aPosition, 1.0);
+        float uShininess = 2.33;
+        vec3 norm = normalize(vNormal);
+        vec3 viewDir = normalize(vViewRay);
+        vec3 reflectDir = reflect(vLightRay, norm);  
 
-        vec3 viewDir = -normalize((uViewMatrix * uModelMatrix * vec4(aPosition, 1.0)).xyz);
-        vec3 normal = normalize((uViewMatrix * uModelMatrix * vec4(aNormal, 1.0)).xyz);
-        vec3 lightDir = normalize((uViewMatrix * vec4(uLightDir, 1.0)).xyz);
-        vec3 specular;
-        if (dot(normal, lightDir) > 0.0) { // BUG
-            vec3 reflectDir = reflect(lightDir, normal);
-            float specularStrength = uStrength; // 镜面高光强度
-            float spec = pow(max(dot(viewDir, reflectDir), 0.0), uShininess); // 反射高光的粗糙度
-            specular = uLightColor * specularStrength * spec*uSpecular;// 镜面光强度
-
-        } else {
-            specular = vec3(0.0, 0.0, 0.0);
-        }
-
-        vec3 ambient = uAmbient; // 环境光强度
-        vec3 diffuse = aColor * max(dot(normal, lightDir), 0.0)*uLightColor*uDiffuse; // 漫反射项
-
-
-        vColor = ambient + specular + diffuse;
-    }
-    `;
-
-var fragmentShaderSource = `
-    precision mediump float;
-
-    varying vec3 vColor;
-
-    void main() {
-        gl_FragColor = vec4(vColor, 1.0);
+        vec3 ambient = uAmbient * uLightColor;
+    
+        // 漫反射光
+        float diff = max(dot(norm, vLightRay), 0.0);
+        vec3 diffuse = diff * uLightColor* uDiffuse;
+    
+        // 镜面高光
+        float specularStrength = uStrength;
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), uShininess);
+        vec3 specular = specularStrength * spec * uLightColor;
+    
+        vec3 result = (ambient + diffuse + specular) * texture2D(uSampler, vTexCoord).rgb;
+        gl_FragColor = vec4(result, 1.0);
     }
     `;
 
@@ -573,14 +592,21 @@ var fragmentShaderSource = `
     var uModelMatrixLocation = gl.getUniformLocation(shaderProgram, 'uModelMatrix');
     var uViewMatrixLocation = gl.getUniformLocation(shaderProgram, 'uViewMatrix');
     var uProjectionMatrixLocation = gl.getUniformLocation(shaderProgram, 'uProjectionMatrix');
+    var uNormalMatrixLocation = gl.getUniformLocation(shaderProgram, 'uNormalMatrix');
 
-    var uLightDirLocation = gl.getUniformLocation(shaderProgram, 'uLightDir');
+    var uLightDirectionLocation = gl.getUniformLocation(shaderProgram, 'uLightDirection');
     var uLightColorLocation = gl.getUniformLocation(shaderProgram, 'uLightColor');
+    var uViewPositionLocation = gl.getUniformLocation(shaderProgram, 'uViewPosition');
 
-    function setShaderProgram(vertices, colors, normals, materials) {
+    function setShaderProgram(vertices, texCoords, normals,materials) {
         var modelMatrix = tg.modelMatrix;
         var viewMatrix = tg.viewMatrix;
         var projectionMatrix = tg.projectionMatrix;
+        var normalMatrix = tg.normalMatrix;
+
+        var lightDirection = tg.lightDir;
+        var lightColor = tg.lightColor;
+        var viewPosition = tg.cameraPosition;
 
         var vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -590,13 +616,13 @@ var fragmentShaderSource = `
         gl.vertexAttribPointer(aPositionLocation, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(aPositionLocation);
 
-        var colorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+        var texCoordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoords), gl.STATIC_DRAW);
 
-        var aColorLocation = gl.getAttribLocation(shaderProgram, 'aColor');
-        gl.vertexAttribPointer(aColorLocation, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(aColorLocation);
+        var aTexCoordLocation = gl.getAttribLocation(shaderProgram, 'aTexCoord');
+        gl.vertexAttribPointer(aTexCoordLocation, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(aTexCoordLocation);
 
         var normalBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
@@ -619,16 +645,16 @@ var fragmentShaderSource = `
         gl.uniform1f(uShininessLocation, materials.shininess);
         gl.uniform1f(uStrengthLocation, materials.strength);
 
-
-
-       
+        gl.uniform3fv(uLightDirectionLocation, lightDirection);
+        gl.uniform3fv(uLightColorLocation, lightColor);
+        gl.uniform3fv(uViewPositionLocation, viewPosition);
+        
 
         gl.uniformMatrix4fv(uModelMatrixLocation, false, modelMatrix);
         gl.uniformMatrix4fv(uViewMatrixLocation, false, viewMatrix);
         gl.uniformMatrix4fv(uProjectionMatrixLocation, false, projectionMatrix);
+        gl.uniformMatrix3fv(uNormalMatrixLocation, false, normalMatrix);
 
-        gl.uniform3fv(uLightDirLocation, tg.lightDir);
-        gl.uniform3fv(uLightColorLocation, tg.lightColor);
     }
     return setShaderProgram;
 }

@@ -86,8 +86,8 @@ class CanvasScene extends Component {
                 tg.drawMaterialTriangle(vertices, colors, normals,{
                     ambient: [0.4, 0.4, 0.4],
                     diffuse: [0.5, 0.5, 0.5],
-                    specular: [0.0, 0.0, 0.0],
-                    shininess: 1.0,
+                    specular: [1.0, 1.0, 1.0],
+                    shininess: 5.0,
                     strength: 10.0,
                 });
             }

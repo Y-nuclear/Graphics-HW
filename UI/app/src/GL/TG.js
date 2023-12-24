@@ -31,7 +31,6 @@ class TG {
         this.setColorShaderProgram2D = TGShaderProgram.ColorShaderProgram2D(this);
         this.setTextureShaderProgram = TGShaderProgram.TextureShaderProgram(this);
         this.setTextureShaderProgram2D = TGShaderProgram.TextureShaderProgram2D(this);
-        this.setBasicLightShaderProgram = TGShaderProgram.BasicLightShaderProgram(this);
         this.setMaterialShaderProgram = TGShaderProgram.MaterialShaderProgram(this);
         this.setColorLightShaderProgram = TGShaderProgram.ColorLightShaderProgram(this);
         this.setTextureLightShaderProgram = TGShaderProgram.TextureLightShaderProgram(this);
