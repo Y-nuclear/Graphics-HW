@@ -16,7 +16,7 @@ class ACamera {
         var lastMouseX;
         var lastMouseY;
 
-        this.initCameraPosition = vec3.fromValues(0.2, 0.2, 2.5);
+        this.initCameraPosition = vec3.fromValues(1.0, 0.2, 2.5);
         this.initTargetPosition = vec3.fromValues(0, 0, 0);
         this.initCameraZoom = 1.0;
         this.initFov = 90;

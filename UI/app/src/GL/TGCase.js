@@ -49,6 +49,19 @@ function case2Init(tg) {
 }
 function case2Animate(tg, frame) {
     tg.clear();
+    var lightDir = [0.0, 0.0, -1.0];
+    var lightColor = [1.0, 1.0, 1.0];
+    tg.setLight(lightDir, lightColor);
+
+    // 绘制光线
+    tg.pushModelMatrix();
+    {
+        tg.translate(0.0, 0.0, 2.5);
+        tg.drawArrow([0, 0, 0], lightDir, lightColor)
+        tg.drawText("light", [lightDir[0] / 2, lightDir[1] / 2, lightDir[2] / 2], "#ffffff", 0.04, 1)
+    }
+    tg.popModelMatrix();
+
     tg.drawXYZ();
 
     tg.pushModelMatrix();
@@ -65,16 +78,22 @@ function case2Animate(tg, frame) {
             0.0, 0.0, 1.0,  // 2
             1.0, 1.0, 1.0,  // 3
         ];
+        var normals = [
+            0.0, 0.0, 1.0,  // 0
+            0.0, 0.0, 1.0,  // 1
+            0.0, 0.0, 1.0,  // 2
+            0.0, 0.0, 1.0,  // 3
+        ]
         var indices = [
             0, 1, 2,
             0, 2, 3,
         ];
 
         tg.translate(-0.5, -0.5, 0);
-        tg.drawColorFaces(vertices, colors, indices);
+        // tg.drawColorFaces(vertices, colors, indices);
+        tg.drawLightColorFaces(vertices, colors, normals, indices);
     }
     tg.popModelMatrix();
-
 
 }
 

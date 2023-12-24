@@ -51,6 +51,9 @@ function drawArrow(tg, start, end, color) {
 
     var len = vec3.distance(startScreen, endScreen);
     var arrowLen = len / 8;
+    if (arrowLen > 0.1) {
+        arrowLen = 0.1;
+    }
 
     var dir = vec3.create();
     vec3.sub(dir, endScreen, startScreen);
@@ -193,9 +196,26 @@ function drawImageTextureFaces(tg, vertices, texCoords, image, indices) {
     drawTextureFaces(tg, vertices, texCoords, texture, indices);
 }
 
+function drawLightColorFaces(tg, vertices, colors, normals, indices) {
+    var gl = tg.gl;
+    tg.setBasicLightShaderProgram(vertices, colors, normals);
+
+    var indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+}
+
 function drawTriangle(tg, vertices, colors) {
     var gl = tg.gl;
     tg.setBasicShaderProgram(vertices, colors);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
+}
+
+function drawLightTriangle(tg, vertices, colors, normals) {
+    var gl = tg.gl;
+    tg.setBasicLightShaderProgram(vertices, colors, normals);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
 }
 
@@ -215,14 +235,12 @@ function drawImageTexture(tg, vertices, texCoords, image) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
 }
 
-function drawLightTriangle(tg, vertices, colors, normals) {
-    var gl = tg.gl;
-    tg.setBasicLightShaderProgram(vertices, colors, normals);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 3);
-}
+
 
 export {
     drawLine, drawLine2D, drawXYZ, drawArrow, drawText,
     drawColorFaces, image2texture, drawTextureFaces, drawImageTextureFaces,
-    // drawTriangle, drawImageTexture, drawLightTriangle,
+    drawLightColorFaces,
+    drawTriangle, drawLightTriangle,
+    // drawImageTexture,
 };
