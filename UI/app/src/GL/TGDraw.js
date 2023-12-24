@@ -161,7 +161,7 @@ function drawColorFaces(tg, vertices, colors, indices) {
     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 }
 
-function drawTextureFaces (tg, vertices, texCoords, image, indices) {
+function drawImageTextureFaces (tg, vertices, texCoords, image, indices) {
     var gl = tg.gl;
 
     var texture = gl.createTexture();
@@ -212,6 +212,6 @@ function drawLightTriangle(tg, vertices, colors, normals) {
 
 export {
     drawLine, drawLine2D, drawXYZ, drawArrow, drawText,
-    drawColorFaces,drawTextureFaces,
+    drawColorFaces,drawImageTextureFaces,
     drawTriangle, drawImageTexture, drawLightTriangle,
 };
