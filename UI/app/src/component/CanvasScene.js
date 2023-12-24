@@ -6,7 +6,9 @@ import { vec3, mat4 } from 'gl-matrix';
 // import OBJobject from '../GL/OBJobject';
 
 import { TG } from '../GL/TG';
+import * as TGCase from '../GL/TGCase';
 import { ACamera } from '../GL/Camera';
+
 import { Cube } from '../GL/BasicProperty';
 
 class CanvasScene extends Component {
@@ -33,14 +35,7 @@ class CanvasScene extends Component {
             // obj3d.loadOBJ('./shuibei.obj');
             // objects.push(obj3d);
 
-            var image = new Image();
-            image.onload = () => {
-                objects.push({
-                    type: 'image',
-                    data: image,
-                });
-            }
-            image.src = './goutou.png';
+            TGCase.case1Init(tg);
         }
 
         this.setState({
@@ -59,11 +54,11 @@ class CanvasScene extends Component {
         var camera = this.state.camera;
         var objects = this.state.objects;
 
-        tg.clear();
         var { position, target, mode, fov, near, far } = camera.getParams();
         tg.setCamera(position, target, mode, fov, near, far);
 
-        tg.drawXYZ();
+        TGCase.case1Animate(tg, frame);
+
 
         // var flag = 4;
 

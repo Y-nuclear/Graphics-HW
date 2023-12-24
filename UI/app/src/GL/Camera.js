@@ -1,15 +1,13 @@
 import { mat4, vec3 } from 'gl-matrix';
 
 
-//Camera类
-// 用于控制相机的位置和方向
-
 /**
- * 一个相机
+ * 一个相机，也许能用？ \
  * 鼠标左键拖动旋转 \
  * 鼠标中键拖动平移 \
  * 鼠标滚轮缩放 \
- * A、D、W、S、Q、E键控制相机左右前后上下移动
+ * A、D、W、S、Q、E 键控制相机左右前后上下移动 \
+ * R 键重置相机位置
  */
 class ACamera {
     constructor(canvas) {
@@ -18,9 +16,19 @@ class ACamera {
         var lastMouseX;
         var lastMouseY;
 
-        this.cameraPosition = vec3.fromValues(0.2, 0.2, 2.5);
-        this.targetPosition = vec3.fromValues(0, 0, 0);
-        this.cameraZoom = 1.0;
+        this.initCameraPosition = vec3.fromValues(0.2, 0.2, 2.5);
+        this.initTargetPosition = vec3.fromValues(0, 0, 0);
+        this.initCameraZoom = 1.0;
+        this.initFov = 90;
+        this.initNear = 0.1;
+        this.initFar = 100;
+
+        this.cameraPosition = vec3.copy(vec3.create(), this.initCameraPosition);
+        this.targetPosition = vec3.copy(vec3.create(), this.initTargetPosition);
+        this.cameraZoom = this.initCameraZoom;
+        this.fov = this.initFov;
+        this.near = this.initNear;
+        this.far = this.initFar;
 
         canvas.addEventListener('mousedown', (event) => {
             lastMouseX = event.clientX;
@@ -46,7 +54,7 @@ class ACamera {
             } else if (isMidClickDragging) {
                 // 中键拖动时移动相机位置的逻辑
                 const moveSpeed = 0.01;
-                
+
                 // 与相机朝向垂直的方向
                 var cameraDir = vec3.create();
                 vec3.sub(cameraDir, this.targetPosition, this.cameraPosition);
@@ -115,6 +123,14 @@ class ACamera {
                     vec3.add(this.cameraPosition, this.cameraPosition, vec3.fromValues(0, -moveAmount, 0));
                     vec3.add(this.targetPosition, this.targetPosition, vec3.fromValues(0, -moveAmount, 0));
                     break;
+                case 'r':
+                    this.cameraPosition = vec3.copy(vec3.create(), this.initCameraPosition);
+                    this.targetPosition = vec3.copy(vec3.create(), this.initTargetPosition);
+                    this.cameraZoom = this.initCameraZoom;
+                    this.fov = this.initFov;
+                    this.near = this.initNear;
+                    this.far = this.initFar;
+                    break;
             }
         });
     }
@@ -125,15 +141,13 @@ class ACamera {
         var position = cameraPositionZoomed;
         var target = this.targetPosition;
         var mode = 'perspective';
-        var fov = 90;
-        var near = 0.1;
-        var far = 100;
+        var fov = this.fov;
+        var near = this.near;
+        var far = this.far;
 
         return { position, target, mode, fov, near, far };
     }
 }
-
-
 
 
 export { ACamera };
