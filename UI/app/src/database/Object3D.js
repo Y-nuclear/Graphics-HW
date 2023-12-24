@@ -6,9 +6,6 @@ import { mat4, vec3 } from "gl-matrix";
 
 //Object3D作为所有3D对象的基类，提供了一些基本的属性和方法
 //包括顶点数据、顶点索引、顶点颜色、位置、旋转、缩放、模型矩阵、子对象等
-function IdentityMat4(){
-    return mat4.create();
-}
 class Object3D extends EventDispatcher{
     constructor(){
         super();
