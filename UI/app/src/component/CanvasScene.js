@@ -32,7 +32,7 @@ class CanvasScene extends Component {
 
         {// 临时
             var obj3d = new OBJobject();
-            obj3d.loadOBJ('./shuibei.obj');
+            obj3d.loadOBJ('./obj/obj.obj');
             objects.push(obj3d);
 
             TGCase.case1Init(tg);
@@ -73,13 +73,18 @@ class CanvasScene extends Component {
 
             tg.pushModelMatrix();
             {
-                objects[1].geometries[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
+                // objects[1].geometries[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
                 objects[1].geometries[0].updateVertices();
                 var vertices = objects[1].geometries[0].vertices;
                 var texcoords = objects[1].geometries[0].uvs;
                 var colors = objects[1].geometries[0].colors;
                 var normals = objects[1].geometries[0].normals;
-
+                var textures = objects[1].geometries[0].textures;
+                var image = new Image();
+                image.onload = () => {
+                    textures[0] = tg.image2texture(image);
+                }
+                image.src = './obj/Slime_UV/diffuse.png';
                 // tg.rotate(frame / 100, 0, 1, 0);
                 tg.translate(0.5, 0, 0);
                 var scalef = 1 + 0.9 * Math.cos(frame / 80);
@@ -90,8 +95,7 @@ class CanvasScene extends Component {
                     specular: [0.5, 0.5, 0.5],
                     shininess: 1,
                     strength: 1,
-                },tg.goutouTexture
-                
+                },textures[0]
                 );
             }
             tg.popModelMatrix();

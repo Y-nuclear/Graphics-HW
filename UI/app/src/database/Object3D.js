@@ -14,7 +14,14 @@ class Object3D extends EventDispatcher{
 
         this.uvs = [];
         this.normals = [];
-        this.materials = [];
+        this.materials = {
+            ambient: [0.2,0.2,0.2],
+            diffuse: [1.0,1.0,1.0],
+            specular: [0.5,0.5,0.5],
+            shininess: 15,
+            strength: 1,
+        }
+        this.textures = [];
 
         this.modelMatrix = mat4.create();
         this.box = null;
