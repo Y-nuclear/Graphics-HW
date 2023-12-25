@@ -221,6 +221,7 @@ function drawLightTextureFaces(tg, vertices, texCoords, normals, texture, indice
 }
 
 function drawTriangle(tg, vertices, colors) {
+    
     var gl = tg.gl;
     tg.setColorShaderProgram(vertices, colors);
     gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
@@ -240,7 +241,7 @@ function drawMaterialTriangle(tg, vertices, colors, normals, material) {
 
 function drawMaterialTextureTriangle(tg, vertices, texCoords, normals, material, texture) {
     var gl = tg.gl;
-
+    
     gl.bindTexture(gl.TEXTURE_2D, texture);
     tg.setTextureMaterialShaderProgram(vertices, texCoords, normals, material);
 

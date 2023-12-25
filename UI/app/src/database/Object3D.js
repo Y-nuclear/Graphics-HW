@@ -15,7 +15,7 @@ class Object3D extends EventDispatcher{
         this.uvs = [];
         this.normals = [];
         this.materials = [];
-
+        this.triangles = [];
         this.modelMatrix = mat4.create();
         this.box = null;
         this.sphere = null;

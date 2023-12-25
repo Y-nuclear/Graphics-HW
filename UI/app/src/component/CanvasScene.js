@@ -9,7 +9,7 @@ import { TG } from '../GL/TG';
 import * as TGCase from '../GL/TGCase';
 import { ACamera } from '../GL/Camera';
 
-import { Cube } from '../GL/BasicProperty';
+import { Sphere ,Triangle,Cube,Circle } from '../GL/BasicProperty';
 
 class CanvasScene extends Component {
     constructor(props) {
@@ -27,14 +27,21 @@ class CanvasScene extends Component {
         var canvas = document.getElementById('canvas');
         var tg = new TG(canvas);
         var camera = new ACamera(canvas);
+        // var cube = new Cube();
+        var triangle = new Triangle();
         var cube = new Cube();
-        var objects = [cube]
+        var circle = new Circle();
+        var sphere = new Sphere();
+        var objects = [triangle]//0
 
         {// 临时
             var obj3d = new OBJobject();
             obj3d.loadOBJ('./shuibei.obj');
-            objects.push(obj3d);
-
+            objects.push(obj3d);//1
+            objects.push(cube);//2
+            objects.push(circle);//3
+            objects.push(sphere);//4
+            // console.log('objects; ',objects);
             TGCase.case1Init(tg);
             TGCase.case2Init(tg);
             TGCase.case3Init(tg);
@@ -53,6 +60,7 @@ class CanvasScene extends Component {
         var frame = this.state.frame;
 
         var tg = this.state.tg;
+        // console.log('tg: ', tg);
         var camera = this.state.camera;
         var objects = this.state.objects;
 
@@ -71,8 +79,34 @@ class CanvasScene extends Component {
             // tg.setCamera(camera);
             tg.drawXYZ();
 
+        //三角形 objects[0]
+        tg.pushModelMatrix(); {
+            tg.translate(0.2, -1.2, 1);
+            tg.drawTriangle(objects[0].vertices, objects[0].colors);        
+        }
+        tg.popModelMatrix();
+
+        //正方体objects[2]
+        tg.pushModelMatrix(); {
+            tg.translate(-1.5, -1.2, 1);
+            tg.drawTriangle(objects[2].vertices, objects[2].colors);        
+        } tg.popModelMatrix();
+        //圆objects[3]
+        tg.pushModelMatrix(); {
+            tg.translate(-1.5, 1.2, 1);
+            tg.drawTriangle(objects[3].vertices, objects[3].colors);        
+        } tg.popModelMatrix();
+        
+        //球objects[4]
+        tg.pushModelMatrix(); {
+            tg.translate(-4.5, -1.2, 1);
+            tg.drawTriangle(objects[4].vertices, objects[4].colors);        
+        } tg.popModelMatrix();
+        
+        //旋转水杯
             tg.pushModelMatrix();
-            {
+        {       
+                
                 objects[1].geometries[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
                 objects[1].geometries[0].updateVertices();
                 var vertices = objects[1].geometries[0].vertices;
@@ -208,6 +242,7 @@ class CanvasScene extends Component {
         cancelAnimationFrame(this.animationFrameId);
     }
     animate = () => {
+        
         // 更新状态，触发重新渲染
         this.setState((prevState) => ({
             frame: prevState.frame + 1,
