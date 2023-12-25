@@ -11,7 +11,7 @@ function App() {
       <NavBar />
       <div className="App-body" style={{display: 'flex', flexDirection: 'row', height: '100%',width:'100%', padding:'0 auto'}}>
       <CanvasScene />
-      <ToolBox />
+      
       </div>
       <FooterComponent />
 

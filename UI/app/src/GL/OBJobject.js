@@ -69,7 +69,7 @@ class OBJobject{
             materialLibs.push(unparsedArgs);
           },
           usemtl(parts,geometry, unparsedArgs) {
-            geometry.materials.push(unparsedArgs);
+            // geometry.materials.push(unparsedArgs);
           },
           g(parts,geometry) {
 
@@ -219,6 +219,11 @@ class OBJobject{
           for(let j=0;j<this.geometries[i].vertices.length;j++){
             this.geometries[i].colors.push(0.5);
           }
+        }
+      }
+      for(let i=0;i<this.geometries.length;i++){
+        for(let j=1;j<this.geometries[i].uvs.length;j+=2){
+          this.geometries[i].uvs[j] = 1 - this.geometries[i].uvs[j];
         }
       }
       console.log(this);

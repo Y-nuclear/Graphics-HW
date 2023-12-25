@@ -10,7 +10,7 @@ import * as TGCase from '../GL/TGCase';
 import { ACamera } from '../GL/Camera';
 
 import { Sphere ,Triangle,Cube,Circle } from '../GL/BasicProperty';
-
+import ObjectBox from './ObjectBox';
 class CanvasScene extends Component {
     constructor(props) {
         super(props);
@@ -36,12 +36,11 @@ class CanvasScene extends Component {
 
         {// 临时
             var obj3d = new OBJobject();
-            obj3d.loadOBJ('./shuibei.obj');
-            objects.push(obj3d);//1
-            objects.push(cube);//2
+            obj3d.loadOBJ('./obj/obj.obj');
+            objects.push(...obj3d.geometries);
+             objects.push(cube);//2
             objects.push(circle);//3
             objects.push(sphere);//4
-            // console.log('objects; ',objects);
             TGCase.case1Init(tg);
             TGCase.case2Init(tg);
             TGCase.case3Init(tg);
@@ -105,27 +104,28 @@ class CanvasScene extends Component {
         
         //旋转水杯
             tg.pushModelMatrix();
-        {       
-                
-                objects[1].geometries[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
-                objects[1].geometries[0].updateVertices();
-                var vertices = objects[1].geometries[0].vertices;
-                var texcoords = objects[1].geometries[0].uvs;
-                var colors = objects[1].geometries[0].colors;
-                var normals = objects[1].geometries[0].normals;
-
-                // tg.rotate(frame / 100, 0, 1, 0);
+            {
+                // objects[1].geometries[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
+                objects[1].updateVertices();
+                var vertices = objects[1].vertices;
+                var texcoords = objects[1].uvs;
+                var colors = objects[1].colors;
+                var normals = objects[1].normals;
+                var textures = objects[1].textures;
+                var image = new Image();
+                image.onload = () => {
+                    textures[0] = tg.image2texture(image);
+                }
+                image.src = './obj/Slime_UV/diffuse.png';
                 tg.translate(0.5, 0, 0);
                 var scalef = 1 + 0.9 * Math.cos(frame / 80);
-                // tg.scale(scalef, scalef, scalef);
                 tg.drawMaterialTextureTriangle(vertices, texcoords, normals,{
                     ambient: [0.2, 0.2, 0.2],
                     diffuse: [1.0, 1.0, 1.0],
                     specular: [0.5, 0.5, 0.5],
                     shininess: 1,
                     strength: 1,
-                },tg.goutouTexture
-                
+                },textures[0]
                 );
             }
             tg.popModelMatrix();
@@ -282,8 +282,9 @@ class CanvasScene extends Component {
     }
     render() {
         return (
-            <div>
-                <canvas id="canvas" width={720} height={480} style={
+            <div style={{display:"flex",flexDirection:"row"}}>
+                <>
+                <canvas id="canvas" width={960} height={640} style={
                     {
                         border: '1px solid #000',
                         margin: '10px auto',
@@ -291,6 +292,10 @@ class CanvasScene extends Component {
                         background: '#ffd0d0'
                     }
                 }>canvas</canvas>
+                </>
+                <div>
+                    <ObjectBox obj={this.state.objects[0]}/>
+                </div>
             </div>
         );
     }
