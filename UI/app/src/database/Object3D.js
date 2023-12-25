@@ -22,7 +22,7 @@ class Object3D extends EventDispatcher{
             shininess: 15,
             strength: 1,
         }
-        this.textures = [];
+        this.textures = null;
 
         this.modelMatrix = mat4.create();
         this.box = null;

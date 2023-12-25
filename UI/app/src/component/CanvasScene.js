@@ -10,7 +10,7 @@ import * as TGCase from '../GL/TGCase';
 import { ACamera } from '../GL/Camera';
 
 import { Cube } from '../GL/BasicProperty';
-import ObjectBox from './ObjectBox';
+import ObjectList from './ObjectList';
 class CanvasScene extends Component {
     constructor(props) {
         super(props);
@@ -82,18 +82,18 @@ class CanvasScene extends Component {
                 var textures = objects[1].textures;
                 var image = new Image();
                 image.onload = () => {
-                    textures[0] = tg.image2texture(image);
+                    textures = tg.image2texture(image);
                 }
                 image.src = './obj/Slime_UV/diffuse.png';
                 tg.translate(0.5, 0, 0);
                 var scalef = 1 + 0.9 * Math.cos(frame / 80);
-                tg.drawMaterialTextureTriangle(vertices, texcoords, normals,{
+                tg.drawMaterialTriangle(vertices, colors, normals,{
                     ambient: [0.2, 0.2, 0.2],
                     diffuse: [1.0, 1.0, 1.0],
                     specular: [0.5, 0.5, 0.5],
-                    shininess: 1,
+                    shininess: 12,
                     strength: 1,
-                },textures[0]
+                },textures
                 );
             }
             tg.popModelMatrix();
@@ -251,7 +251,7 @@ class CanvasScene extends Component {
         return (
             <div style={{display:"flex",flexDirection:"row"}}>
                 <>
-                <canvas id="canvas" width={960} height={640} style={
+                <canvas id="canvas" width={800} height={600} style={
                     {
                         border: '1px solid #000',
                         margin: '10px auto',
@@ -261,7 +261,7 @@ class CanvasScene extends Component {
                 }>canvas</canvas>
                 </>
                 <div>
-                    <ObjectBox obj={this.state.objects[0]}/>
+                    <ObjectList objects={this.state.objects} />
                 </div>
             </div>
         );

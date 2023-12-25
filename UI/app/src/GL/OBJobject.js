@@ -222,11 +222,11 @@ class OBJobject{
         }
       }
       for(let i=0;i<this.geometries.length;i++){
+        this.geometries[i].name = objPath.split("/")[objPath.split("/").length - 1].split(".")[0]+"_"+i;
         for(let j=1;j<this.geometries[i].uvs.length;j+=2){
           this.geometries[i].uvs[j] = 1 - this.geometries[i].uvs[j];
         }
       }
-      console.log(this);
     }
     getGeometries(){
         return this.geometries;

@@ -10,6 +10,7 @@ class Triangle extends Object3D{
         super();
         //设置原型
         Object.setPrototypeOf(this,Triangle.prototype);
+        this.name = "Triangle";
         this.vertices = [
             [0.0, 0.5,0.0],
             [-0.5, -0.5,0.0],
@@ -63,6 +64,7 @@ class Cube extends Object3D{
             6,5,2,
             5,1,2
         ];
+        this.name = "Cube";
         for (let i = 0; i < indices.length; i++) {
             for (let j = 0; j < 3; j++) {
                 this.vertices.push(vertices[indices[i]][j]);
