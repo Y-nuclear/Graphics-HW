@@ -10,7 +10,7 @@ import * as TGCase from '../GL/TGCase';
 import { ACamera } from '../GL/Camera';
 
 import { Cube } from '../GL/BasicProperty';
-
+import ObjectBox from './ObjectBox';
 class CanvasScene extends Component {
     constructor(props) {
         super(props);
@@ -251,8 +251,9 @@ class CanvasScene extends Component {
     }
     render() {
         return (
-            <div>
-                <canvas id="canvas" width={720} height={480} style={
+            <div style={{display:"flex",flexDirection:"row"}}>
+                <>
+                <canvas id="canvas" width={960} height={640} style={
                     {
                         border: '1px solid #000',
                         margin: '10px auto',
@@ -260,6 +261,10 @@ class CanvasScene extends Component {
                         background: '#ffd0d0'
                     }
                 }>canvas</canvas>
+                </>
+                <div>
+                    <ObjectBox obj={this.state.objects[0]}/>
+                </div>
             </div>
         );
     }

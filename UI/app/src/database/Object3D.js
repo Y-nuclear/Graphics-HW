@@ -9,6 +9,7 @@ import { mat4, vec3 } from "gl-matrix";
 class Object3D extends EventDispatcher{
     constructor(){
         super();
+        this.id = null;
         this.vertices = [];
         this.colors = [];
 
