@@ -1,9 +1,9 @@
 // canvas组件，可以添加各种Object
-import OBJobject from '../GL/OBJobject';
 import React, { Component } from 'react';
 
 import { TG } from '../GL/TG';
 import * as TGCase from '../GL/TGCase';
+
 import { ACamera } from '../GL/Camera';
 
 import { Sphere ,Triangle,Cube,Circle } from '../GL/BasicProperty';
@@ -39,6 +39,7 @@ class CanvasScene extends Component {
             objects.push(cube);//2
             objects.push(circle);//3
             objects.push(sphere);//4
+
             TGCase.case1Init(tg);
             TGCase.case2Init(tg);
             TGCase.case3Init(tg);
@@ -65,7 +66,7 @@ class CanvasScene extends Component {
         tg.setCamera(position, target, mode, fov, near, far);
 
         // TGCase.case1Animate(tg, frame);
-        TGCase.case2Animate(tg, frame);
+        // TGCase.case2Animate(tg, frame);
         // TGCase.case3Animate(tg, frame);
         tg.drawXYZ();
         objects.forEach(element => {
@@ -81,7 +82,7 @@ class CanvasScene extends Component {
         cancelAnimationFrame(this.animationFrameId);
     }
     animate = () => {
-        
+
         // 更新状态，触发重新渲染
         this.setState((prevState) => ({
             frame: prevState.frame + 1,
@@ -144,16 +145,16 @@ class CanvasScene extends Component {
 
     render() {
         return (
-            <div style={{display:"flex",flexDirection:"row"}}>
+            <div style={{ display: "flex", flexDirection: "row" }}>
                 <>
-                <canvas id="canvas" width={800} height={600} style={
-                    {
-                        border: '1px solid #000',
-                        margin: '10px auto',
-                        display: 'block',
-                        background: '#ffd0d0'
-                    }
-                }>canvas</canvas>
+                    <canvas id="canvas" width={800} height={600} style={
+                        {
+                            border: '1px solid #000',
+                            margin: '10px auto',
+                            display: 'block',
+                            background: '#ffd0d0'
+                        }
+                    }>canvas</canvas>
                 </>
                 <Toolbar
                     objects={this.state.objects}

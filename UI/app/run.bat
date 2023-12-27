@@ -1,1 +1,2 @@
-npm i && npm start
+@REM npm i && npm start
+npm start

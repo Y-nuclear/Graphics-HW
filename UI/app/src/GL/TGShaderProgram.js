@@ -335,6 +335,10 @@ function ColorLightShaderProgram(tg) {
         var projectionMatrix = tg.projectionMatrix;
         var normalMatrix = tg.normalMatrix;
 
+        if (tg.lightDir == null) {
+            console.error("not set light");
+        }
+
         var lightDirection = tg.lightDir;
         var lightColor = tg.lightColor;
         var viewPosition = tg.cameraPosition;
@@ -467,6 +471,10 @@ function TextureLightShaderProgram(tg) {
         var projectionMatrix = tg.projectionMatrix;
         var normalMatrix = tg.normalMatrix;
 
+        if (tg.lightDir == null) {
+            console.error("not set light");
+        }
+
         var lightDirection = tg.lightDir;
         var lightColor = tg.lightColor;
         var viewPosition = tg.cameraPosition;
@@ -548,7 +556,7 @@ function TextureMaterialShaderProgram(tg) {
     }
     `;
 
-var fragmentShaderSource = `
+    var fragmentShaderSource = `
     precision mediump float;
 
     varying vec3 vNormal;
@@ -598,11 +606,15 @@ var fragmentShaderSource = `
     var uLightColorLocation = gl.getUniformLocation(shaderProgram, 'uLightColor');
     var uViewPositionLocation = gl.getUniformLocation(shaderProgram, 'uViewPosition');
 
-    function setShaderProgram(vertices, texCoords, normals,materials) {
+    function setShaderProgram(vertices, texCoords, normals, materials) {
         var modelMatrix = tg.modelMatrix;
         var viewMatrix = tg.viewMatrix;
         var projectionMatrix = tg.projectionMatrix;
         var normalMatrix = tg.normalMatrix;
+
+        if (tg.lightDir == null) {
+            console.error("not set light");
+        }
 
         var lightDirection = tg.lightDir;
         var lightColor = tg.lightColor;
@@ -648,7 +660,7 @@ var fragmentShaderSource = `
         gl.uniform3fv(uLightDirectionLocation, lightDirection);
         gl.uniform3fv(uLightColorLocation, lightColor);
         gl.uniform3fv(uViewPositionLocation, viewPosition);
-        
+
 
         gl.uniformMatrix4fv(uModelMatrixLocation, false, modelMatrix);
         gl.uniformMatrix4fv(uViewMatrixLocation, false, viewMatrix);
@@ -697,7 +709,7 @@ function ColorMaterialShaderProgram(tg) {
     }
     `;
 
-var fragmentShaderSource = `
+    var fragmentShaderSource = `
     precision mediump float;
 
     varying vec3 vNormal;
@@ -747,11 +759,15 @@ var fragmentShaderSource = `
     var uLightColorLocation = gl.getUniformLocation(shaderProgram, 'uLightColor');
     var uViewPositionLocation = gl.getUniformLocation(shaderProgram, 'uViewPosition');
 
-    function setShaderProgram(vertices, colors, normals,materials) {
+    function setShaderProgram(vertices, colors, normals, materials) {
         var modelMatrix = tg.modelMatrix;
         var viewMatrix = tg.viewMatrix;
         var projectionMatrix = tg.projectionMatrix;
         var normalMatrix = tg.normalMatrix;
+
+        if (tg.lightDir == null) {
+            console.error("not set light");
+        }
 
         var lightDirection = tg.lightDir;
         var lightColor = tg.lightColor;
@@ -798,7 +814,7 @@ var fragmentShaderSource = `
         gl.uniform3fv(uLightDirectionLocation, lightDirection);
         gl.uniform3fv(uLightColorLocation, lightColor);
         gl.uniform3fv(uViewPositionLocation, viewPosition);
-        
+
 
         gl.uniformMatrix4fv(uModelMatrixLocation, false, modelMatrix);
         gl.uniformMatrix4fv(uViewMatrixLocation, false, viewMatrix);
