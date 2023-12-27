@@ -10,7 +10,10 @@ class TG {
         this.projectionMatrix = mat4.create();
 
         this.normalMatrix = null;
-        this.cameraPosition = null;
+        this.cameraPosition = vec3.create();
+        this.cameraPosition[0] = 0;
+        this.cameraPosition[1] = 0;
+        this.cameraPosition[2] = 1;
 
         this.lightDir = null;
         this.lightColor = null;
