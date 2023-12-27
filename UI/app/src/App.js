@@ -4,6 +4,7 @@ import UploaderBox from './component/UploaderBox';
 import CanvasScene from './component/CanvasScene';
 import { FooterComponent  } from './component/BasicComponent';
 import NavBar from './component/NavBar';
+import ToolBar from './component/ToolBar';
 import ToolBox from './component/ToolBox';
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
       <NavBar />
       <div className="App-body" style={{display: 'flex', flexDirection: 'row', height: '100%',width:'100%', padding:'0 auto'}}>
       <CanvasScene />
-      
+      <ToolBar />
       </div>
       <FooterComponent />
 

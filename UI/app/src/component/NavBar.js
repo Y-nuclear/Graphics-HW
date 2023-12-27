@@ -146,11 +146,12 @@ const items = [
   ];
   
 const NavBar = () => {
-  const [current, setCurrent] = useState('mail');
-  const onClick = (e) => {
-    console.log('click ', e);
-    setCurrent(e.key);
-  };
-  return <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;
+  // const [current, setCurrent] = useState('mail');
+  // const onClick = (e) => {
+  //   console.log('click ', e);
+  //   setCurrent(e.key);
+  // };
+  // return <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;
+  return <Menu mode="horizontal" items={items} />;
 };
 export default NavBar;
