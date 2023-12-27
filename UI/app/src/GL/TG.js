@@ -9,14 +9,14 @@ class TG {
         this.viewMatrix = mat4.create();
         this.projectionMatrix = mat4.create();
 
-        this.normalMatrix = null;
+        this.normalMatrix = mat3.create();
         this.cameraPosition = vec3.create();
         this.cameraPosition[0] = 0;
         this.cameraPosition[1] = 0;
         this.cameraPosition[2] = 1;
 
-        this.lightDir = null;
-        this.lightColor = null;
+        this.lightDir = [0, 0, 1];
+        this.lightColor = [1,1,1];
 
         this.canvas = canvas;
         var gl = canvas.getContext('webgl');

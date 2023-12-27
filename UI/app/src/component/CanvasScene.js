@@ -65,7 +65,7 @@ class CanvasScene extends Component {
         var { position, target, mode, fov, near, far } = camera.getParams();
         tg.setCamera(position, target, mode, fov, near, far);
 
-        // TGCase.case1Animate(tg, frame);
+        TGCase.case1Animate(tg, frame);
         // TGCase.case2Animate(tg, frame);
         // TGCase.case3Animate(tg, frame);
         tg.drawXYZ();
