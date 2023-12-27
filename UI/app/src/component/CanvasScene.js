@@ -1,27 +1,23 @@
 // canvas组件，可以添加各种Object
 import OBJobject from '../GL/OBJobject';
 import React, { Component } from 'react';
-import { vec3, mat4 } from 'gl-matrix';
-// import { Triangle, Rectangle, Cube } from '../GL/BasicProperty';
-// import OBJobject from '../GL/OBJobject';
 
 import { TG } from '../GL/TG';
 import * as TGCase from '../GL/TGCase';
 import { ACamera } from '../GL/Camera';
 
-import { Cube } from '../GL/BasicProperty';
-import ObjectList from './ObjectList';
 import { Sphere ,Triangle,Cube,Circle } from '../GL/BasicProperty';
-import ObjectBox from './ObjectBox';
+import Toolbar from './ToolBar';
 class CanvasScene extends Component {
     constructor(props) {
         super(props);
-
+        var triangle = new Triangle();
+        console.log(triangle);
         this.state = {
             frame: 0,
             canvas: null,
             tg: null,
-            objects: [],
+            objects: [triangle],
             camera: null,
         }
     }
@@ -37,10 +33,10 @@ class CanvasScene extends Component {
         var objects = [triangle]//0
 
         {// 临时
-            var obj3d = new OBJobject();
-            obj3d.loadOBJ('./obj/obj.obj');
-            objects.push(...obj3d.geometries);
-             objects.push(cube);//2
+            // var obj3d = new OBJobject();
+            // obj3d.loadOBJ('./obj/obj.obj');
+            // objects.push(...obj3d.geometries);
+            objects.push(cube);//2
             objects.push(circle);//3
             objects.push(sphere);//4
             TGCase.case1Init(tg);
@@ -71,171 +67,12 @@ class CanvasScene extends Component {
         // TGCase.case1Animate(tg, frame);
         TGCase.case2Animate(tg, frame);
         // TGCase.case3Animate(tg, frame);
+        tg.drawXYZ();
+        objects.forEach(element => {
 
-
-        // var flag = 4;
-
-        // if (flag == 1) { // case 1
-            // tg.clear();
-            // tg.setCamera(camera);
-            tg.drawXYZ();
-
-        //三角形 objects[0]
-        tg.pushModelMatrix(); {
-            tg.translate(0.2, -1.2, 1);
-            tg.drawTriangle(objects[0].vertices, objects[0].colors);        
-        }
-        tg.popModelMatrix();
-
-        //正方体objects[2]
-        tg.pushModelMatrix(); {
-            tg.translate(-1.5, -1.2, 1);
-            tg.drawTriangle(objects[2].vertices, objects[2].colors);        
-        } tg.popModelMatrix();
-        //圆objects[3]
-        tg.pushModelMatrix(); {
-            tg.translate(-1.5, 1.2, 1);
-            tg.drawTriangle(objects[3].vertices, objects[3].colors);        
-        } tg.popModelMatrix();
+            tg.drawMaterialTriangle(element.vertices, element.colors, element.normals, element.materials, element.textures);
+        });
         
-        //球objects[4]
-        tg.pushModelMatrix(); {
-            tg.translate(-4.5, -1.2, 1);
-            tg.drawTriangle(objects[4].vertices, objects[4].colors);        
-        } tg.popModelMatrix();
-        
-        //旋转水杯
-            tg.pushModelMatrix();
-            {
-                // objects[1].geometries[0].glRotate(1 * Math.PI / 180, 1, 0, 1);
-                objects[1].updateVertices();
-                var vertices = objects[1].vertices;
-                var texcoords = objects[1].uvs;
-                var colors = objects[1].colors;
-                var normals = objects[1].normals;
-                var textures = objects[1].textures;
-                var image = new Image();
-                image.onload = () => {
-                    textures = tg.image2texture(image);
-                }
-                image.src = './obj/Slime_UV/diffuse.png';
-                tg.translate(0.5, 0, 0);
-                var scalef = 1 + 0.9 * Math.cos(frame / 80);
-                tg.drawMaterialTriangle(vertices, colors, normals,{
-                    ambient: [0.2, 0.2, 0.2],
-                    diffuse: [1.0, 1.0, 1.0],
-                    specular: [0.5, 0.5, 0.5],
-                    shininess: 12,
-                    strength: 1,
-                },textures
-                );
-            }
-            tg.popModelMatrix();
-        // } else if (flag == 2) { // case 2
-        //     tg.clear();
-        //     tg.setCamera(camera);
-        //     tg.drawXYZ();
-
-        //     for (var i = 0; i < objects.length; i++) {
-
-        //         if (objects[i].type == 'image') {
-        //             var image = objects[i].data;
-
-        //             var vertices = [
-        //                 -0.5, 0.5, 0.0,  // 左上角
-        //                 -0.5, -0.5, 0.0,  // 左下角
-        //                 0.5, 0.5, 0.0,  // 右上角
-        //                 0.5, -0.5, 0.0,   // 右下角
-        //             ];
-
-        //             var texCoords = [
-        //                 0.0, 0.0,  // 左上角
-        //                 0.0, 1.0,  // 左下角
-        //                 1.0, 0.0,  // 右上角
-        //                 1.0, 1.0,   // 右下角
-        //             ];
-
-        //             tg.pushModelMatrix();
-        //             {
-        //                 tg.translate(0.2, 0.5, 0.2);
-        //                 tg.rotate(45, 0, 1, 0);
-        //                 tg.drawImageTexture(vertices, texCoords, image);
-        //             }
-        //             tg.popModelMatrix();
-        //         }
-        //     }
-        // } else if (flag == 3) { // case 3
-        //     tg.clear();
-        //     tg.setCamera(camera);
-        //     tg.setLight([0.0, 0.0, -1.0], [1.0, 1.0, 1.0]);
-        //     tg.drawXYZ();
-
-        //     tg.pushModelMatrix();
-        //     {
-        //         var vertices = [
-        //             -0.5, 0.5, 0.0,  // 左上角
-        //             -0.5, -0.5, 0.0,  // 左下角
-        //             0.5, 0.5, 0.0,  // 右上角
-        //             0.5, -0.5, 0.0,   // 右下角
-        //         ];
-
-        //         var colors = [
-        //             1.0, 0.0, 0.0,  // 左上角
-        //             0.0, 1.0, 0.0,  // 左下角
-        //             0.0, 0.0, 1.0,  // 右上角
-        //             1.0, 1.0, 1.0,   // 右下角
-        //         ];
-
-        //         var normals = [
-        //             0.0, 0.0, 1.0,  // 左上角
-        //             0.0, 0.0, 1.0,  // 左下角
-        //             0.0, 0.0, 1.0,  // 右上角
-        //             0.0, 0.0, 1.0,   // 右下角
-        //         ];
-
-        //         tg.rotate(frame / 50, 0, 1, 0);
-        //         // tg.translate(0.2, 0.5, 0.2);
-        //         tg.drawLightTriangle(vertices, colors, normals);
-        //     }
-        //     tg.popModelMatrix();
-        // } else if (flag == 4) { // case 4
-        //     tg.clear();
-        //     tg.setCamera(camera);
-        //     tg.drawXYZ();
-
-        //     tg.drawLine2D([-1, 0, -1], [-0.5, 0.5, -1], [1, 0, 0]);
-        //     tg.drawArrow([0, 0, 0], [0.5, 0.5, 0], [1, 1, 0]);
-        //     tg.drawText("Hallo World", [-0.5, 0.5, 0], "#ffffff", 0.05, 1);
-
-        // } else if (flag == 5) { // case 5
-        // } else if (flag == 6) { // case 6
-        // }
-
-        // old case
-        // for (var i = 0; i < objects.length; i++) {
-        //     objects[i].glRotate(0.5, 0, 0, 1);
-        //     // objects[i].glRotate(0.5,0,1,0);
-        //     // objects[i].glTranslate(0.2,0,0);
-        //     // this.state.Camera.setPerspective(45,1,0.1,100);
-        //     // this.state.Camera.setPosition(0,0,2.5);
-        //     // this.state.Camera.updateModelMatrix();
-        //     // this.state.Camera.setViewMatrix();
-        //     // objects[i].modelMatrix.multiply(this.state.Camera.viewMatrix);
-        //     // objects[i].update();
-
-        //     // console.log(objects[i].modelMatrix.elements);
-
-        //     this.state.Camera.setPerspective(45, 1, 0.1, 100);
-        //     this.state.Camera.setPosition(0, 0, 2.5);
-        //     this.state.Camera.updateModelMatrix();
-        //     this.state.Camera.setViewMatrix();
-        //     objects[i].modelMatrix.multiply(this.state.Camera.viewMatrix);
-        //     objects[i].update();
-
-
-        //     objects[i].render();
-        // }
-
     }
     startAnimation() {
         this.animationFrameId = requestAnimationFrame(this.animate);
@@ -282,6 +119,29 @@ class CanvasScene extends Component {
         var canvas = this.state.canvas;
         canvas.removeEventListener(type, func);
     }
+
+    //修改物体属性相关函数
+    //修改物体位置
+    changePosition(object, x, y, z) {
+        var objects = this.state.objects;
+        var index = objects.indexOf(object);
+        x = x - object.position[0];
+        y = y - object.position[1];
+        z = z - object.position[2];
+
+        if (index !== -1) {
+            objects[index].glTranslate(x, y, z);
+            objects[index].updateVertices();
+            objects[index].position[0] += x;
+            objects[index].position[1] += y;
+            objects[index].position[2] += z;
+        }
+        console.log(objects[index]);
+        this.setState({
+            objects: objects
+        });
+    }
+
     render() {
         return (
             <div style={{display:"flex",flexDirection:"row"}}>
@@ -295,9 +155,14 @@ class CanvasScene extends Component {
                     }
                 }>canvas</canvas>
                 </>
-                <div>
-                    <ObjectList objects={this.state.objects} />
-                </div>
+                <Toolbar
+                    objects={this.state.objects}
+                    addObject={this.addObject.bind(this)}
+                    removeObject={this.removeObject.bind(this)}
+                    addEvent={this.addEvent.bind(this)}
+                    removeEvent={this.removeEvent.bind(this)}
+                    changePosition={this.changePosition.bind(this)}
+                />
             </div>
         );
     }

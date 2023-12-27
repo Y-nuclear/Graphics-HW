@@ -24,6 +24,9 @@ class Object3D extends EventDispatcher{
         }
         this.textures = null;
 
+        this.position = [0,0,0];
+        this.rotation = [0,0,0];
+        this.scale = [1,1,1];
         this.modelMatrix = mat4.create();
         this.box = null;
         this.sphere = null;
@@ -31,6 +34,7 @@ class Object3D extends EventDispatcher{
 
     // 平移
     glTranslate(x,y,z){
+
         mat4.translate(this.modelMatrix,this.modelMatrix,[x,y,z])
     }
     // 旋转

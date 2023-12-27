@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { List, Input, InputNumber, Form, Button, Card } from 'antd';
 
 // 示例对象列表
-const objectsList = [
-  { id: 1, name: '对象1', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 } },
-  { id: 2, name: '对象2', position: { x: 1, y: 1, z: 1 }, rotation: { x: 1, y: 1, z: 1 } },
-  // ...根据需要添加更多对象
-];
 
-const Toolbar = () => {
+
+const Toolbar = (objectsList) => {
+  var changePosition = objectsList.changePosition
+
+
+  objectsList = objectsList.objects
+
   const [selectedObject, setSelectedObject] = useState(objectsList[0]);
-
   // 点击按钮时更新选中的对象
   const handleButtonClick = (object) => {
     setSelectedObject(object);
@@ -23,6 +23,31 @@ const Toolbar = () => {
       [propName]: { ...selectedObject[propName], [axis]: value },
     });
   };
+  const onChangePosition = (propName, axis, value) => {
+    console.log('value: ', value);
+    let cal = ()=>{
+      switch (axis) {
+        case 'x':
+          return [value, selectedObject.position[1], selectedObject.position[2]];
+        case 'y':
+          return [selectedObject.position[0], value, selectedObject.position[2]];
+        case 'z':
+          return [selectedObject.position[0], selectedObject.position[1], value];
+        default:
+          return selectedObject.position;
+      }
+    }
+    let position = cal()
+    changePosition(selectedObject, position[0], position[1], position[2])
+    console.log('position: ', selectedObject.position);
+    console.log('selectedObject: ', selectedObject);
+  };
+  const handleDelete = (object) => {
+    //从Objectlists中删除当前的object
+
+    setSelectedObject(object);
+
+  }
 
   return (
     <Card bordered style={{ margin: 10 }}>
@@ -55,22 +80,22 @@ const Toolbar = () => {
             <Input.Group compact>
               <Form.Item label="X" style={{ marginBottom: 0 }}>
                 <InputNumber
-                  value={selectedObject.position.x}
-                  onChange={(value) => handleInputChange('position', 'x', value)}
+                  value={selectedObject.position[0]}
+                  onChange={(value) => onChangePosition('position', 'x', value)}
                   placeholder="X"
                 />
               </Form.Item>
               <Form.Item label="Y" style={{ marginBottom: 0 }}>
                 <InputNumber
-                  value={selectedObject.position.y}
-                  onChange={(value) => handleInputChange('position', 'y', value)}
+                  value={selectedObject.position[1]}
+                  onChange={(value) => onChangePosition('position', 'y', value)}
                   placeholder="Y"
                 />
               </Form.Item>
               <Form.Item label="Z" style={{ marginBottom: 0 }}>
                 <InputNumber
-                  value={selectedObject.position.z}
-                  onChange={(value) => handleInputChange('position', 'z', value)}
+                  value={selectedObject.position[2]}
+                  onChange={(value) => onChangePosition('position', 'z', value)}
                   placeholder="Z"
                 />
               </Form.Item>
@@ -80,26 +105,31 @@ const Toolbar = () => {
             <Input.Group compact>
               <Form.Item label="X" style={{ marginBottom: 0 }}>
                 <InputNumber
-                  value={selectedObject.rotation.x}
+                  value={selectedObject.rotation[0]}
                   onChange={(value) => handleInputChange('rotation', 'x', value)}
                   placeholder="X"
                 />
               </Form.Item>
               <Form.Item label="Y" style={{ marginBottom: 0 }}>
                 <InputNumber
-                  value={selectedObject.rotation.y}
+                  value={selectedObject.rotation[1]}
                   onChange={(value) => handleInputChange('rotation', 'y', value)}
                   placeholder="Y"
                 />
               </Form.Item>
               <Form.Item label="Z" style={{ marginBottom: 0 }}>
                 <InputNumber
-                  value={selectedObject.rotation.z}
+                  value={selectedObject.rotation[2]}
                   onChange={(value) => handleInputChange('rotation', 'z', value)}
                   placeholder="Z"
                 />
               </Form.Item>
             </Input.Group>
+          </Form.Item>
+          <Form.Item>
+            <Button type="danger" onClick={() => handleButtonClick(selectedObject)}>
+              删除
+            </Button>
           </Form.Item>
         </Form>
       </Card>
