@@ -1,6 +1,6 @@
 // canvas组件，可以添加各种Object
 import React, { Component } from 'react';
-
+import OBJobject from '../GL/OBJobject';
 import { TG } from '../GL/TG';
 import * as TGCase from '../GL/TGCase';
 
@@ -33,9 +33,9 @@ class CanvasScene extends Component {
         var objects = [triangle]//0
 
         {// 临时
-            // var obj3d = new OBJobject();
-            // obj3d.loadOBJ('./obj/obj.obj');
-            // objects.push(...obj3d.geometries);
+            var obj3d = new OBJobject();
+            obj3d.loadOBJ('./obj/obj.obj');
+            objects.push(...obj3d.geometries);
             objects.push(cube);//2
             objects.push(circle);//3
             objects.push(sphere);//4
@@ -65,13 +65,13 @@ class CanvasScene extends Component {
         var { position, target, mode, fov, near, far } = camera.getParams();
         tg.setCamera(position, target, mode, fov, near, far);
 
-        TGCase.case1Animate(tg, frame);
+        // TGCase.case1Animate(tg, frame);
         // TGCase.case2Animate(tg, frame);
         // TGCase.case3Animate(tg, frame);
         tg.drawXYZ();
         objects.forEach(element => {
 
-            tg.drawMaterialTriangle(element.vertices, element.colors, element.normals, element.materials, element.textures);
+            tg.drawMaterialTriangle(element.vertices, element.colors, element.normals, element.materials);
         });
         
     }

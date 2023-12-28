@@ -15,7 +15,7 @@ class TG {
         this.cameraPosition[1] = 0;
         this.cameraPosition[2] = 1;
 
-        this.lightDir = [0, 0, 1];
+        this.lightDir = [0, 0, -1];
         this.lightColor = [1,1,1];
 
         this.canvas = canvas;

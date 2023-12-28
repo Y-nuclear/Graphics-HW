@@ -695,16 +695,16 @@ function ColorMaterialShaderProgram(tg) {
     void main() {
         vec4 vertexPosition = uModelMatrix * vec4(aPosition, 1.0);
         gl_Position = uProjectionMatrix * uViewMatrix * vertexPosition;
-    
         // Transform the normal to the eye space
         vNormal = uNormalMatrix * aNormal;
-    
+        vNormal = normalize(vNormal);
         // Since it's a directional light, the light ray is constant everywhere
         vLightRay = normalize(uLightDirection);
     
         // Calculate the view direction
         vec3 viewDirection = uViewPosition - vertexPosition.xyz;
         vViewRay = normalize(viewDirection);
+
         vColor = aColor;
     }
     `;

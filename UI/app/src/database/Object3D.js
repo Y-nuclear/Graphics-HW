@@ -18,7 +18,7 @@ class Object3D extends EventDispatcher{
         this.materials = {
             ambient: [0.2,0.2,0.2],
             diffuse: [1.0,1.0,1.0],
-            specular: [0.5,0.5,0.5],
+            specular: [1.0,1.0,1.0],
             shininess: 15,
             strength: 1,
         }
