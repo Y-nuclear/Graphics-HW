@@ -6,7 +6,7 @@ import * as TGCase from '../GL/TGCase';
 
 import { ACamera } from '../GL/Camera';
 
-import { Sphere ,Triangle,Cube,Circle } from '../GL/BasicProperty';
+import { Sphere ,Triangle,Cube,Circle,Ring,Rectangle } from '../GL/BasicProperty';
 import Toolbar from './ToolBar';
 class CanvasScene extends Component {
     constructor(props) {
@@ -30,16 +30,19 @@ class CanvasScene extends Component {
         var cube = new Cube();
         var circle = new Circle();
         var sphere = new Sphere();
+        var rectangle = new Rectangle();
+        var ring =new Ring();
         var objects = [triangle]//0
 
         {// 临时
             var obj3d = new OBJobject();
             obj3d.loadOBJ('./obj/obj.obj');
-            objects.push(...obj3d.geometries);
+            objects.push(...obj3d.geometries);//1
             objects.push(cube);//2
             objects.push(circle);//3
             objects.push(sphere);//4
-
+            objects.push(rectangle);//5
+            objects.push(ring);//6
             TGCase.case1Init(tg);
             TGCase.case2Init(tg);
             TGCase.case3Init(tg);
@@ -69,8 +72,10 @@ class CanvasScene extends Component {
         // TGCase.case2Animate(tg, frame);
         // TGCase.case3Animate(tg, frame);
         tg.drawXYZ();
+        // tg.drawTriangle(objects[5].vertices, objects[5].colors, objects[5].normals);
+        tg.drawTriangle(objects[6].vertices, objects[6].colors, objects[6].normals);
         objects.forEach(element => {
-
+            // tg.drawTriangle(element.vertices, element.colors, element.normals);
             tg.drawMaterialTriangle(element.vertices, element.colors, element.normals, element.materials);
         });
         

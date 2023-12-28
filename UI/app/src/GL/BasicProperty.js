@@ -1,10 +1,95 @@
 //使用WebGL定义基本的物体
-//包括三角形、正方形、圆形、球体圆环、、立方体、圆锥体、圆柱体、棱柱体、棱锥体、棱台体
+//包括三角形、正方形、圆形、球体、立方体
+//圆环、圆锥体、圆柱体、棱柱体、棱锥体、棱台体
 //以及各种物体的变换、旋转、缩放、平移等操作
 //定义三角形类
 import Object3D from "../database/Object3D";
+class Rectangle extends Object3D { 
+    constructor(){
+        super();
+        //设置原型
+        Object.setPrototypeOf(this,Triangle.prototype);
+        this.name = "Rectangle";
+        this.vertices = [
+            0.5, -0.5,0.0,
+            -0.5, 0.5,0.0,
+            -0.5, -0.5, 0.0,
+            0.5, -0.5, 0.0,
+            0.5, 0.5, 0.0,
+            -0.5, 0.5,0.0
+        ]
+        this.colors = [
+            //灰色
+            0.5,0.5,0.5,
+            0.5,0.5,0.5,
+            0.5, 0.5, 0.5,
+            0.5,0.5,0.5,
+            0.5,0.5,0.5,
+            0.5,0.5,0.5
+        ]
+    }
+}
+class Ring extends Object3D { 
+    constructor(r = 0.8,R=1.0) {
+        super();
+        // var radius = 0.5;
+        var segmentCount = 360;
+        var verticesr = [[0, 0, 0]]; // 添加原点
+        var verticesR = [[0, 0, 0]]; // 添加原点
 
+        // 添加圆周上的顶点
+        for (let i = 0; i <= segmentCount; i++) {
+            let angle = (i * 2 * Math.PI) / segmentCount;
+            let x = r * Math.cos(angle);
+            let y = r * Math.sin(angle);
+            let Rx = R * Math.cos(angle);
+            let Ry = R * Math.sin(angle);
+            verticesR.push([Rx, Ry, 0]);
+            verticesr.push([x, y, 0]);
+        }
+//r1 r2 R1; R2 R1 r2;r2 r3 R2; R3 R2 r3;r3 r4 R3; R4 R3 r4;r4 r1 R4; R1 R4 r1;
 
+        for (let i = 0; i <= segmentCount; i++) { 
+            if (true) {
+                this.vertices.push(...verticesr[i]);
+                this.vertices.push(...verticesr[i + 1]);
+                this.vertices.push(...verticesR[i]);
+
+                this.vertices.push(...verticesR[i + 1]);
+                this.vertices.push(...verticesR[i]);
+                this.vertices.push(...verticesr[i + 1])
+
+            } else {
+                this.vertices.push(...verticesr[i]);
+                this.vertices.push(...verticesr[0]);
+                this.vertices.push(...verticesR[i]);
+
+                this.vertices.push(...verticesR[0]);
+                this.vertices.push(...verticesR[i]);
+                this.vertices.push(...verticesr[0])
+            
+            }
+            for(let j=0;j<6;j++){
+                this.colors.push(0.4, 0.0, 0.0);
+            }
+        }
+        // 构建三角形
+//         for (let i = 1; i <= segmentCount; i++) {
+//             this.vertices.push(...verticesr[0]); // 圆心
+//             this.colors.push(1.0, 0.0, 0.0);
+// 
+//             this.vertices.push(...verticesr[i]); // 当前顶点
+//             this.colors.push(1.0, 0.0, 0.0);
+// 
+//             if (i === segmentCount) {
+//                 this.vertices.push(...verticesr[1]); // 最后一个顶点连接到第一个顶点
+//             } else {
+//                 this.vertices.push(...verticesr[i + 1]); // 下一个顶点
+//             }
+//             this.colors.push(1.0, 0.0, 0.0);
+//         }
+    }
+}
 class Triangle extends Object3D{
     constructor(){
         super();
@@ -210,4 +295,4 @@ class Sphere extends Object3D {
 
 
 
-export {Sphere ,Circle,Triangle,Cube};
+export {Sphere ,Ring,Circle,Triangle,Cube,Rectangle};
