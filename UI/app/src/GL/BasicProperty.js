@@ -1,9 +1,343 @@
 //使用WebGL定义基本的物体
-//包括三角形、正方形、圆形、球体、立方体
-//圆环、圆锥体、圆柱体、棱柱体、棱锥体、棱台体
+//包括三角形、正方形、圆形、球体、立方体、圆环、圆锥体、圆柱体、棱锥体、棱柱体、棱台体
 //以及各种物体的变换、旋转、缩放、平移等操作
 //定义三角形类
 import Object3D from "../database/Object3D";
+class Prismoid extends Object3D { //棱台体
+     constructor(degree = 5,height=1.0,radius=0.4,Radius=1.0) {
+        super();
+        //设置原型
+        Object.setPrototypeOf(this, Triangle.prototype);
+        this.name = "Prism";
+        var verticesBottom = []
+        var verticesTop = []
+        var topPoint = [0, height, 0];
+        var color=[]
+        for (var j = 0; j < degree; j++) {
+            var x = Math.cos(2 * Math.PI * j / degree);
+            var y = Math.sin(2 * Math.PI * j / degree);
+            verticesBottom.push([Radius*x, 0, Radius*y]);
+            verticesTop.push([radius*x, height, radius*y]);
+        }
+        //侧面
+        for(var i=0;i<degree;i++){
+            var Left = i;
+            var Right = (i + 1) % degree;
+            
+            // var topLeft = degree;
+            this.vertices.push(...verticesTop[Left]);
+            this.vertices.push(...verticesBottom[Left]);
+            this.vertices.push(...verticesBottom[Right]);
+            this.colors.push(0.8, 0.8, 0.8);
+            this.colors.push(0.8, 0.8, 0.8);
+            this.colors.push(0.8, 0.8, 0.8);
+            
+            
+
+            this.vertices.push(...verticesTop[Left]);
+            this.vertices.push(...verticesBottom[Right]);
+            this.vertices.push(...verticesTop[Right]);
+            this.colors.push(0.8, 0.8, 0.8);
+            this.colors.push(0.8, 0.8, 0.8);
+            this.colors.push(0.8, 0.8, 0.8);
+        }
+        //底面 + 顶面
+        for (var i = 0; i < degree; i++) {
+            var Left = i;
+            var Right = (i + 1) % degree;
+            this.vertices.push(...[0, 0, 0]);
+            this.vertices.push(...verticesBottom[Left]);
+            this.vertices.push(...verticesBottom[Right]);
+            
+            this.vertices.push(...[0, height, 0]);
+            this.vertices.push(...verticesTop[Left]);
+            this.vertices.push(...verticesTop[Right]);
+
+            this.colors.push(0.5, 0.5, 0.5);
+            this.colors.push(0.5, 0.5, 0.5);
+            this.colors.push(0.5, 0.5, 0.5);
+            this.colors.push(0.5, 0.5, 0.5);
+            this.colors.push(0.5, 0.5, 0.5);
+            this.colors.push(0.5, 0.5, 0.5);
+        }
+    }
+}
+class Prism extends Object3D { //棱柱体
+    constructor(degree = 5,height=1.0,radius=0.8) {
+        super();
+        //设置原型
+        Object.setPrototypeOf(this, Triangle.prototype);
+        this.name = "Prism";
+        var verticesBottom = []
+        var verticesTop = []
+        var topPoint = [0, height, 0];
+        var color=[]
+        for (var j = 0; j < degree; j++) {
+            var x = radius*Math.cos(2 * Math.PI * j / degree);
+            var y = radius*Math.sin(2 * Math.PI * j / degree);
+            verticesBottom.push([x, 0, y]);
+            verticesTop.push([x, height, y]);
+        }
+        //侧面
+        for(var i=0;i<degree;i++){
+            var Left = i;
+            var Right = (i + 1) % degree;
+            
+            // var topLeft = degree;
+            this.vertices.push(...verticesTop[Left]);
+            this.vertices.push(...verticesBottom[Left]);
+            this.vertices.push(...verticesBottom[Right]);
+            this.colors.push(0.1, 0.1, 0.1);
+            this.colors.push(0.1, 0.1, 0.1);
+            this.colors.push(0.1, 0.1, 0.1);
+            
+            
+
+            this.vertices.push(...verticesTop[Left]);
+            this.vertices.push(...verticesBottom[Right]);
+            this.vertices.push(...verticesTop[Right]);
+            this.colors.push(0.1, 0.1, 0.1);
+            this.colors.push(0.1, 0.1, 0.1);
+            this.colors.push(0.1, 0.1, 0.1);
+        }
+        //底面 + 顶面
+        for (var i = 0; i < degree; i++) {
+            var Left = i;
+            var Right = (i + 1) % degree;
+            this.vertices.push(...[0, 0, 0]);
+            this.vertices.push(...verticesBottom[Left]);
+            this.vertices.push(...verticesBottom[Right]);
+            
+            this.vertices.push(...[0, height, 0]);
+            this.vertices.push(...verticesTop[Left]);
+            this.vertices.push(...verticesTop[Right]);
+
+            this.colors.push(0.5, 0.5, 0.5);
+            this.colors.push(0.5, 0.5, 0.5);
+            this.colors.push(0.5, 0.5, 0.5);
+            this.colors.push(0.5, 0.5, 0.5);
+            this.colors.push(0.5, 0.5, 0.5);
+            this.colors.push(0.5, 0.5, 0.5);
+        }
+    }
+}
+class Pyramid extends Object3D { //棱锥体
+    constructor(degree = 5,height=1.0,radius=0.8) {
+        super();
+        //设置原型
+        Object.setPrototypeOf(this, Triangle.prototype);
+        this.name = "Pyramid";
+        var vertices = []
+        var topPoint=[0,height,0];
+        for (var j = 0; j < degree; j++) {
+            var x = radius*Math.cos(2 * Math.PI * j / degree);
+            var y = radius*Math.sin(2 * Math.PI * j / degree);
+            vertices.push([x, 0, y]);
+        }
+        //侧面
+        for(var i=0;i<degree;i++){
+            var bottomLeft = i;
+            var bottomRight = (i + 1) % degree;
+            // var topLeft = degree;
+            this.vertices.push(...topPoint);
+            this.vertices.push(...vertices[bottomLeft]);
+            this.vertices.push(...vertices[bottomRight]);
+            this.colors.push(0.0, 1.0, 1.0);
+            this.colors.push(1.0, 0.4, 0.0);
+            this.colors.push(1.0, 1.0, 1.0);
+        }
+        //底面
+        for (var i = 0; i < degree; i++) {
+            var bottomLeft = i;
+            var bottomRight = (i + 1) % degree;
+            var topLeft = degree;
+            this.vertices.push(...[0, 0, 0]);
+            this.vertices.push(...vertices[bottomLeft]);
+            this.vertices.push(...vertices[bottomRight]);
+            
+            this.colors.push(1.0, 1.0, 1.0);
+            this.colors.push(1.0, 1.0, 1.0);
+            this.colors.push(1.0, 1.0, 1.0);
+        }
+    }
+}
+class Conecylinder extends Object3D { //圆柱体
+    constructor(radius = 0.5,height = 1.0) {
+        super();
+        //设置原型
+        Object.setPrototypeOf(this, Triangle.prototype);
+        this.name = "Conecylinder";
+        // var radius = 0.5;
+        // var height = 1.0;
+        var segmentCount = 360;
+        var ySegmentCount = 100;
+        // var vertices = [[0, 0, 0]]; // 添加原点
+        var bottom = [0, 0, 0]; // 添加底部顶点
+        var vertices = [];
+        var tantheta = radius / height;
+
+        for (let i = 0; i <= ySegmentCount; i++) {
+            var h = height - i * height / ySegmentCount;
+            var b = i * height / ySegmentCount;
+            var r = radius;
+            for (let j = 0; j <= segmentCount; j++) {
+                let angle = (j * 2 * Math.PI) / segmentCount;
+                let x = r * Math.cos(angle);
+                let y = r * Math.sin(angle);
+                vertices.push([x, b, y]);
+            }
+        }
+        //底面圆+顶面圆
+        for (let i = 0; i <= segmentCount; i++) {
+            //顶面
+            var topIndex = i + (segmentCount + 1) * (ySegmentCount);
+            this.vertices.push(...[0, height, 0]); // 圆心
+            this.colors.push(1.0, 1.0, 1.0);
+
+            this.vertices.push(...vertices[topIndex]); // 当前顶点
+            this.colors.push(1.0, 1.0, 1.0);
+
+            if (i === segmentCount) {
+                this.vertices.push(...vertices[topIndex]); // 最后一个顶点连接到第一个顶点
+            }
+            else { 
+                this.vertices.push(...vertices[topIndex + 1]); // 下一个顶点
+            }
+            this.colors.push(1.0, 1.0, 1.0);
+            //底面
+            this.vertices.push(...[0, 0, 0]); // 圆心
+            this.colors.push(1.0, 1.0, 1.0);
+
+            this.vertices.push(...vertices[i]); // 当前顶点
+            this.colors.push(1.0, 1.0, 1.0);
+
+            if (i === segmentCount) {
+                this.vertices.push(...vertices[0]); // 最后一个顶点连接到第一个顶点
+            } else {
+                this.vertices.push(...vertices[i + 1]); // 下一个顶点
+            }
+            this.colors.push(1.0, 1.0, 1.0);
+        }
+    
+        //侧面
+        for (let i = 0; i < ySegmentCount; i++) {
+            for (let j = 0; j <= segmentCount; j++) {
+                var bottomLeft = i * segmentCount + j;
+                if (j === segmentCount) {
+                    var bottomRight = i * segmentCount;
+                } else {
+                    var bottomRight = bottomLeft + 1;
+                }
+                
+                
+                var topLeft = (i + 1) * segmentCount + j;
+                if (j === segmentCount) { 
+                    var topRight = (i + 1) * segmentCount;
+                } else {
+                    var topRight = (i + 1) * segmentCount + j + 1;
+                }
+                
+                
+                this.vertices.push(...vertices[bottomLeft]);
+                this.vertices.push(...vertices[bottomRight]);
+                this.vertices.push(...vertices[topLeft]);
+                this.vertices.push(...vertices[topLeft]);
+                this.vertices.push(...vertices[bottomRight]);
+                this.vertices.push(...vertices[topRight]);
+
+                this.colors.push(1.0, 1.0, 1.0);
+                this.colors.push(1.0, 1.0, 1.0);
+                this.colors.push(1.0, 1.0, 1.0);
+                this.colors.push(1.0, 1.0, 1.0);
+                this.colors.push(1.0, 1.0, 1.0);
+                this.colors.push(1.0, 1.0, 1.0);
+                // this.colors.push(0.4, 0.0, 0.0);
+                // this.colors.push(0.4, 0.0, 0.0);
+                // this.colors.push(0.4, 0.0, 0.0);
+            }
+        }
+    }
+}
+class Cone extends Object3D { //圆锥体
+    constructor(radius = 0.5,height = 1.0) {
+        super();
+        //设置原型
+        Object.setPrototypeOf(this, Triangle.prototype);
+        this.name = "Cone";
+        // var radius = 0.5;
+        // var height = 1.0;
+        var segmentCount = 360;
+        var ySegmentCount = 100;
+        // var vertices = [[0, 0, 0]]; // 添加原点
+        var bottom = [0, 0, 0]; // 添加底部顶点
+        var vertices = [];
+        var tantheta = radius / height;
+
+        for (let i = 0; i <= ySegmentCount; i++) {
+            var h = height - i * height / ySegmentCount;
+            var b = i * height / ySegmentCount;
+            var r = h * tantheta;
+            for (let j = 0; j <= segmentCount; j++) {
+                let angle = (j * 2 * Math.PI) / segmentCount;
+                let x = r * Math.cos(angle);
+                let y = r * Math.sin(angle);
+                vertices.push([x, b, y]);
+            }
+        }
+        //底面圆
+        for (let i = 0; i <= segmentCount; i++) {
+            this.vertices.push(...[0, 0, 0]); // 圆心
+            this.colors.push(1.0, 1.0, 1.0);
+
+            this.vertices.push(...vertices[i]); // 当前顶点
+            this.colors.push(1.0, 1.0, 1.0);
+
+            if (i === segmentCount) {
+                this.vertices.push(...vertices[0]); // 最后一个顶点连接到第一个顶点
+            } else {
+                this.vertices.push(...vertices[i + 1]); // 下一个顶点
+            }
+            this.colors.push(1.0, 1.0, 1.0);
+        }
+    
+        //侧面
+        for (let i = 0; i < ySegmentCount; i++) {
+            for (let j = 0; j <= segmentCount; j++) {
+                var bottomLeft = i * segmentCount + j;
+                if (j === segmentCount) {
+                    var bottomRight = i * segmentCount;
+                } else {
+                    var bottomRight = i * segmentCount + j + 1;
+                }
+                
+                var topLeft = (i + 1) * segmentCount + j;
+                if (j === segmentCount) { 
+                    var topRight = (i + 1) * segmentCount;
+                } else {
+                    var topRight = (i + 1) * segmentCount + j + 1;
+                }
+                
+                
+                this.vertices.push(...vertices[bottomLeft]);
+                this.vertices.push(...vertices[bottomRight]);
+                this.vertices.push(...vertices[topLeft]);
+                this.vertices.push(...vertices[topLeft]);
+                this.vertices.push(...vertices[bottomRight]);
+                this.vertices.push(...vertices[topRight]);
+
+                this.colors.push(1.0, 1.0, 1.0);
+                this.colors.push(1.0, 1.0, 1.0);
+                this.colors.push(1.0, 1.0, 1.0);
+                this.colors.push(1.0, 1.0, 1.0);
+                this.colors.push(1.0, 1.0, 1.0);
+                this.colors.push(1.0, 1.0, 1.0);
+                // this.colors.push(0.4, 0.0, 0.0);
+                // this.colors.push(0.4, 0.0, 0.0);
+                // this.colors.push(0.4, 0.0, 0.0);
+            }
+        }
+    }
+}
 class Rectangle extends Object3D { 
     constructor(){
         super();
@@ -73,21 +407,7 @@ class Ring extends Object3D {
                 this.colors.push(0.4, 0.0, 0.0);
             }
         }
-        // 构建三角形
-//         for (let i = 1; i <= segmentCount; i++) {
-//             this.vertices.push(...verticesr[0]); // 圆心
-//             this.colors.push(1.0, 0.0, 0.0);
-// 
-//             this.vertices.push(...verticesr[i]); // 当前顶点
-//             this.colors.push(1.0, 0.0, 0.0);
-// 
-//             if (i === segmentCount) {
-//                 this.vertices.push(...verticesr[1]); // 最后一个顶点连接到第一个顶点
-//             } else {
-//                 this.vertices.push(...verticesr[i + 1]); // 下一个顶点
-//             }
-//             this.colors.push(1.0, 0.0, 0.0);
-//         }
+
     }
 }
 class Triangle extends Object3D{
@@ -295,4 +615,4 @@ class Sphere extends Object3D {
 
 
 
-export {Sphere ,Ring,Circle,Triangle,Cube,Rectangle};
+export {Sphere ,Cone,Ring,Prism,Conecylinder,Pyramid,Circle,Triangle,Cube,Rectangle,Prismoid};

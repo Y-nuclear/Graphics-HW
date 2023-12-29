@@ -6,7 +6,7 @@ import * as TGCase from '../GL/TGCase';
 
 import { ACamera } from '../GL/Camera';
 
-import { Sphere ,Triangle,Cube,Circle,Ring,Rectangle } from '../GL/BasicProperty';
+import { Sphere ,Triangle,Cube,Circle,Cone,Pyramid,Prism,Ring,Prismoid,Conecylinder,Rectangle } from '../GL/BasicProperty';
 import Toolbar from './ToolBar';
 class CanvasScene extends Component {
     constructor(props) {
@@ -33,16 +33,22 @@ class CanvasScene extends Component {
         var rectangle = new Rectangle();
         var ring =new Ring();
         var objects = [triangle]//0
+    
 
         {// 临时
             var obj3d = new OBJobject();
             obj3d.loadOBJ('./obj/obj.obj');
             objects.push(...obj3d.geometries);//1
-            objects.push(cube);//2
-            objects.push(circle);//3
-            objects.push(sphere);//4
-            objects.push(rectangle);//5
-            objects.push(ring);//6
+            objects.push(cube);//2 立方体
+            objects.push(circle);//3 圆
+            objects.push(sphere);//4 球
+            objects.push(rectangle);//5 矩形
+            objects.push(ring);//6 环
+            objects.push(new Cone());//7 圆锥
+            objects.push(new Conecylinder());//8 圆柱
+            objects.push(new Pyramid());//9 金字塔
+            objects.push(new Prism());//10 棱柱
+            objects.push(new Prismoid());//11 棱台
             TGCase.case1Init(tg);
             TGCase.case2Init(tg);
             TGCase.case3Init(tg);
@@ -72,8 +78,9 @@ class CanvasScene extends Component {
         // TGCase.case2Animate(tg, frame);
         // TGCase.case3Animate(tg, frame);
         tg.drawXYZ();
-        // tg.drawTriangle(objects[5].vertices, objects[5].colors, objects[5].normals);
-        tg.drawTriangle(objects[6].vertices, objects[6].colors, objects[6].normals);
+        
+        tg.drawTriangle(objects[11].vertices, objects[11].colors, objects[11].normals);//棱台
+        // objects[11].glTranslate(1.0, 1.0, 0);
         objects.forEach(element => {
             // tg.drawTriangle(element.vertices, element.colors, element.normals);
             tg.drawMaterialTriangle(element.vertices, element.colors, element.normals, element.materials);
