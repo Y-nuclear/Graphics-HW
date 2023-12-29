@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { List, Input, InputNumber, Form, Button, Card } from 'antd';
+import { List, Input, InputNumber, Form, Button, Card, ColorPicker } from 'antd';
 
 // 示例对象列表
 
@@ -14,6 +14,7 @@ const Toolbar = (objectsList) => {
   // 点击按钮时更新选中的对象
   const handleButtonClick = (object) => {
     setSelectedObject(object);
+    console.log(object);
   };
 
   // 输入值变化时更新对象的属性
@@ -51,24 +52,28 @@ const Toolbar = (objectsList) => {
 
   return (
     <Card bordered style={{ margin: 10 }}>
-      <List
-        header={<div>对象列表</div>}
-        bordered
-        dataSource={objectsList}
-        renderItem={item => (
-          <List.Item>
-            <Button
-              block
-              type={selectedObject.id === item.id ? 'primary' : 'default'}
-              onClick={() => handleButtonClick(item)}
-            >
-              {item.name}
-            </Button>
-          </List.Item>
-        )}
-      />
-      <Card bordered style={{ marginTop: 10 }}>
-        <Form layout="horizontal">
+      <Card title="对象列表" bordered style={{ margin: 0 }} size="small">
+        <div style={{ height: '100px', overflow: 'auto' }}>
+          <List
+          size="small"
+            dataSource={objectsList}
+            renderItem={item => (
+              <List.Item>
+                <Button
+                  block
+                  size="small"
+                  type={selectedObject.id === item.id ? 'primary' : 'default'}
+                  onClick={() => handleButtonClick(item)}
+                >
+                  {item.name}
+                </Button>
+              </List.Item>
+            )}
+          />
+        </div>
+        </Card >
+      <Card title="对象详情" bordered style={{ marginTop: 20 }} size="small">
+        <Form layout="horizontal" colon={false} size="small" >
           <Form.Item label="名称">
             <Input
               value={selectedObject.name}
@@ -76,6 +81,7 @@ const Toolbar = (objectsList) => {
               placeholder="请输入名称"
             />
           </Form.Item>
+          
           <Form.Item label="位置">
             <Input.Group compact>
               <Form.Item label="X" style={{ marginBottom: 0 }}>
@@ -126,8 +132,54 @@ const Toolbar = (objectsList) => {
               </Form.Item>
             </Input.Group>
           </Form.Item>
+          <Form.Item label="缩放">
+            <Input.Group compact>
+              <Form.Item label="X" style={{ marginBottom: 0 }}>
+                <InputNumber
+                  value={selectedObject.scale[0]}
+                  onChange={(value) => onChangePosition('scale', 'x', value)}
+                  placeholder="X"
+                />
+              </Form.Item>
+              <Form.Item label="Y" style={{ marginBottom: 0 }}>
+                <InputNumber
+                  value={selectedObject.scale[1]}
+                  onChange={(value) => onChangePosition('scale', 'y', value)}
+                  placeholder="Y"
+                />
+              </Form.Item>
+              <Form.Item label="Z" style={{ marginBottom: 0 }}>
+                <InputNumber
+                  value={selectedObject.scale[2]}
+                  onChange={(value) => onChangePosition('scale', 'z', value)}
+                  placeholder="Z"
+                />
+              </Form.Item>
+            </Input.Group>
+          </Form.Item>
+          <Form.Item label="颜色">
+            <ColorPicker 
+              showText
+              // color={selectedObject.color}
+              // onChange={(color) => handleInputChange('color', 'color', color)}
+            />
+          </Form.Item>
+          <Form.Item label="贴图">
+            <Input
+              value={selectedObject.texture}
+              onChange={(e) => handleInputChange('texture', 'texture', e.target.value)}
+              placeholder="请输入贴图"
+            />
+          </Form.Item>
+          <Form.Item label="材质">
+            <Input
+              value={selectedObject.texture}
+              onChange={(e) => handleInputChange('materials', 'materials', e.target.value)}
+              placeholder="请输入材质"
+            />
+          </Form.Item>
           <Form.Item>
-            <Button type="danger" onClick={() => handleButtonClick(selectedObject)}>
+            <Button danger onClick={() => handleButtonClick(selectedObject)}>
               删除
             </Button>
           </Form.Item>

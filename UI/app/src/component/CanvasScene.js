@@ -152,7 +152,7 @@ class CanvasScene extends Component {
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
                 <>
-                    <canvas id="canvas" width={800} height={600} style={
+                    <canvas id="canvas" width={1280} height={720} style={
                         {
                             border: '1px solid #000',
                             margin: '10px auto',
