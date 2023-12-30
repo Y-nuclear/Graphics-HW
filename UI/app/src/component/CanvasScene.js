@@ -2,13 +2,12 @@
 import React, { Component } from 'react';
 import OBJobject from '../GL/OBJobject';
 import { TG } from '../GL/TG';
-import * as TGCase from '../GL/TGCase';
 
 import { ACamera } from '../GL/Camera';
 
-import { Sphere ,Triangle,Cube,Circle,Cone,Pyramid,Prism,Ring,Prismoid,Conecylinder,Rectangle } from '../GL/BasicProperty';
-import Toolbar from './ToolBar';
+import { Circle, Cube, Triangle } from '../GL/BasicProperty';
 import NavBar from './NavBar';
+import Toolbar from './ToolBar';
 class CanvasScene extends Component {
     constructor(props) {
         super(props);
@@ -31,11 +30,22 @@ class CanvasScene extends Component {
         var camera = new ACamera(canvas);
         var objects = this.state.objects;
         // var cube = new Cube();
-        
-            TGCase.case1Init(tg);
-            TGCase.case2Init(tg);
-            TGCase.case3Init(tg);
-            console.log(objects);
+
+        // TGCase.case1Init(tg);
+        // TGCase.case2Init(tg);
+        // TGCase.case3Init(tg);
+
+        window.addEventListener('keydown', (event) => {
+            if (event.key == 'x' || event.key == 'X') {
+                tg.shot();
+            } else if (event.key == 'c' || event.key == 'C') {
+                tg.startCapture();
+            } else if (event.key == 'v' || event.key == 'V') {
+                tg.endCapture();
+            }
+        });
+
+        console.log(objects);
         this.setState({
             canvas: canvas,
             tg: tg,
@@ -53,21 +63,24 @@ class CanvasScene extends Component {
         var camera = this.state.camera;
         var objects = this.state.objects;
 
+        tg.clear();
+
         var { position, target, mode, fov, near, far } = camera.getParams();
         tg.setCamera(position, target, mode, fov, near, far);
 
         // TGCase.case1Animate(tg, frame);
         // TGCase.case2Animate(tg, frame);
         // TGCase.case3Animate(tg, frame);
+
         tg.drawXYZ();
-        
+
         // tg.drawTriangle(objects[11].vertices, objects[11].colors, objects[11].normals);//棱台
         // objects[11].glTranslate(1.0, 1.0, 0);
         objects.forEach(element => {
             // tg.drawTriangle(element.vertices, element.colors, element.normals);
             tg.drawMaterialTriangle(element.vertices, element.colors, element.normals, element.materials);
         });
-        
+
     }
     startAnimation() {
         this.animationFrameId = requestAnimationFrame(this.animate);
@@ -143,27 +156,27 @@ class CanvasScene extends Component {
         var objects = this.state.objects;
         var index = objects.indexOf(object);
         if (index !== -1) {
-            objects[index].glRotate(x/180*Math.PI, 1, 0, 0);
-            objects[index].glRotate(y/180*Math.PI, 0, 1, 0);
-            objects[index].glRotate(z/180*Math.PI, 0, 0, 1);
+            objects[index].glRotate(x / 180 * Math.PI, 1, 0, 0);
+            objects[index].glRotate(y / 180 * Math.PI, 0, 1, 0);
+            objects[index].glRotate(z / 180 * Math.PI, 0, 0, 1);
             objects[index].updateVertices();
             objects[index].rotation[0] += x;
             objects[index].rotation[1] += y;
             objects[index].rotation[2] += z;
-            for(var i=0;i<3;i++){
-                if(objects[index].rotation[i]>360){
-                    objects[index].rotation[i]-=360;
+            for (var i = 0; i < 3; i++) {
+                if (objects[index].rotation[i] > 360) {
+                    objects[index].rotation[i] -= 360;
                 }
-                if(objects[index].rotation[i]<0){
-                    objects[index].rotation[i]+=360;
+                if (objects[index].rotation[i] < 0) {
+                    objects[index].rotation[i] += 360;
                 }
             }
         }
     }
     chanegScale(object, x, y, z) {
-        x = x/object.scale[0];
-        y = y/object.scale[1];
-        z = z/object.scale[2];
+        x = x / object.scale[0];
+        y = y / object.scale[1];
+        z = z / object.scale[2];
         var objects = this.state.objects;
         var index = objects.indexOf(object);
         if (index !== -1) {
@@ -200,35 +213,35 @@ class CanvasScene extends Component {
     render() {
         return (
             <div className="Main" width='100%' height='100%'>
-                <NavBar 
-                    createSquare={this.createSquare.bind(this)} 
-                    createTriangle={this.createTriangle.bind(this)} 
+                <NavBar
+                    createSquare={this.createSquare.bind(this)}
+                    createTriangle={this.createTriangle.bind(this)}
                     createCircle={this.createCircle.bind(this)}
                 />
-            <div style={{display: 'flex', flexDirection: 'row', height: '100%',width:'100%', padding:'0 auto'}}>
+                <div style={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', padding: '0 auto' }}>
 
-                <>
-                    <canvas id="canvas" width={900} height={600} style={
-                        {
-                            border: '1px solid #000',
-                            margin: '10px auto',
-                            display: 'block',
-                            background: '#ffd0d0'
-                        }
-                    }>canvas</canvas>
-                </>
-                <Toolbar
-                    objects={this.state.objects}
-                    addObject={this.addObject.bind(this)}
-                    addEvent={this.addEvent.bind(this)}
-                    removeEvent={this.removeEvent.bind(this)}
-                    changeName={this.changeName.bind(this)}
-                    changePosition={this.changePosition.bind(this)}
-                    changeRotation={this.changeRotation.bind(this)}
-                    changeScale={this.chanegScale.bind(this)}
-                    deleteObject={this.removeObject.bind(this)}
-                />
-            </div>
+                    <>
+                        <canvas id="canvas" width={900} height={600} style={
+                            {
+                                border: '1px solid #000',
+                                margin: '10px auto',
+                                display: 'block',
+                                background: '#ffd0d0'
+                            }
+                        }>canvas</canvas>
+                    </>
+                    <Toolbar
+                        objects={this.state.objects}
+                        addObject={this.addObject.bind(this)}
+                        addEvent={this.addEvent.bind(this)}
+                        removeEvent={this.removeEvent.bind(this)}
+                        changeName={this.changeName.bind(this)}
+                        changePosition={this.changePosition.bind(this)}
+                        changeRotation={this.changeRotation.bind(this)}
+                        changeScale={this.chanegScale.bind(this)}
+                        deleteObject={this.removeObject.bind(this)}
+                    />
+                </div>
             </div>
         );
     }
