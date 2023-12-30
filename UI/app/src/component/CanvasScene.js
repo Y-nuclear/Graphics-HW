@@ -256,6 +256,16 @@ class CanvasScene extends Component {
         change();
         
     }
+    changeMaterial(object, material) {
+        var objects = this.state.objects;
+        var index = objects.indexOf(object);
+        if (index !== -1) {
+            objects[index].materials = material;
+        }
+        this.setState({
+            objects: objects
+        });
+    }
 
     //创建物体
     createTriangle() {
@@ -301,6 +311,7 @@ class CanvasScene extends Component {
                     changeRotation={this.changeRotation.bind(this)}
                     changeScale={this.chanegScale.bind(this)}
                     changeTexture={this.changeTexture.bind(this)}
+                    changeMaterial={this.changeMaterial.bind(this)}
                     deleteObject={this.removeObject.bind(this)}
                 />
             </div>

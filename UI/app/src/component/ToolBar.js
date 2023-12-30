@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { List, Input, InputNumber, Form, Button, Card, ColorPicker,Upload } from 'antd';
+import { List, Input, InputNumber, Form, Button, Card, ColorPicker,Upload, Slider } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 // 示例对象列表
 
@@ -87,6 +87,25 @@ const Toolbar = (props) => {
   const onChangeTexture = (texture) => {
     texture.preventDefault()
     changeTexture(selectedObject, texture)
+  }
+  const onChangeMaterial = (object, propName, axis, value) => {
+    var num = 0
+    if (axis === 'x') {
+      num = 0
+    } else if (axis === 'y') {
+      num = 1
+    } else if (axis === 'z') {
+      num = 2
+    }
+    var material = object.materials
+    if(propName === 'shininess'){
+      material[propName] = value
+    }else if(propName === 'strength'){
+      material[propName] = value
+    }else{
+      material[propName][num] = value
+    }
+    changeMaterial(object, material)
   }
 
 
@@ -227,14 +246,141 @@ const Toolbar = (props) => {
             placeholder="请输入贴图"
           />
           </Form.Item>
-          <Form.Item label="材质">
-          <Input type="text" style={{display: 'none'}} />
-            <Input
-              value={selectedObject.texture}
-              onChange={(e) => onChangePosition('materials', 'materials', e.target.value)}
-              placeholder="请输入材质"
-            />
-          </Form.Item>
+          {/* <Form.Item label="材质"> */}
+         <div id='M_Ambient'>
+              <Form.Item label="环境光">
+          <Input.Group compact>
+                <Form.Item label="R" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    value={selectedObject.materials.ambient[0]}
+                    onChange={(value) => onChangeMaterial(selectedObject, 'ambient', 'x', value)}
+                    placeholder="X"
+                    max={1}
+                    min={0}
+                    step={0.05}
+                  />
+                </Form.Item>
+                <Form.Item label="G" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    value={selectedObject.materials.ambient[1]}
+                    onChange={(value) => onChangeMaterial(selectedObject, 'ambient', 'y', value)}
+                    placeholder="Y"
+                    max={1}
+                    min={0}
+                    step={0.05}
+                  />
+                </Form.Item>
+                <Form.Item label="B" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    value={selectedObject.materials.ambient[2]}
+                    onChange={(value) => onChangeMaterial(selectedObject, 'ambient', 'z', value)}
+                    placeholder="Z"
+                    max={1}
+                    min={0}
+                    step={0.05}
+                  />
+                </Form.Item>
+              </Input.Group>
+              </Form.Item>
+         </div>
+          <div id='M_Diffuse'>
+                <Form.Item label="漫反射">
+          <Input.Group compact>
+                <Form.Item label="R" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    value={selectedObject.materials.diffuse[0]}
+                    onChange={(value) => onChangeMaterial(selectedObject, 'diffuse', 'x', value)}
+                    placeholder="X"
+                    max={1}
+                    min={0}
+                    step={0.05}
+                  />
+                </Form.Item>
+                <Form.Item label="G" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    value={selectedObject.materials.diffuse[1]}
+                    onChange={(value) => onChangeMaterial(selectedObject, 'diffuse', 'y', value)}
+                    placeholder="Y"
+                    max={1}
+                    min={0}
+                    step={0.05}
+                  />
+                </Form.Item>
+                <Form.Item label="B" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    value={selectedObject.materials.diffuse[2]}
+                    onChange={(value) => onChangeMaterial(selectedObject, 'diffuse', 'z', value)}
+                    placeholder="Z"
+                    max={1}
+                    min={0}
+                    step={0.05}
+                  />
+                </Form.Item>
+              </Input.Group>
+              </Form.Item>
+          </div>
+          <div id='M_Specular'>
+                <Form.Item label="镜面反射">
+          <Input.Group compact>
+                <Form.Item label="R" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    value={selectedObject.materials.specular[0]}
+                    onChange={(value) => onChangeMaterial(selectedObject, 'specular', 'x', value)}
+                    placeholder="X"
+                    max={1}
+                    min={0}
+                    step={0.05}
+                  />
+                </Form.Item>
+                <Form.Item label="G" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    value={selectedObject.materials.specular[1]}
+                    onChange={(value) => onChangeMaterial(selectedObject, 'specular', 'y', value)}
+                    placeholder="Y"
+                    max={1}
+                    min={0}
+                    step={0.05}
+                  />
+                </Form.Item>
+                <Form.Item label="B" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    value={selectedObject.materials.specular[2]}
+                    onChange={(value) => onChangeMaterial(selectedObject, 'specular', 'z', value)}
+                    placeholder="Z"
+                    max={1}
+                    min={0}
+                    step={0.05}
+                  />
+                </Form.Item>
+              </Input.Group>
+              </Form.Item>
+          </div>
+          <div id='M_Shininess'>
+                <Form.Item label="高光系数">
+                  <Slider 
+                    value={selectedObject.materials.shininess}
+                    onChange={(value) => onChangeMaterial(selectedObject, 'shininess', 'x', value)}
+                    max={100}
+                    min={0}
+                    step={1}
+                  />
+                </Form.Item>
+          </div>
+          <div id='M_Strength'>
+                <Form.Item label="高光强度">
+                  <Slider
+                    value={selectedObject.materials.strength}
+                    onChange={(value) => onChangeMaterial(selectedObject, 'strength', 'x', value)}
+                    max={10}
+                    min={0}
+                    step={0.1}
+                  />
+                </Form.Item>
+          </div>
+
+
+
+          {/* </Form.Item> */}
           <Form.Item>
             <Button danger onClick={clickDelete}>
               删除
