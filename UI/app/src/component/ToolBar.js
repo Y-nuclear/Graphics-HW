@@ -5,6 +5,7 @@ import { List, Input, InputNumber, Form, Button, Card, ColorPicker } from 'antd'
 
 
 const Toolbar = (props) => {
+  var changeName = props.changeName
   var changePosition = props.changePosition
   var changeRotation = props.changeRotation
   var changeScale = props.changeScale
@@ -79,7 +80,9 @@ const Toolbar = (props) => {
     console.log(color)
     changeColor(selectedObject, color)
   };
-
+  const onChangeName = (name) => {
+    changeName(selectedObject, name)
+  };
   const clickDelete = () => {
     deleteObject(selectedObject)
   }
@@ -119,7 +122,7 @@ const Toolbar = (props) => {
           <Form.Item label="名称">
             <Input
               value={selectedObject.name}
-              onChange={(e) => onChangePosition('name', 'name', e.target.value)}
+              onChange={(e) => onChangeName(e.target.value)}
               placeholder="请输入名称"
             />
           </Form.Item>

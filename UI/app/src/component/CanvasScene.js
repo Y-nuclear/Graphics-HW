@@ -12,30 +12,10 @@ import NavBar from './NavBar';
 class CanvasScene extends Component {
     constructor(props) {
         super(props);
-        var triangle = new Triangle();
-        var cube = new Cube();
-        var circle = new Circle();
-        var sphere = new Sphere();
-        var rectangle = new Rectangle();
-        var ring =new Ring();
-        var objects = [triangle]//0
-    
-
-        {// 临时
-            var obj3d = new OBJobject();
-            obj3d.loadOBJ('./obj/obj.obj');
-            objects.push(...obj3d.geometries);//1
-            objects.push(cube);//2 立方体
-            objects.push(circle);//3 圆
-            objects.push(sphere);//4 球
-            objects.push(rectangle);//5 矩形
-            objects.push(ring);//6 环
-            objects.push(new Cone());//7 圆锥
-            objects.push(new Conecylinder());//8 圆柱
-            objects.push(new Pyramid());//9 金字塔
-            objects.push(new Prism());//10 棱柱
-            objects.push(new Prismoid());//11 棱台
-        }
+        var objects = [];
+        var obj3d = new OBJobject();
+        obj3d.loadOBJ('./obj/obj.obj');
+        objects.push(...obj3d.geometries);//1
 
         this.state = {
             frame: 0,
@@ -194,11 +174,37 @@ class CanvasScene extends Component {
             objects[index].scale[2] *= z;
         }
     }
+    changeName(object, name) {
+        var objects = this.state.objects;
+        var index = objects.indexOf(object);
+        if (index !== -1) {
+            objects[index].name = name;
+        }
+        this.setState({
+            objects: objects
+        });
+    }
+    createTriangle() {
+        var triangle = new Triangle();
+        this.addObject(triangle);
+    }
+    createSquare() {
+        var cube = new Cube();
+        this.addObject(cube);
+    }
+    createCircle() {
+        var circle = new Circle();
+        this.addObject(circle);
+    }
 
     render() {
         return (
             <div className="Main" width='100%' height='100%'>
-                <NavBar />
+                <NavBar 
+                    createSquare={this.createSquare.bind(this)} 
+                    createTriangle={this.createTriangle.bind(this)} 
+                    createCircle={this.createCircle.bind(this)}
+                />
             <div style={{display: 'flex', flexDirection: 'row', height: '100%',width:'100%', padding:'0 auto'}}>
 
                 <>
@@ -216,6 +222,7 @@ class CanvasScene extends Component {
                     addObject={this.addObject.bind(this)}
                     addEvent={this.addEvent.bind(this)}
                     removeEvent={this.removeEvent.bind(this)}
+                    changeName={this.changeName.bind(this)}
                     changePosition={this.changePosition.bind(this)}
                     changeRotation={this.changeRotation.bind(this)}
                     changeScale={this.chanegScale.bind(this)}

@@ -366,6 +366,7 @@ class Rectangle extends Object3D {
 class Ring extends Object3D { 
     constructor(r = 0.8,R=1.0) {
         super();
+        this.name = "Ring";
         // var radius = 0.5;
         var segmentCount = 360;
         var verticesr = [[0, 0, 0]]; // 添加原点
@@ -484,6 +485,7 @@ class Cube extends Object3D{
 class Circle extends Object3D {
     constructor(radius = 0.5) {
         super();
+        this.name = "Circle";
         // var radius = 0.5;
         var segmentCount = 360;
         var vertices = [[0, 0, 0]]; // 添加原点
@@ -517,9 +519,8 @@ class Circle extends Object3D {
 class Sphere extends Object3D {
     constructor(radius = 1, latitudeBands = 80, longitudeBands = 80) {
         super();
+        this.name = "Sphere";
         var vertices = [];
-        var indices = [];
-        var ori = [0, 0, 0]
         var bottom=[0,-radius,0]
         for (let latNumber = 0; latNumber < latitudeBands; latNumber++) {
             const theta = latNumber * Math.PI / latitudeBands;

@@ -51,14 +51,49 @@ const items = [
           type: 'group',
           children: [
             {
-              label: 'New Item',
-              key: 'newItem',
+              label: 'Triangle',
+              key: 'Triangle',
             },
             {
-              label: 'Import Item',
-              key: 'importItem',
+              label: 'Cube',
+              key: 'Square',
             },
-            // ... 更多 Add 子菜单项
+            {
+              label: 'Circle',
+              key: 'Circle',
+            },
+            {
+              label: 'Sphere',
+              key: 'Sphere',
+            },
+            {
+              label: 'Rectangle',
+              key: 'Rectangle',
+            },
+            {
+              label: 'Ring',
+              key: 'Ring',
+            },
+            {
+              label: 'Cone',
+              key: 'Cone',
+            },
+            {
+              label: 'Cylinder',
+              key: 'Cylinder',
+            },
+            {
+              label: 'Pyramid',
+              key: 'Pyramid',
+            },
+            {
+              label: 'Prism',
+              key: 'Prism',
+            },
+            {
+              label: 'Prismoid',
+              key: 'Prismoid',
+            },
           ],
         },
       ],
@@ -145,9 +180,28 @@ const items = [
     },
   ];
   
-const NavBar = () => {
+const NavBar = (props) => {
+  console.log(props);
+  var CreateTriangle = props.createTriangle;
+  var CreateSquare = props.createSquare;
+  var CreateCircle = props.createCircle;
+  
   const onClick = (e) => {
     console.log('click ', e);
+    switch(e.key){
+      case 'Triangle':
+        console.log(CreateTriangle);
+        CreateTriangle();
+        break;
+      case 'Square':
+        CreateSquare();
+        break;
+      case 'Circle':
+        CreateCircle();
+        break;
+      default:
+        break;
+    }
   };
   return <Menu onClick={onClick} mode="horizontal" items={items} />;
 };
