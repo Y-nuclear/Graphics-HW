@@ -574,21 +574,21 @@ function TextureMaterialShaderProgram(tg) {
     uniform float uStrength;
 
     void main() {
-        float uShininess = 2.33;
+        vec3 lightDir = -normalize(vLightRay);
         vec3 norm = normalize(vNormal);
         vec3 viewDir = normalize(vViewRay);
-        vec3 reflectDir = reflect(vLightRay, norm);  
+        vec3 halfwayDir = normalize(lightDir + viewDir);
 
         vec3 ambient = uAmbient * uLightColor;
     
         // 漫反射光
-        float diff = max(dot(norm, vLightRay), 0.0);
+        float diff = max(dot(norm, lightDir), 0.0);
         vec3 diffuse = diff * uLightColor* uDiffuse;
     
         // 镜面高光
         float specularStrength = uStrength;
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), uShininess);
-        vec3 specular = specularStrength * spec * uLightColor;
+        float spec = pow(max(dot(norm, halfwayDir), 0.0), uShininess);
+        vec3 specular = specularStrength * spec * uLightColor* uSpecular;
     
         vec3 result = (ambient + diffuse + specular) * texture2D(uSampler, vTexCoord).rgb;
         gl_FragColor = vec4(result, 1.0);
@@ -727,21 +727,21 @@ function ColorMaterialShaderProgram(tg) {
     uniform float uStrength;
 
     void main() {
-        float uShininess = 2.33;
+        vec3 lightDir = -normalize(vLightRay);
         vec3 norm = normalize(vNormal);
         vec3 viewDir = normalize(vViewRay);
-        vec3 reflectDir = reflect(vLightRay, norm);  
+        vec3 halfDir = normalize(lightDir + viewDir);
 
         vec3 ambient = uAmbient * uLightColor;
     
         // 漫反射光
-        float diff = max(dot(norm, vLightRay), 0.0);
+        float diff = max(dot(norm, lightDir), 0.0);
         vec3 diffuse = diff * uLightColor* uDiffuse;
     
         // 镜面高光
         float specularStrength = uStrength;
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), uShininess);
-        vec3 specular = specularStrength * spec * uLightColor;
+        float spec = pow(max(dot(norm, halfDir), 0.0), uShininess);
+        vec3 specular = specularStrength * spec * uLightColor * uSpecular;
     
         vec3 result = (ambient + diffuse + specular) * vColor;
         gl_FragColor = vec4(result, 1.0);
