@@ -62,6 +62,63 @@ class Object3D extends EventDispatcher{
         this.materials = materials;
     }
 
+    computeNormals(){
+        if(this.normals.length != 0){
+            return;
+        }
+        var normals = [];
+        var vertices = [];
+        var equal = function(v1,v_a){
+            for(let i=0;i<v_a.length;i++){
+                if(v1[0] == v_a[i][0] && v1[1] == v_a[i][1] && v1[2] == v_a[i][2]){
+                    return i;
+                }
+            }
+            return -1;
+        };
+        for(var i=0;i<this.vertices.length;i+=9){
+            var v1 = vec3.fromValues(this.vertices[i],this.vertices[i+1],this.vertices[i+2]);
+            var v2 = vec3.fromValues(this.vertices[i+3],this.vertices[i+4],this.vertices[i+5]);
+            var v3 = vec3.fromValues(this.vertices[i+6],this.vertices[i+7],this.vertices[i+8]);
+            var normal = vec3.create();
+            vec3.cross(normal,vec3.sub(vec3.create(),v2,v1),vec3.sub(vec3.create(),v3,v1));
+            vec3.normalize(normal,normal);
+            if(equal(v1,vertices) == -1){
+                vertices.push(v1);
+                normals.push(normal);
+            }
+            else{
+                vec3.add(normals[equal(v1,vertices)],normals[equal(v1,vertices)],normal);
+            }
+            if(equal(v2,vertices) == -1){
+                vertices.push(v2);
+                normals.push(normal);
+            }
+            else{
+                vec3.add(normals[equal(v2,vertices)],normals[equal(v2,vertices)],normal);
+            }
+            if(equal(v3,vertices) == -1){
+                vertices.push(v3);
+                normals.push(normal);
+            }
+            else{
+                vec3.add(normals[equal(v3,vertices)],normals[equal(v3,vertices)],normal);
+            }
+        }
+        for(var i=0;i<normals.length;i++){
+            vec3.normalize(normals[i],normals[i]);
+        }
+        console.log(normals);
+        console.log(vertices)
+        for(var i=0;i<this.vertices.length;i+=3){
+            var v = vec3.fromValues(this.vertices[i],this.vertices[i+1],this.vertices[i+2]);
+            var normal = normals[equal(v,vertices)];
+            this.normals.push(normal[0]);
+            this.normals.push(normal[1]);
+            this.normals.push(normal[2]);
+        }
+    }
+
     // 对对象进行更新
     updateVertices(){
         if (this.vertices.length != 0)

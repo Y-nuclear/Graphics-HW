@@ -479,6 +479,7 @@ class Cube extends Object3D{
                 this.colors.push(colors[indices[i]][j]);
             }
         }
+        this.computeNormals();
     }
 }
 
@@ -513,6 +514,7 @@ class Circle extends Object3D {
             }
             this.colors.push(1.0, 0.0, 0.0);
         }
+        this.computeNormals();
     }
 }
 
@@ -611,6 +613,7 @@ class Sphere extends Object3D {
                 
             }
         }
+        this.computeNormals();
     }
 }
 

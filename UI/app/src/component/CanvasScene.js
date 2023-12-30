@@ -30,11 +30,6 @@ class CanvasScene extends Component {
         var tg = new TG(canvas);
         var camera = new ACamera(canvas);
         var objects = this.state.objects;
-        // var cube = new Cube();
-
-        // TGCase.case1Init(tg);
-        // TGCase.case2Init(tg);
-        // TGCase.case3Init(tg);
 
         window.addEventListener('keydown', (event) => {
             if (event.key == 'x' || event.key == 'X') {
