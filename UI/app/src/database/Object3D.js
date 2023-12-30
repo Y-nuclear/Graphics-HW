@@ -64,7 +64,8 @@ class Object3D extends EventDispatcher{
 
     // 对对象进行更新
     updateVertices(){
-        let vertex_temp = [];
+        if (this.vertices.length != 0)
+        {let vertex_temp = [];
         for(let i=0;i<this.vertices.length;i+=3){
             var Vertex = vec3.fromValues(this.vertices[i],this.vertices[i+1],this.vertices[i+2])
             vec3.transformMat4(Vertex,Vertex,this.modelMatrix);
@@ -72,8 +73,9 @@ class Object3D extends EventDispatcher{
             vertex_temp.push(Vertex[1])
             vertex_temp.push(Vertex[2])
         }
-        this.vertices = vertex_temp;
-        let normal_temp = [];
+        this.vertices = vertex_temp;}
+        if (this.normals.length != 0)
+        {let normal_temp = [];
         for(let i=0;i<this.normals.length;i+=3){
             var normal = vec3.fromValues(this.normals[i],this.normals[i+1],this.normals[i+2])
             vec3.transformMat4(normal,normal,mat4.invert(mat4.create(),this.modelMatrix));
@@ -81,9 +83,9 @@ class Object3D extends EventDispatcher{
             normal_temp.push(normal[1])
             normal_temp.push(normal[2])
         }
-        this.normals = normal_temp;
+        this.normals = normal_temp;}
         this.modelMatrix = mat4.create();
-        return vertex_temp;
+        return this.vertices;
     }
 
 

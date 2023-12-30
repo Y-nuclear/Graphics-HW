@@ -8,24 +8,10 @@ import { ACamera } from '../GL/Camera';
 
 import { Sphere ,Triangle,Cube,Circle,Cone,Pyramid,Prism,Ring,Prismoid,Conecylinder,Rectangle } from '../GL/BasicProperty';
 import Toolbar from './ToolBar';
+import NavBar from './NavBar';
 class CanvasScene extends Component {
     constructor(props) {
         super(props);
-        var triangle = new Triangle();
-        console.log(triangle);
-        this.state = {
-            frame: 0,
-            canvas: null,
-            tg: null,
-            objects: [triangle],
-            camera: null,
-        }
-    }
-    componentDidMount() {
-        var canvas = document.getElementById('canvas');
-        var tg = new TG(canvas);
-        var camera = new ACamera(canvas);
-        // var cube = new Cube();
         var triangle = new Triangle();
         var cube = new Cube();
         var circle = new Circle();
@@ -49,11 +35,27 @@ class CanvasScene extends Component {
             objects.push(new Pyramid());//9 金字塔
             objects.push(new Prism());//10 棱柱
             objects.push(new Prismoid());//11 棱台
+        }
+
+        this.state = {
+            frame: 0,
+            canvas: null,
+            tg: null,
+            objects: objects,
+            camera: null,
+        }
+    }
+    componentDidMount() {
+        var canvas = document.getElementById('canvas');
+        var tg = new TG(canvas);
+        var camera = new ACamera(canvas);
+        var objects = this.state.objects;
+        // var cube = new Cube();
+        
             TGCase.case1Init(tg);
             TGCase.case2Init(tg);
             TGCase.case3Init(tg);
-        }
-
+            console.log(objects);
         this.setState({
             canvas: canvas,
             tg: tg,
@@ -79,7 +81,7 @@ class CanvasScene extends Component {
         // TGCase.case3Animate(tg, frame);
         tg.drawXYZ();
         
-        tg.drawTriangle(objects[11].vertices, objects[11].colors, objects[11].normals);//棱台
+        // tg.drawTriangle(objects[11].vertices, objects[11].colors, objects[11].normals);//棱台
         // objects[11].glTranslate(1.0, 1.0, 0);
         objects.forEach(element => {
             // tg.drawTriangle(element.vertices, element.colors, element.normals);
@@ -154,12 +156,53 @@ class CanvasScene extends Component {
             objects: objects
         });
     }
+    changeRotation(object, x, y, z) {
+        x = x - object.rotation[0];
+        y = y - object.rotation[1];
+        z = z - object.rotation[2];
+        var objects = this.state.objects;
+        var index = objects.indexOf(object);
+        if (index !== -1) {
+            objects[index].glRotate(x/180*Math.PI, 1, 0, 0);
+            objects[index].glRotate(y/180*Math.PI, 0, 1, 0);
+            objects[index].glRotate(z/180*Math.PI, 0, 0, 1);
+            objects[index].updateVertices();
+            objects[index].rotation[0] += x;
+            objects[index].rotation[1] += y;
+            objects[index].rotation[2] += z;
+            for(var i=0;i<3;i++){
+                if(objects[index].rotation[i]>360){
+                    objects[index].rotation[i]-=360;
+                }
+                if(objects[index].rotation[i]<0){
+                    objects[index].rotation[i]+=360;
+                }
+            }
+        }
+    }
+    chanegScale(object, x, y, z) {
+        x = x/object.scale[0];
+        y = y/object.scale[1];
+        z = z/object.scale[2];
+        var objects = this.state.objects;
+        var index = objects.indexOf(object);
+        if (index !== -1) {
+            objects[index].glScale(x, y, z);
+            objects[index].updateVertices();
+            objects[index].scale[0] *= x;
+            objects[index].scale[1] *= y;
+            objects[index].scale[2] *= z;
+        }
+    }
 
     render() {
         return (
-            <div style={{ display: "flex", flexDirection: "row" }}>
+            <div className="Main" width='100%' height='100%'>
+                <NavBar />
+            <div style={{display: 'flex', flexDirection: 'row', height: '100%',width:'100%', padding:'0 auto'}}>
+
                 <>
-                    <canvas id="canvas" width={1280} height={720} style={
+                    <canvas id="canvas" width={900} height={600} style={
                         {
                             border: '1px solid #000',
                             margin: '10px auto',
@@ -171,11 +214,14 @@ class CanvasScene extends Component {
                 <Toolbar
                     objects={this.state.objects}
                     addObject={this.addObject.bind(this)}
-                    removeObject={this.removeObject.bind(this)}
                     addEvent={this.addEvent.bind(this)}
                     removeEvent={this.removeEvent.bind(this)}
                     changePosition={this.changePosition.bind(this)}
+                    changeRotation={this.changeRotation.bind(this)}
+                    changeScale={this.chanegScale.bind(this)}
+                    deleteObject={this.removeObject.bind(this)}
                 />
+            </div>
             </div>
         );
     }
