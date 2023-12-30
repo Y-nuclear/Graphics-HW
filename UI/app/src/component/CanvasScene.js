@@ -5,10 +5,11 @@ import { TG } from '../GL/TG';
 import * as TGCase from '../GL/TGCase';
 
 import { ACamera } from '../GL/Camera';
-
+import axios from 'axios';
 import { Sphere ,Triangle,Cube,Circle,Cone,Pyramid,Prism,Ring,Prismoid,Conecylinder,Rectangle } from '../GL/BasicProperty';
 import Toolbar from './ToolBar';
 import NavBar from './NavBar';
+
 class CanvasScene extends Component {
     constructor(props) {
         super(props);
@@ -65,7 +66,12 @@ class CanvasScene extends Component {
         // objects[11].glTranslate(1.0, 1.0, 0);
         objects.forEach(element => {
             // tg.drawTriangle(element.vertices, element.colors, element.normals);
+            if (element.textures instanceof WebGLTexture) {
+                tg.drawMaterialTextureTriangle(element.vertices, element.uvs, element.normals, element.materials, element.textures);
+            }
+            else{
             tg.drawMaterialTriangle(element.vertices, element.colors, element.normals, element.materials);
+            }
         });
         
     }
@@ -78,12 +84,15 @@ class CanvasScene extends Component {
     animate = () => {
 
         // 更新状态，触发重新渲染
-        this.setState((prevState) => ({
-            frame: prevState.frame + 1,
-        }));
+        this.setState({
+            frame: this.state.frame + 1,
+        });
         // 继续下一帧动画
         this.animationFrameId = requestAnimationFrame(this.animate);
     };
+    componentWillUnmount() {
+        this.stopAnimation();
+    }
 
     // 添加物体
     addObject(object) {
@@ -184,6 +193,57 @@ class CanvasScene extends Component {
             objects: objects
         });
     }
+    
+    changeTexture(object,e) {
+        e.preventDefault();
+        
+        var tg = this.state.tg;
+        var file = e.target.files[0];
+        var formData = new FormData();
+        
+        formData.append('file', file);
+        if(!file){
+            return;
+        }
+        var filename = file.name;
+        
+        var change = ()=>{
+            var texture = './'+filename;
+            console.log(texture);
+            var objects = this.state.objects;
+            var index = objects.indexOf(object);
+
+            if (index !== -1) {
+                var image = new Image();
+                image.onload = () => {
+                    objects[index].textures = tg.image2texture(image)
+                }
+                image.src = texture;
+                console.log(objects);
+            }
+
+            this.setState({
+                objects: objects
+            });
+            }
+        var upload =  ()=>{
+            axios({
+                method: 'POST',
+                url: 'http://localhost:5000/api/upload',
+                data: formData,
+                headers: { 'Content-Type': 'multipart/form-data' }
+            }).then((res) => {
+                console.log(res);
+                change();
+            }).catch((err) => {
+                console.log(err);
+            })
+        };
+        upload();
+        
+    }
+
+    //创建物体
     createTriangle() {
         var triangle = new Triangle();
         this.addObject(triangle);
@@ -213,7 +273,7 @@ class CanvasScene extends Component {
                             border: '1px solid #000',
                             margin: '10px auto',
                             display: 'block',
-                            background: '#ffd0d0'
+                            background: '#eeeeee'
                         }
                     }>canvas</canvas>
                 </>
@@ -226,6 +286,7 @@ class CanvasScene extends Component {
                     changePosition={this.changePosition.bind(this)}
                     changeRotation={this.changeRotation.bind(this)}
                     changeScale={this.chanegScale.bind(this)}
+                    changeTexture={this.changeTexture.bind(this)}
                     deleteObject={this.removeObject.bind(this)}
                 />
             </div>

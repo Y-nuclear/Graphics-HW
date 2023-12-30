@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { List, Input, InputNumber, Form, Button, Card, ColorPicker } from 'antd';
-
+import { List, Input, InputNumber, Form, Button, Card, ColorPicker,Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 // 示例对象列表
 
 
@@ -20,7 +20,6 @@ const Toolbar = (props) => {
   // 点击按钮时更新选中的对象
   const handleButtonClick = (object) => {
     setSelectedObject(object);
-    console.log(object);
   };
 
   // 输入值变化时更新对象的属性
@@ -77,7 +76,6 @@ const Toolbar = (props) => {
     changeScale(selectedObject, scale[0], scale[1], scale[2])
   };
   const onChangeColor = (color) => {
-    console.log(color)
     changeColor(selectedObject, color)
   };
   const onChangeName = (name) => {
@@ -86,14 +84,11 @@ const Toolbar = (props) => {
   const clickDelete = () => {
     deleteObject(selectedObject)
   }
-
-
-  const handleDelete = (object) => {
-    //从Objectlists中删除当前的object
-
-    setSelectedObject(object);
-
+  const onChangeTexture = (texture) => {
+    texture.preventDefault()
+    changeTexture(selectedObject, texture)
   }
+
 
   return (
     <Card bordered style={{ margin: 10 }}>
@@ -225,13 +220,15 @@ const Toolbar = (props) => {
             />
           </Form.Item>
           <Form.Item label="贴图">
-            <Input
-              value={selectedObject.texture}
-              onChange={(e) => onChangePosition('texture', 'texture', e.target.value)}
-              placeholder="请输入贴图"
-            />
+          <input type="text" style={{display: 'none'}} />
+          <input
+            type='file'
+            onChange={onChangeTexture}
+            placeholder="请输入贴图"
+          />
           </Form.Item>
           <Form.Item label="材质">
+          <Input type="text" style={{display: 'none'}} />
             <Input
               value={selectedObject.texture}
               onChange={(e) => onChangePosition('materials', 'materials', e.target.value)}

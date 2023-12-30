@@ -181,16 +181,13 @@ const items = [
   ];
   
 const NavBar = (props) => {
-  console.log(props);
   var CreateTriangle = props.createTriangle;
   var CreateSquare = props.createSquare;
   var CreateCircle = props.createCircle;
   
   const onClick = (e) => {
-    console.log('click ', e);
     switch(e.key){
       case 'Triangle':
-        console.log(CreateTriangle);
         CreateTriangle();
         break;
       case 'Square':
