@@ -1,6 +1,6 @@
-import { mat4, mat3, vec3 } from 'gl-matrix';
-import * as TGShaderProgram from './TGShaderProgram';
+import { mat3, mat4, vec3 } from 'gl-matrix';
 import * as TGDraw from './TGDraw';
+import * as TGShaderProgram from './TGShaderProgram';
 
 class TG {
     constructor(canvas) {
@@ -16,7 +16,7 @@ class TG {
         this.cameraPosition[2] = 1;
 
         this.lightDir = [0, 0, -1];
-        this.lightColor = [1,1,1];
+        this.lightColor = [1, 1, 1];
 
         this.canvas = canvas;
         var gl = canvas.getContext('webgl');
@@ -149,6 +149,47 @@ class TG {
         a.download = 'webgl_scene.png';
         a.click();
     }
+
+    startCapture() {
+        var recordedChunks = [];
+        var canvas = this.canvas;
+        var frameRate = 30;
+
+        if (canvas.captureStream) {
+            var stream = canvas.captureStream(frameRate);
+
+            this.mediaRecorder = new MediaRecorder(stream);
+            this.mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            this.mediaRecorder.onstop = () => {
+                const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+
+                const downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(recordedBlob);
+                downloadLink.download = 'canvas-recording.webm';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+
+                recordedChunks = [];
+                this.mediaRecorder = null;
+            };
+            this.mediaRecorder.start();
+        } else {
+            console.error('captureStream is not supported in this browser.');
+        }
+    }
+
+    endCapture() {
+        if (this.mediaRecorder) {
+            this.mediaRecorder.stop();
+        }
+    }
+
 };
 
 export { TG };
+
