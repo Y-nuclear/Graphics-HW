@@ -239,20 +239,21 @@ class CanvasScene extends Component {
                 objects: objects
             });
             }
-        var upload =  ()=>{
-            axios({
-                method: 'POST',
-                url: 'http://localhost:5000/api/upload',
-                data: formData,
-                headers: { 'Content-Type': 'multipart/form-data' }
-            }).then((res) => {
-                console.log(res);
-                change();
-            }).catch((err) => {
-                console.log(err);
-            })
-        };
-        upload();
+        // var upload =  ()=>{
+        //     axios({
+        //         method: 'POST',
+        //         url: 'http://localhost:5000/api/upload',
+        //         data: formData,
+        //         headers: { 'Content-Type': 'multipart/form-data' }
+        //     }).then((res) => {
+        //         console.log(res);
+        //         change();
+        //     }).catch((err) => {
+        //         console.log(err);
+        //     })
+        // };
+        // upload();
+        change();
         
     }
 
