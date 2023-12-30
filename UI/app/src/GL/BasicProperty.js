@@ -60,6 +60,8 @@ class Prismoid extends Object3D { //棱台体
             this.colors.push(0.5, 0.5, 0.5);
             this.colors.push(0.5, 0.5, 0.5);
         }
+        this.computeNormals();
+        this.fillUVs();
     }
 }
 class Prism extends Object3D { //棱柱体
@@ -119,6 +121,8 @@ class Prism extends Object3D { //棱柱体
             this.colors.push(0.5, 0.5, 0.5);
             this.colors.push(0.5, 0.5, 0.5);
         }
+        this.computeNormals();
+        this.fillUVs();
     }
 }
 class Pyramid extends Object3D { //棱锥体
@@ -159,6 +163,8 @@ class Pyramid extends Object3D { //棱锥体
             this.colors.push(1.0, 1.0, 1.0);
             this.colors.push(1.0, 1.0, 1.0);
         }
+        this.computeNormals();
+        this.fillUVs();
     }
 }
 class Conecylinder extends Object3D { //圆柱体
@@ -256,6 +262,8 @@ class Conecylinder extends Object3D { //圆柱体
                 // this.colors.push(0.4, 0.0, 0.0);
             }
         }
+        this.computeNormals();
+        this.fillUVs();
     }
 }
 class Cone extends Object3D { //圆锥体
@@ -336,6 +344,8 @@ class Cone extends Object3D { //圆锥体
                 // this.colors.push(0.4, 0.0, 0.0);
             }
         }
+        this.computeNormals();
+        this.fillUVs();
     }
 }
 class Rectangle extends Object3D { 
@@ -361,6 +371,8 @@ class Rectangle extends Object3D {
             0.5,0.5,0.5,
             0.5,0.5,0.5
         ]
+        this.computeNormals();
+        this.fillUVs();
     }
 }
 class Ring extends Object3D { 
@@ -408,7 +420,8 @@ class Ring extends Object3D {
                 this.colors.push(0.4, 0.0, 0.0);
             }
         }
-
+        this.computeNormals();
+        this.fillUVs();
     }
 }
 class Triangle extends Object3D{
@@ -428,6 +441,8 @@ class Triangle extends Object3D{
             0.5,0.5,0.5,
             0.5,0.5,0.5
         ]
+        this.computeNormals();
+        this.fillUVs();
     }
 }
 
@@ -480,6 +495,7 @@ class Cube extends Object3D{
             }
         }
         this.computeNormals();
+        this.fillUVs();
     }
 }
 
@@ -515,6 +531,7 @@ class Circle extends Object3D {
             this.colors.push(1.0, 0.0, 0.0);
         }
         this.computeNormals();
+        this.fillUVs();
     }
 }
 
@@ -614,6 +631,7 @@ class Sphere extends Object3D {
             }
         }
         this.computeNormals();
+        this.fillUVs();
     }
 }
 

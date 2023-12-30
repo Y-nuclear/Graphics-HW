@@ -2,7 +2,7 @@
 // 使用WebGL
 // 定义基本的物体
 import { EventDispatcher } from "./EventDispatcher";
-import { mat4, vec3 } from "gl-matrix";
+import { mat4, vec2, vec3 } from "gl-matrix";
 
 //Object3D作为所有3D对象的基类，提供了一些基本的属性和方法
 //包括顶点数据、顶点索引、顶点颜色、位置、旋转、缩放、模型矩阵、子对象等
@@ -28,6 +28,7 @@ class Object3D extends EventDispatcher{
         this.rotation = [0,0,0];
         this.scale = [1,1,1];
         this.modelMatrix = mat4.create();
+        this.type = 'Object3D';
         this.box = null;
         this.sphere = null;
     }
@@ -119,6 +120,18 @@ class Object3D extends EventDispatcher{
         }
     }
 
+    // 填充uv
+    fillUVs(){
+        if(this.uvs.length != 0){
+            return;
+        }
+        for(var i=0;i<this.vertices.length;i+=3){
+            var norm = vec2.fromValues(this.vertices[i],this.vertices[i+1]);
+            vec2.normalize(norm,norm);
+            this.uvs.push(norm[0]);
+            this.uvs.push(norm[1]);
+        }
+    }
     // 对对象进行更新
     updateVertices(){
         if (this.vertices.length != 0)
