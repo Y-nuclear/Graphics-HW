@@ -110,7 +110,7 @@ const Toolbar = (props) => {
 
 
   return (
-    <Card bordered style={{ margin: 10 }}>
+    <Card bordered style={{ margin: 10 }} size = "small">
       <Card title="对象列表" bordered style={{ margin: 0 }} size="small">
         <div style={{ height: '100px', overflow: 'auto' }}>
           <List
@@ -131,7 +131,7 @@ const Toolbar = (props) => {
           />
         </div>
         </Card >
-      <Card title="对象详情" bordered style={{ marginTop: 20 }} size="small">
+      <Card title="对象详情" bordered style={{ marginTop: 10 }} size="small">
         <Form layout="horizontal" colon={false} size="small" >
           <Form.Item label="名称">
             <Input
@@ -143,64 +143,74 @@ const Toolbar = (props) => {
           
           <Form.Item label="位置">
             <Input.Group compact>
-              <Form.Item label="X" style={{ marginBottom: 0 }}>
                 <InputNumber
+                addonBefore="X"
+                style={{ width: 100, margin:'0 10px' }}
                   value={selectedObject.position[0]}
                   onChange={(value) => onChangePosition('position', 'x', value)}
                   placeholder="X"
                 />
-              </Form.Item>
-              <Form.Item label="Y" style={{ marginBottom: 0 }}>
                 <InputNumber
+                addonBefore="Y"
+                style={{ width: 100, margin:'0 10px' }}
                   value={selectedObject.position[1]}
                   onChange={(value) => onChangePosition('position', 'y', value)}
                   placeholder="Y"
                 />
-              </Form.Item>
-              <Form.Item label="Z" style={{ marginBottom: 0 }}>
+
                 <InputNumber
+                addonBefore="Z"
+                style={{ width: 100, margin:'0 10px' }}
                   value={selectedObject.position[2]}
                   onChange={(value) => onChangePosition('position', 'z', value)}
                   placeholder="Z"
                 />
-              </Form.Item>
+
             </Input.Group>
           </Form.Item>
           <Form.Item label="旋转">
             <Input.Group compact>
-              <Form.Item label="X" style={{ marginBottom: 0 }}>
+
                 <InputNumber
+                addonBefore="X"
+                style={{ width: 100, margin:'0 10px' }}
                   value={selectedObject.rotation[0]}
                   onChange={(value) => onChangeRotation('rotation', 'x', value)}
                   max={360}
                   min={0}
                   placeholder="X"
                 />
-              </Form.Item>
-              <Form.Item label="Y" style={{ marginBottom: 0 }}>
+
+
                 <InputNumber
+                addonBefore="Y"
+                style={{ width: 100, margin:'0 10px' }}
                   value={selectedObject.rotation[1]}
                   onChange={(value) => onChangeRotation('rotation', 'y', value)}
                   placeholder="Y"
                   max={360}
                   min={0}
                 />
-              </Form.Item>
-              <Form.Item label="Z" style={{ marginBottom: 0 }}>
+
+
                 <InputNumber
+                addonBefore="Z"
+                style={{ width: 100, margin:'0 10px' }}
                   value={selectedObject.rotation[2]}
                   onChange={(value) => onChangeRotation('rotation', 'z', value)}
                   placeholder="Z"
                   max={360}
                   min={0}
                 />
-              </Form.Item>
+
             </Input.Group>
           </Form.Item>
           <Form.Item label="缩放">
             <Input.Group compact>
-              <Form.Item label="X" style={{ marginBottom: 0 }}>
+
                 <InputNumber
+                addonBefore="X"
+                style={{ width: 100, margin:'0 10px' }}
                   value={selectedObject.scale[0]}
                   onChange={(value) => onChangeScale('scale', 'x', value)}
                   placeholder="X"
@@ -208,9 +218,11 @@ const Toolbar = (props) => {
                   min={0.1}
                   step={0.05}
                 />
-              </Form.Item>
-              <Form.Item label="Y" style={{ marginBottom: 0 }}>
+
+
                 <InputNumber
+                addonBefore="Y"
+                style={{ width: 100, margin:'0 10px' }}
                   value={selectedObject.scale[1]}
                   onChange={(value) => onChangeScale('scale', 'y', value)}
                   placeholder="Y"
@@ -218,9 +230,11 @@ const Toolbar = (props) => {
                   min={0.1}
                   step={0.05}
                 />
-              </Form.Item>
-              <Form.Item label="Z" style={{ marginBottom: 0 }}>
+
+
                 <InputNumber
+                addonBefore="Z"
+                style={{ width: 100, margin:'0 10px' }}
                   value={selectedObject.scale[2]}
                   onChange={(value) => onChangeScale('scale', 'z', value)}
                   placeholder="Z"
@@ -228,7 +242,7 @@ const Toolbar = (props) => {
                   min={0.1}
                   step={0.05}
                 />
-              </Form.Item>
+
             </Input.Group>
           </Form.Item>
           <Form.Item label="颜色">

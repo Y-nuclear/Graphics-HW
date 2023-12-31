@@ -4,7 +4,7 @@ import OBJobject from '../GL/OBJobject';
 import { TG } from '../GL/TG';
 
 import { ACamera } from '../GL/Camera';
-import axios from 'axios';
+// import axios from 'axios';
 import { Sphere ,Triangle,Cube,Circle,Cone,Pyramid,Prism,Ring,Prismoid,Conecylinder,Rectangle } from '../GL/BasicProperty';
 import Toolbar from './ToolBar';
 import NavBar from './NavBar';
@@ -287,7 +287,7 @@ class CanvasScene extends Component {
                 <div style={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', padding: '0 auto' }}>
 
                 <>
-                    <canvas id="canvas" width={900} height={600} style={
+                    <canvas id="canvas" width={1280} height={720} style={
                         {
                             border: '1px solid #000',
                             margin: '10px auto',
