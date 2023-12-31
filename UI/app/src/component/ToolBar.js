@@ -13,7 +13,7 @@ const Toolbar = (props) => {
   var changeTexture = props.changeTexture
   var changeMaterial = props.changeMaterial
   var deleteObject = props.deleteObject
-
+var zoomToObject = props.zoomToObject
   var objectsList = props.objects
 
   const [selectedObject, setSelectedObject] = useState(objectsList[0]);
@@ -21,7 +21,12 @@ const Toolbar = (props) => {
   const handleButtonClick = (object) => {
     setSelectedObject(object);
   };
-
+  const handleButtonZoom = (object) => {
+    // props.addEvent(object)
+    setSelectedObject(object);
+    zoomToObject(object)
+    // console.log("handleButtonZoom",object)
+  };
   // 输入值变化时更新对象的属性
 
   const onChangePosition = (propName, axis, value) => {
@@ -125,6 +130,15 @@ const Toolbar = (props) => {
                   onClick={() => handleButtonClick(item)}
                 >
                   {item.name}
+                </Button>
+                <div>&nbsp;&nbsp;&nbsp;</div>
+                <Button
+                  block
+                  size="small"
+                  type={selectedObject.id === item.id ? 'primary' : 'default'}
+                  onClick={() => handleButtonZoom(item)}
+                >
+                  {"zoom"}
                 </Button>
               </List.Item>
             )}

@@ -4,7 +4,7 @@ import OBJobject from '../GL/OBJobject';
 import { TG } from '../GL/TG';
 
 import { ACamera } from '../GL/Camera';
-import axios from 'axios';
+// import axios from 'axios';
 import { Sphere ,Triangle,Cube,Circle,Cone,Pyramid,Prism,Ring,Prismoid,Conecylinder,Rectangle } from '../GL/BasicProperty';
 import Toolbar from './ToolBar';
 import NavBar from './NavBar';
@@ -41,7 +41,7 @@ class CanvasScene extends Component {
             }
         });
 
-        console.log(objects);
+        // console.log(objects);
         this.setState({
             canvas: canvas,
             tg: tg,
@@ -120,6 +120,30 @@ class CanvasScene extends Component {
         this.setState({
             objects: objects
         });
+    }
+    zoomToObject(object) { //缩放到物体
+        var camera = this.state.camera;
+        var objects = this.state.objects;
+        var index = objects.indexOf(object);
+        // console.log("zoom")
+        if (index !== -1) {
+            console.log("computeBox")
+            // 计算物体的包围盒和包围球
+            object.computeBox();
+            object.computeSphere();
+            var box = objects[index].box;
+            var sphere = objects[index].sphere;
+            // 计算物体的中心点
+            var centerX = (box.minX + box.maxX) / 2;
+            var centerY = (box.minY + box.maxY) / 2;
+            var centerZ = (box.minZ + box.maxZ) / 2;
+            var distance = sphere.r *1.5;
+            var position = [centerX, centerY, centerZ + distance];
+            // console.log("position", position);
+            var target = [sphere.x, sphere.y, sphere.z];
+            // console.log("target", target);
+            camera.setParams(position, target);
+        }
     }
     // 添加canvas事件
     addEvent(type, func) {
@@ -307,7 +331,8 @@ class CanvasScene extends Component {
                     changeScale={this.chanegScale.bind(this)}
                     changeTexture={this.changeTexture.bind(this)}
                     changeMaterial={this.changeMaterial.bind(this)}
-                    deleteObject={this.removeObject.bind(this)}
+                        deleteObject={this.removeObject.bind(this)}
+                        zoomToObject={this.zoomToObject.bind(this)}
                 />
             </div>
             </div>
