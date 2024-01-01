@@ -98,7 +98,7 @@ class OBJobject{
           console.warn('unhandled keyword:', keyword);  // eslint-disable-line no-console
           continue;
         }
-        // 打印中间结果，避免异步
+
         let new_geo = handler(parts, currentGeometry, unparsedArgs);
         if(new_geo){
             {
@@ -163,7 +163,6 @@ class OBJobject{
       if (currentGeometry.vertices.length > 0) {
         this.geometries.push(currentGeometry);
       }
-      console.log(this);
       this.materialLibs = materialLibs;
       this.name = name;
       // 获取范围

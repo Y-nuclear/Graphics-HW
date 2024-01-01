@@ -365,7 +365,15 @@ class CanvasScene extends Component {
         this.addObject(nurbs);
     }
 
-
+    openOBJ(filename) {
+        var obj3d = new OBJobject();
+        obj3d.loadOBJ('./'+filename);
+        var objects = this.state.objects;
+        objects.push(...obj3d.geometries);
+        this.setState({
+            objects: objects
+        });
+    }
 
 
 
@@ -379,6 +387,7 @@ class CanvasScene extends Component {
                     createTriangle={this.createTriangle.bind(this)}
                     createCircle={this.createCircle.bind(this)}
                     CreateNURBS={this.CreateNURBS.bind(this)}
+                    OpenOBJFile={this.openOBJ.bind(this)}
                 />
                 <div style={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', padding: '0 auto' }}>
 

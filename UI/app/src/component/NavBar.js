@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
-import { Input, InputNumber, Menu } from 'antd';
+import { Input, InputNumber, Menu, Select } from 'antd';
 // 导入对话框
 import { Modal, Button } from 'antd';
 
@@ -13,14 +13,13 @@ const items = [
           type: 'group',
           children: [
             {
-              label: 'New',
-              key: 'new',
-            },
-            {
-              label: 'Open',
+              label: 'Open OBJ File',
               key: 'open',
             },
-            // ... 更多 File 子菜单项
+            {
+              label: 'Save OBJ File',
+              key: 'save',
+            },
           ],
         },
       ],
@@ -190,10 +189,21 @@ const NavBar = (props) => {
   var CreateTriangle = props.createTriangle;
   var CreateSquare = props.createSquare;
   var CreateCircle = props.createCircle;
+  var files = require.context('../../public', true, /\.obj$/);
+  var OBJFiles = files.keys().map(key => key.slice(2));
+  var optionsOBJ = OBJFiles.map((item) => {
+    return {label: item, value: item};
+  });
   const [NURBSVisible, setNURBSVisible] = useState(false);
   const [NURBSUControlNum, setNURBSUControlNum] = useState(5);
   const [NURBSVControlNum, setNURBSVControlNum] = useState(5);
   const [NURBSDeg, setNURBSDeg] = useState(3);
+
+  const [OBJOpenVisible, setOBJOpenVisible] = useState(false);
+  const [OBJSaveVisible, setOBJSaveVisible] = useState(false);
+  const [OBJFileName, setOBJFileName] = useState('');
+  const [OBJFileList, setOBJFileList] = useState(optionsOBJ);
+  
   const onClick = (e) => {
     switch(e.key){
       case 'Triangle':
@@ -205,10 +215,16 @@ const NavBar = (props) => {
       case 'Circle':
         CreateCircle();
         break;
-      
-
       case 'NURBS':
         setNURBSVisible(true);
+        break;
+
+
+      case 'open':
+        setOBJOpenVisible(true);
+        break;
+      case 'save':
+        setOBJSaveVisible(true);
         break;
       default:
         break;
@@ -235,7 +251,23 @@ const NavBar = (props) => {
         min={1} max={10} defaultValue={3} onChange={(value) => setNURBSDeg(value)} />
 
       </Modal>
+      <Modal title="Open OBJ File" open={OBJOpenVisible} onClose={() => setOBJOpenVisible(false)} 
+      onOk={() => {
+        props.OpenOBJFile(OBJFileName);
+        setOBJOpenVisible(false);
+      }}
+        onCancel={() => setOBJOpenVisible(false)}>
+        <Select defaultValue="" style={{ width: '100%' }} options={OBJFileList} value={OBJFileName} onChange={(value) => setOBJFileName(value)}
+        ></Select>
+      </Modal>
+      <Modal title="Save OBJ File" open={OBJSaveVisible} onClose={() => setOBJSaveVisible(false)}
+        onCancel={() => setOBJSaveVisible(false)}>
+        <Input placeholder="input OBJ file name" />
+      </Modal>
      </>
   );
 };
+
+// 获取public文件夹中所有文件名称
+
 export default NavBar;
