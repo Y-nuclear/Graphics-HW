@@ -1,4 +1,4 @@
-import { mat4, vec3 } from 'gl-matrix';
+import { mat4, vec3,quat } from 'gl-matrix';
 
 
 /**
@@ -22,6 +22,7 @@ class ACamera {
         this.initFov = 90;
         this.initNear = 0.1;
         this.initFar = 100;
+        this.rotationQuat = quat.create();//四元数
 
         this.cameraPosition = vec3.copy(vec3.create(), this.initCameraPosition);
         this.targetPosition = vec3.copy(vec3.create(), this.initTargetPosition);
@@ -29,6 +30,8 @@ class ACamera {
         this.fov = this.initFov;
         this.near = this.initNear;
         this.far = this.initFar;
+        this.yaw = 0;   // 偏航角，绕Y轴旋转
+        this.pitch = 0; // 俯仰角，绕X轴旋转
 
         canvas.addEventListener('mousedown', (event) => {
             lastMouseX = event.clientX;
@@ -39,18 +42,36 @@ class ACamera {
                 isMidClickDragging = true;
             }
         });
+            // 更新相机位置
+    
+
         canvas.addEventListener('mousemove', (event) => {
-            const deltaX = event.clientX - lastMouseX;
-            const deltaY = event.clientY - lastMouseY;
+            const deltaX = -event.clientX + lastMouseX;
+            const deltaY = -event.clientY + lastMouseY;
 
             if (isDragging) {
-                // 左键拖动时旋转相机的逻辑
-                const sensitivity = 0.01;
+                const sensitivity = 0.005;
                 const yaw = deltaX * sensitivity;
                 const pitch = deltaY * sensitivity;
 
-                vec3.rotateY(this.cameraPosition, this.cameraPosition, this.targetPosition, -yaw);
-                vec3.rotateX(this.cameraPosition, this.cameraPosition, this.targetPosition, -pitch);
+                // 计算绕Y轴的旋转（偏航）
+                let rotY = quat.setAxisAngle(quat.create(), vec3.fromValues(0, 1, 0), yaw);
+                // 计算绕X轴的旋转（俯仰）
+                let rotX = quat.setAxisAngle(quat.create(), vec3.fromValues(1, 0, 0), pitch);
+
+                var rotQ = quat.multiply(quat.create(), rotY, rotX);
+
+                // 首先应用偏航旋转，然后应用俯仰旋转
+                
+                // quat.multiply(this.rotationQuat, rotX, this.rotationQuat);
+                // quat.multiply(this.rotationQuat,  this.rotationQuat,rotY);
+                
+                quat.multiply(this.rotationQuat, this.rotationQuat, rotQ);
+                    
+                let rotatedPosition = vec3.create();
+                vec3.transformQuat(rotatedPosition, this.initCameraPosition, this.rotationQuat);
+                this.cameraPosition = rotatedPosition;
+
             } else if (isMidClickDragging) {
                 // 中键拖动时移动相机位置的逻辑
                 const moveSpeed = 0.01;
@@ -159,6 +180,7 @@ class ACamera {
         this.targetPosition = vec3.copy(vec3.create(), TargetPosition);
         // console.log("this.cameraPosition", this.cameraPosition);
     }
+    
 }
 
 
