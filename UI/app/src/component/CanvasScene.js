@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import OBJobject from '../GL/OBJobject';
 import { TG } from '../GL/TG';
-
+import NURBSObject from '../GL/NURBS';
 import { ACamera } from '../GL/Camera';
 // import axios from 'axios';
 import { Sphere ,Triangle,Cube,Circle,Cone,Pyramid,Prism,Ring,Prismoid,Conecylinder,Rectangle } from '../GL/BasicProperty';
@@ -16,7 +16,9 @@ class CanvasScene extends Component {
         var obj3d = new OBJobject();
         obj3d.loadOBJ('./obj/obj.obj');
         objects.push(...obj3d.geometries);//1
-
+        let nurbs = new NURBSObject();
+        console.log(nurbs)
+        objects.push(nurbs)
         this.state = {
             frame: 0,
             canvas: null,
