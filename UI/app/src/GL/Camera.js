@@ -135,7 +135,7 @@ class ACamera {
         });
     }
     getParams() {
-        var cameraPositionZoomed = vec3.create();
+        var cameraPositionZoomed = vec3.create();//
         vec3.scale(cameraPositionZoomed, this.cameraPosition, this.cameraZoom);
 
         var position = cameraPositionZoomed;
@@ -146,6 +146,18 @@ class ACamera {
         var far = this.far;
 
         return { position, target, mode, fov, near, far };
+    }
+    setParams(pos,tar) {
+        // console.log("setParams", params,"ww",ww);   
+        // console.log("this.cameraPosition", this.cameraPosition);
+        // console.log("this.targetPosition", this.targetPosition);
+        // console.log("params.position[0]", params.position[0]);
+        var CameraPosition = vec3.fromValues(pos[0], pos[1], pos[2]);
+        var TargetPosition = vec3.fromValues(tar[0], tar[1], tar[2]);
+        this.cameraZoom = this.initCameraZoom;
+        this.cameraPosition = vec3.copy(vec3.create(), CameraPosition);
+        this.targetPosition = vec3.copy(vec3.create(), TargetPosition);
+        // console.log("this.cameraPosition", this.cameraPosition);
     }
 }
 
