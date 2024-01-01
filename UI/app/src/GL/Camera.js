@@ -62,10 +62,12 @@ class ACamera {
                 var rotQ = quat.multiply(quat.create(), rotY, rotX);
 
                 // 首先应用偏航旋转，然后应用俯仰旋转
-                quat.multiply(this.rotationQuat, rotY, this.rotationQuat);
-                quat.multiply(this.rotationQuat, this.rotationQuat, rotX);
-                var rotMatrix = mat4.fromQuat(mat4.create(), rotQ);
-
+                
+                // quat.multiply(this.rotationQuat, rotX, this.rotationQuat);
+                // quat.multiply(this.rotationQuat,  this.rotationQuat,rotY);
+                
+                quat.multiply(this.rotationQuat, this.rotationQuat, rotQ);
+                    
                 let rotatedPosition = vec3.create();
                 vec3.transformQuat(rotatedPosition, this.initCameraPosition, this.rotationQuat);
                 this.cameraPosition = rotatedPosition;
