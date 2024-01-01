@@ -395,7 +395,12 @@ var zoomToObject = props.zoomToObject
                   />
                 </Form.Item>
           </div>
-
+          {/* 如果object.type == 'NURBSObject'则显示控制点编辑界面*/}
+            <ControlPointsEditor object={selectedObject} 
+            onChangeControlPoint={props.onChangeControlPoint}
+            onChangeWeight={props.onChangeWeight}
+            onChangeKnot={props.onChangeKnot}
+            />
           <Form.Item>
             <Button danger onClick={clickDelete} block style={{padding: 0}}>
               删除
@@ -406,5 +411,142 @@ var zoomToObject = props.zoomToObject
     </Card>
   );
 };
+
+// 控制点，权重与节点向量编辑器
+// 功能为，可以选择控制点和节点向量，修改对应的值
+const ControlPointsEditor = (props) => {
+  if (props.object.type !== 'NURBSObject') {
+    return null;
+  }
+  return (
+    <Card title="控制点编辑器" bordered style={{ marginTop: 10 }} size="small">
+      <Form layout="horizontal" colon={false} size="small">
+        <Form.Item label="控制点索引">
+          <Input.Group compact>
+            <InputNumber
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.control_u}
+              onChange={(value) => {props.object.control_u = value}}
+              placeholder="U"
+              min={0}
+              max={props.object.uControlNum-1}
+            />
+            <InputNumber
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.control_v}
+              onChange={(value) => {props.object.control_v = value}}
+              placeholder="V"
+              min={0}
+              max={props.object.vControlNum-1}
+            />
+          </Input.Group>
+        </Form.Item>
+
+        <Form.Item label="控制点">
+          <Input.Group compact>
+            <InputNumber
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.ControlLines[props.object.control_u][props.object.control_v][0]}
+              onChange={(value) => props.onChangeControlPoint(props.object,'x', value, props.object.control_u, props.object.control_v)}
+              placeholder="X"
+            />
+            <InputNumber
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.ControlLines[props.object.control_u][props.object.control_v][1]}
+              onChange={(value) => props.onChangeControlPoint(props.object,'y', value, props.object.control_u, props.object.control_v)}
+              placeholder="Y"
+            />
+            <InputNumber
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.ControlLines[props.object.control_u][props.object.control_v][2]}
+              onChange={(value) => props.onChangeControlPoint(props.object,'z', value, props.object.control_u, props.object.control_v)}
+              placeholder="Z"
+            />
+          </Input.Group>
+        </Form.Item>
+        <Form.Item label="u方向权重">
+          <Input.Group compact>
+            <InputNumber
+              addonBefore="u"
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.weight_u}
+              onChange={(value) => {props.object.weight_u = value}}
+              placeholder="u"
+              min={0}
+              max={props.object.uweights.length-1}
+            />
+            <InputNumber
+              addonBefore="W"
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.uweights[props.object.weight_u]}
+              onChange={(value) => props.onChangeWeight(props.object,'u',value, props.object.weight_u)}
+              placeholder="W"
+            />
+          </Input.Group>
+        </Form.Item>
+        <Form.Item label="v方向权重">
+          <Input.Group compact>
+            <InputNumber
+              addonBefore="v"
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.weight_v}
+              onChange={(value) => {props.object.weight_v = value}}
+              placeholder="v"
+              max={props.object.vweights.length-1}
+              min={0}
+            />
+            <InputNumber
+              addonBefore="W"
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.vweights[props.object.weight_v]}
+              onChange={(value) => props.onChangeWeight(props.object,'v',value, props.object.weight_v)}
+              placeholder="W"
+            />
+          </Input.Group>
+        </Form.Item>
+        <Form.Item label="u方向节点向量">
+          <Input.Group compact>
+            <InputNumber
+              addonBefore="u"
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.knot_u}
+              onChange={(value) => {props.object.knot_u = value}}
+              placeholder="u"
+              min={0}
+              max={props.object.uknots.length-1}
+            />
+            <InputNumber
+              addonBefore="U"
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.uknots[props.object.knot_u]}
+              onChange={(value) => props.onChangeKnot(props.object,'u',value, props.object.knot_u)}
+              placeholder="U"
+            />
+          </Input.Group>
+        </Form.Item>
+        <Form.Item label="v方向节点向量">
+          <Input.Group compact>
+            <InputNumber
+              addonBefore="v"
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.knot_v}
+              onChange={(value) => {props.object.knot_v = value}}
+              placeholder="v"
+              min={0}
+              max={props.object.vknots.length-1}
+            />
+            <InputNumber
+              addonBefore="V"
+              style={{ width: 100, margin: '0 10px' }}
+              value={props.object.vknots[props.object.knot_v]}
+              onChange={(value) => props.onChangeKnot(props.object,'v',value, props.object.knot_v)}
+              placeholder="V"
+            />
+          </Input.Group>
+        </Form.Item>
+      </Form>
+    </Card>
+  );
+}
 
 export default Toolbar;

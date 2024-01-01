@@ -1,26 +1,32 @@
 import Object3D from "../database/Object3D";
 class NURBSObject extends Object3D{
-    constructor(){
+    constructor(uControlNum,vControlNum,deg){
         super();
         this.type = 'NURBSObject';
-        this.deg = 3;
+        this.name = 'NURBS_Surface';
+        this.deg = deg===undefined?3:deg;
         this.uknots = [];
         this.uweights = [];
         this.vknots = [];
         this.vweights = [];
-        this.uControlNum = 0;
-        this.vControlNum = 0;
+        this.uControlNum = uControlNum===undefined?5:uControlNum;
+        this.vControlNum = vControlNum===undefined?5:vControlNum;
         this.ControlLines = [];
         this.uSegments = 0.01;
         this.vSegment = 0.01;
         this.init();
+        this.control_u = 0;
+        this.control_v = 0;
+        this.weight_u = 0;
+        this.weight_v = 0;
+        this.knot_u = 0;
+        this.knot_v = 0;
     }
     init(){
-        this.uControlNum = this.vControlNum = 20;
         for(let i=0;i<this.uControlNum;i++){
             let ControlLine = [];
             for(let j=0;j<this.vControlNum;j++){
-                ControlLine.push([i/this.uControlNum,j/this.vControlNum,Math.sin(i/20*Math.PI)*Math.cos(j/20*Math.PI)])
+                ControlLine.push([i/this.uControlNum,j/this.vControlNum,Math.sin(i/this.uControlNum*Math.PI)*Math.cos(j/this.vControlNum*Math.PI)])
             }
             this.ControlLines.push(ControlLine);
         }
@@ -41,6 +47,7 @@ class NURBSObject extends Object3D{
      // 计算曲面
     calculateSurface(){
         // 计算v方向上的曲线
+        this.vertices = [];
         let uLines = [];
         for(let i=0;i<this.uControlNum;i++){
             uLines.push(calculateNurbsCurve(this.ControlLines[i],this.vweights,this.vknots,this.vSegment))

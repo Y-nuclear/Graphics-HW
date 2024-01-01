@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
+import { Input, InputNumber, Menu } from 'antd';
+// 导入对话框
+import { Modal, Button } from 'antd';
 
 const items = [
     {
@@ -94,6 +96,10 @@ const items = [
               label: 'Prismoid',
               key: 'Prismoid',
             },
+            {
+              label: 'NURBS',
+              key: 'NURBS',
+            },
           ],
         },
       ],
@@ -179,12 +185,15 @@ const items = [
       ],
     },
   ];
-  
+
 const NavBar = (props) => {
   var CreateTriangle = props.createTriangle;
   var CreateSquare = props.createSquare;
   var CreateCircle = props.createCircle;
-  
+  const [NURBSVisible, setNURBSVisible] = useState(false);
+  const [NURBSUControlNum, setNURBSUControlNum] = useState(5);
+  const [NURBSVControlNum, setNURBSVControlNum] = useState(5);
+  const [NURBSDeg, setNURBSDeg] = useState(3);
   const onClick = (e) => {
     switch(e.key){
       case 'Triangle':
@@ -196,10 +205,37 @@ const NavBar = (props) => {
       case 'Circle':
         CreateCircle();
         break;
+      
+
+      case 'NURBS':
+        setNURBSVisible(true);
+        break;
       default:
         break;
     }
   };
-  return <Menu onClick={onClick} mode="horizontal" items={items} />;
+  return (
+    <>
+     <Menu onClick={onClick} mode="horizontal" items={items} />
+     <Modal title="NURBS" open={NURBSVisible} onClose={() => setNURBSVisible(false)} 
+        onOk={() => {
+          props.CreateNURBS(NURBSUControlNum, NURBSVControlNum, NURBSDeg);
+          setNURBSVisible(false);
+        }}
+       onCancel={() => setNURBSVisible(false)}>
+      {/*输入参数为u方向控制点个数，v方向控制点个数，阶数 */}
+        <InputNumber 
+        addonBefore="u方向控制点个数"
+        min={1} max={10} defaultValue={5} onChange={(value) => setNURBSUControlNum(value)} />
+        <InputNumber
+        addonBefore="v方向控制点个数"
+        min={1} max={10} defaultValue={5} onChange={(value) => setNURBSVControlNum(value)} />
+        <InputNumber
+        addonBefore="阶数"
+        min={1} max={10} defaultValue={3} onChange={(value) => setNURBSDeg(value)} />
+
+      </Modal>
+     </>
+  );
 };
 export default NavBar;

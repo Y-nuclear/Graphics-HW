@@ -277,6 +277,7 @@ class CanvasScene extends Component {
         change();
         
     }
+
     changeMaterial(object, material) {
         var objects = this.state.objects;
         var index = objects.indexOf(object);
@@ -287,6 +288,63 @@ class CanvasScene extends Component {
             objects: objects
         });
     }
+
+    //修改NURBS曲线相关函数
+    onChangeControlPoint(object, axis,value,index_u,index_v) {
+        console.log(index_u,index_v)
+        var objects = this.state.objects;
+        var index = objects.indexOf(object);
+        if (index !== -1) {
+            if(axis == 'x'){    
+                objects[index].ControlLines[index_u][index_v][0] = value;
+            }
+            else if(axis == 'y'){
+                objects[index].ControlLines[index_u][index_v][1] = value;
+            }
+            else if(axis == 'z'){
+                objects[index].ControlLines[index_u][index_v][2] = value;
+            }
+            objects[index].calculateSurface();
+        }
+        this.setState({
+            objects: objects
+        });
+    }
+
+    onChangeKnot(object, axis,value,index) {
+        var objects = this.state.objects;
+        var index = objects.indexOf(object);
+        if (index !== -1) {
+            if(axis == 'u'){    
+                objects[index].uknots[index] = value;
+            }
+            else if(axis == 'v'){
+                objects[index].vknots[index] = value;
+            }
+            objects[index].calculateSurface();
+        }
+        this.setState({
+            objects: objects
+        });
+    }
+
+    onChangeWeight(object, axis,value,index) {
+        var objects = this.state.objects;
+        var index = objects.indexOf(object);
+        if (index !== -1) {
+            if(axis == 'u'){    
+                objects[index].uweights[index] = value;
+            }
+            else if(axis == 'v'){
+                objects[index].vweights[index] = value;
+            }
+            objects[index].calculateSurface();
+        }
+        this.setState({
+            objects: objects
+        });
+    }
+
 
     //创建物体
     createTriangle() {
@@ -302,6 +360,17 @@ class CanvasScene extends Component {
         this.addObject(circle);
     }
 
+    CreateNURBS(uControlNum, vControlNum, deg) {
+        var nurbs = new NURBSObject(uControlNum, vControlNum, deg);
+        this.addObject(nurbs);
+    }
+
+
+
+
+
+
+
     render() {
         return (
             <div className="Main" width='100%' height='100%'>
@@ -309,6 +378,7 @@ class CanvasScene extends Component {
                     createSquare={this.createSquare.bind(this)}
                     createTriangle={this.createTriangle.bind(this)}
                     createCircle={this.createCircle.bind(this)}
+                    CreateNURBS={this.CreateNURBS.bind(this)}
                 />
                 <div style={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', padding: '0 auto' }}>
 
@@ -333,8 +403,11 @@ class CanvasScene extends Component {
                     changeScale={this.chanegScale.bind(this)}
                     changeTexture={this.changeTexture.bind(this)}
                     changeMaterial={this.changeMaterial.bind(this)}
-                        deleteObject={this.removeObject.bind(this)}
-                        zoomToObject={this.zoomToObject.bind(this)}
+                    deleteObject={this.removeObject.bind(this)}
+                    zoomToObject={this.zoomToObject.bind(this)}
+                    onChangeControlPoint={this.onChangeControlPoint.bind(this)}
+                    onChangeWeight={this.onChangeWeight.bind(this)}
+                    onChangeKnot={this.onChangeKnot.bind(this)}
                 />
             </div>
             </div>
