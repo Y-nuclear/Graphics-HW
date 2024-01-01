@@ -14,10 +14,10 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 # 上传文件的路径为：UI/app/public/upload
-UPLOAD_FOLDER = 'D:/2023B/Graphics/Big HW/Graphics-HW/UI/app/public'
+UPLOAD_FOLDER = './'
 
 # 允许上传的文件类型
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv', 'xlsx', 'xls'])
+ALLOWED_EXTENSIONS = set(['txt','png', 'jpg', 'jpeg'])
 
 # 设置上传文件的最大尺寸为100MB
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024

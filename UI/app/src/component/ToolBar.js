@@ -9,7 +9,6 @@ const Toolbar = (props) => {
   var changePosition = props.changePosition
   var changeRotation = props.changeRotation
   var changeScale = props.changeScale
-  var changeColor = props.changeColor
   var changeTexture = props.changeTexture
   var changeMaterial = props.changeMaterial
   var deleteObject = props.deleteObject
@@ -80,9 +79,6 @@ var zoomToObject = props.zoomToObject
     let scale = cal()
     changeScale(selectedObject, scale[0], scale[1], scale[2])
   };
-  const onChangeColor = (color) => {
-    changeColor(selectedObject, color)
-  };
   const onChangeName = (name) => {
     changeName(selectedObject, name)
   };
@@ -115,7 +111,7 @@ var zoomToObject = props.zoomToObject
 
 
   return (
-    <Card bordered style={{ margin: 10 }} size = "small">
+    <Card bordered style={{ margin: 10,height: "100%"}} size = "small">
       <Card title="对象列表" bordered style={{ margin: 0 }} size="small">
         <div style={{ height: '100px', overflow: 'auto' }}>
           <List
@@ -137,6 +133,7 @@ var zoomToObject = props.zoomToObject
                   size="small"
                   type={selectedObject.id === item.id ? 'primary' : 'default'}
                   onClick={() => handleButtonZoom(item)}
+                  style={{backgroundColor: "#87CEFA",width: "20%"}}
                 >
                   {"zoom"}
                 </Button>
@@ -258,13 +255,6 @@ var zoomToObject = props.zoomToObject
                 />
 
             </Input.Group>
-          </Form.Item>
-          <Form.Item label="颜色">
-            <ColorPicker 
-              showText
-
-              onChange={onChangeColor}
-            />
           </Form.Item>
           <Form.Item label="贴图">
           <input type="text" style={{display: 'none'}} />
@@ -407,7 +397,7 @@ var zoomToObject = props.zoomToObject
           </div>
 
           <Form.Item>
-            <Button danger onClick={clickDelete}>
+            <Button danger onClick={clickDelete} block style={{padding: 0}}>
               删除
             </Button>
           </Form.Item>
