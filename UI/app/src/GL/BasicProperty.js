@@ -536,9 +536,12 @@ class Circle extends Object3D {
 }
 
 class Sphere extends Object3D {
-    constructor(radius = 1, latitudeBands = 80, longitudeBands = 80) {
+    constructor(radius = 1) {
+
         super();
         this.name = "Sphere";
+        var latitudeBands = 80
+        var longitudeBands = 80
         var vertices = [];
         var bottom=[0,-radius,0]
         for (let latNumber = 0; latNumber < latitudeBands; latNumber++) {
