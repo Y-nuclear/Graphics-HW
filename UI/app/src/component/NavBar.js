@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import { Input, InputNumber, Menu, Select } from 'antd';
+import { useEffect } from 'react';
 // 导入对话框
 import { Modal, Button } from 'antd';
 
@@ -15,10 +16,6 @@ const items = [
             {
               label: 'Open OBJ File',
               key: 'open',
-            },
-            {
-              label: 'Save OBJ File',
-              key: 'save',
             },
           ],
         },
@@ -203,6 +200,11 @@ const NavBar = (props) => {
   const [OBJSaveVisible, setOBJSaveVisible] = useState(false);
   const [OBJFileName, setOBJFileName] = useState('');
   const [OBJFileList, setOBJFileList] = useState(optionsOBJ);
+
+
+
+
+
   
   const onClick = (e) => {
     switch(e.key){
@@ -259,16 +261,6 @@ const NavBar = (props) => {
         onCancel={() => setOBJOpenVisible(false)}>
         <Select defaultValue="" style={{ width: '100%' }} options={OBJFileList} value={OBJFileName} onChange={(value) => setOBJFileName(value)}
         ></Select>
-      </Modal>
-      <Modal title="Save OBJ File" open={OBJSaveVisible} onClose={() => setOBJSaveVisible(false)}
-        onCancel={() => setOBJSaveVisible(false)}
-        onOk={() => {
-          props.SaveOBJFile();
-          setOBJSaveVisible(false);
-        }}>
-        <Select ></Select>
-        <Input placeholder="input OBJ file name" />
-        
       </Modal>
      </>
   );

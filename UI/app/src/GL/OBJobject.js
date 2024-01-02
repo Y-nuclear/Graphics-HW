@@ -234,30 +234,7 @@ class OBJobject{
     getMaterials(){
         return this.materialLibs;
     }
-    saveOBJ(){
-        // 保存为obj文件
-        var objText = "";
-        for(let i=0;i<this.geometries.length;i++){
-            objText += "o " + this.name + "\n";
-            
-            for(let j=0;j<this.geometries[i].vertices.length;j+=3){
-                objText += "v " + this.geometries[i].vertices[j] + " " + this.geometries[i].vertices[j+1] + " " + this.geometries[i].vertices[j+2] + "\n";
-            }
-            for(let j=0;j<this.geometries[i].normals.length;j+=3){
-                objText += "vn " + this.geometries[i].normals[j] + " " + this.geometries[i].normals[j+1] + " " + this.geometries[i].normals[j+2] + "\n";
-            }
-            for(let j=0;j<this.geometries[i].uvs.length;j+=2){
-                objText += "vt " + this.geometries[i].uvs[j] + " " + this.geometries[i].uvs[j+1] + "\n";
-            }
-            for(let j=0;j<this.geometries[i].vertices.length/3;j++){
-                objText += "f " + (j+1) + "/" + (j+1) + "/" + (j+1) + " " + (j+2) + "/" + (j+2) + "/" + (j+2) + " " + (j+3) + "/" + (j+3) + "/" + (j+3) + "\n";
-            }
-        }
-      for (let i = 0; i < this.materialLibs.length; i++) {
-        objText += "mtllib " + this.materialLibs[i] + "\n";
-      }
-        return objText;
-    }
+    
 }
 
 

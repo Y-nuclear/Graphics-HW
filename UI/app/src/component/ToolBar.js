@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { List, Input, InputNumber, Form, Button, Card, ColorPicker,Select, Slider } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { List, Input, InputNumber, Form, Button, Card,Select, Slider } from 'antd';
+import { saveAs } from 'file-saver';
 // 示例对象列表
 
 
@@ -93,6 +93,10 @@ var zoomToObject = props.zoomToObject
   };
   const clickDelete = () => {
     deleteObject(selectedObject)
+    if(objectsList.length>0){
+      setSelectedObject(objectsList[0]);
+    }
+
   }
   const onChangeTexture = (texture) => {
     setTexture(texture)
@@ -411,6 +415,8 @@ var zoomToObject = props.zoomToObject
             onChangeWeight={props.onChangeWeight}
             onChangeKnot={props.onChangeKnot}
             />
+          
+          <SaveOBJFile selectedObject={selectedObject}/>
           <Form.Item>
             <Button danger onClick={clickDelete} block style={{padding: 0}}>
               删除
@@ -568,4 +574,39 @@ const ControlPointsEditor = (props) => {
   );
 }
 
+const SaveOBJFile = (props) => {
+  var object = props.selectedObject
+  const [OBJFileName, setOBJFileName] = useState('SaveObj.obj');
+  return (
+    <Form.Item label="保存为OBJ文件">
+      <Input.Group compact>
+        <Input
+          style={{ width: 200, margin: '0 10px' }}
+          value= {OBJFileName}
+          onChange={(value) => setOBJFileName(value.target.value)}
+          placeholder="请输入文件名"
+        />
+        <Button
+          style={{ width: 50, margin: '0 10px' }}
+          onClick={() => {
+           if(OBJFileName === ''){
+             alert("请输入文件名")
+             return
+           }
+           if(OBJFileName.split(".")[1] !== 'obj'){
+             alert("请输入正确的文件名")
+             return
+           }
+           var objtext = object.saveOBJ()
+            var blob = new Blob([objtext], {type: "text/plain;charset=utf-8"});
+            var filename = OBJFileName;
+            saveAs(blob, filename);
+          }}
+        >
+          保存
+        </Button>
+      </Input.Group>
+    </Form.Item>
+  );
+}
 export default Toolbar;
