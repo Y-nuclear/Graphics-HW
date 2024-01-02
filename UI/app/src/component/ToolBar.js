@@ -467,21 +467,21 @@ const ControlPointsEditor = (props) => {
           <Input.Group compact>
             <InputNumber
             addonBefore="X"
-              style={{ width: 60, margin: '0 10px' }}
+              style={{ width: 100, margin: '0 10px' }}
               value={props.object.ControlLines[props.object.control_u][props.object.control_v][0]}
               onChange={(value) => props.onChangeControlPoint(props.object,'x', value, props.object.control_u, props.object.control_v)}
               placeholder="X"
             />
             <InputNumber
             addonBefore="Y"
-              style={{ width: 60, margin: '0 10px' }}
+              style={{ width: 100, margin: '0 10px' }}
               value={props.object.ControlLines[props.object.control_u][props.object.control_v][1]}
               onChange={(value) => props.onChangeControlPoint(props.object,'y', value, props.object.control_u, props.object.control_v)}
               placeholder="Y"
             />
             <InputNumber
             addonBefore="Z"
-              style={{ width: 60, margin: '0 10px' }}
+              style={{ width: 100, margin: '0 10px' }}
               value={props.object.ControlLines[props.object.control_u][props.object.control_v][2]}
               onChange={(value) => props.onChangeControlPoint(props.object,'z', value, props.object.control_u, props.object.control_v)}
               placeholder="Z"

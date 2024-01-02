@@ -239,48 +239,48 @@ class Object3D extends EventDispatcher{
                 indices_v.push(index);
             }
         }
-        // //处理法线
-        // var normal_temp = [];
-        // var indices_n = [];
-        // for(let i=0;i<100*3;i+=3){
-        //     var normal =[this.normals[i],this.normals[i+1],this.normals[i+2]];
-        //     var index = equal(normal,normal_temp);
-        //     if (index == -1){
-        //         normal_temp.push(normal);
-        //         objText += "vn "+normal[0]+" "+normal[1]+" "+normal[2]+"\n";
-        //         indices_n.push(normal_temp.length-1);
-        //     }
-        //     else{
-        //         indices_n.push(index);
-        //     }
-        // }
-        // //处理uv
-        // var uv_temp = [];
-        // var indices_uv = [];
-        // function equal2(v1,v_a){
-        //     for(let i=0;i<v_a.length;i++){
-        //         if(v1[0] == v_a[i][0] && v1[1] == v_a[i][1]){
-        //             return i;
-        //         }
-        //     }
-        //     return -1;
-        // };
-        // for(let i=0;i<100*2;i+=2){
-        //     var uv =[this.uvs[i],this.uvs[i+1]];
-        //     var index = equal2(uv,uv_temp);
-        //     if (index == -1){
-        //         uv_temp.push(uv);
-        //         objText += "vt "+uv[0]+" "+uv[1]+"\n";
-        //         indices_uv.push(uv_temp.length-1);
-        //     }
-        //     else{
-        //         indices_uv.push(index);
-        //     }
-        // }
+        //处理法线
+        var normal_temp = [];
+        var indices_n = [];
+        for(let i=0;i<this.normals.length;i+=3){
+            var normal =[this.normals[i],this.normals[i+1],this.normals[i+2]];
+            var index = equal(normal,normal_temp);
+            if (index == -1){
+                normal_temp.push(normal);
+                objText += "vn "+normal[0]+" "+normal[1]+" "+normal[2]+"\n";
+                indices_n.push(normal_temp.length-1);
+            }
+            else{
+                indices_n.push(index);
+            }
+        }
+        //处理uv
+        var uv_temp = [];
+        var indices_uv = [];
+        function equal2(v1,v_a){
+            for(let i=0;i<v_a.length;i++){
+                if(v1[0] == v_a[i][0] && v1[1] == v_a[i][1]){
+                    return i;
+                }
+            }
+            return -1;
+        };
+        for(let i=0;i<this.uvs.length;i+=2){
+            var uv =[this.uvs[i],this.uvs[i+1]];
+            var index = equal2(uv,uv_temp);
+            if (index == -1){
+                uv_temp.push(uv);
+                objText += "vt "+uv[0]+" "+uv[1]+"\n";
+                indices_uv.push(uv_temp.length-1);
+            }
+            else{
+                indices_uv.push(index);
+            }
+        }
         //处理面
         for(let i=0;i<indices_v.length;i+=3){
-            objfText += "f "+(indices_v[i]+1)+" "+(indices_v[i+1]+1)+" "+(indices_v[i+2]+1)+"\n";
-            // objfText += "f "+(indices_v[i]+1)+"/"+(indices_uv[i]+1)+"/"+(indices_n[i]+1)+" "+(indices_v[i+1]+1)+"/"+(indices_uv[i+1]+1)+"/"+(indices_n[i+1]+1)+" "+(indices_v[i+2]+1)+"/"+(indices_uv[i+2]+1)+"/"+(indices_n[i+2]+1)+"\n";
+            // objfText += "f "+(indices_v[i]+1)+" "+(indices_v[i+1]+1)+" "+(indices_v[i+2]+1)+"\n";
+            objfText += "f "+(indices_v[i]+1)+"/"+(indices_uv[i]+1)+"/"+(indices_n[i]+1)+" "+(indices_v[i+1]+1)+"/"+(indices_uv[i+1]+1)+"/"+(indices_n[i+1]+1)+" "+(indices_v[i+2]+1)+"/"+(indices_uv[i+2]+1)+"/"+(indices_n[i+2]+1)+"\n";
         }
         objText += objfText;
         return objText;
