@@ -235,7 +235,7 @@ class CanvasScene extends Component {
         var filename = e;
         
         var change = ()=>{
-            var texture = './'+filename;
+            var texture = ''+filename;
             console.log(texture);
             var objects = this.state.objects;
             var index = objects.indexOf(object);
@@ -334,10 +334,44 @@ class CanvasScene extends Component {
         var cube = new Cube();
         this.addObject(cube);
     }
-    createCircle() {
-        var circle = new Circle();
+    createCircle(radius) {
+        var circle = new Circle(radius);
         this.addObject(circle);
     }
+    createSphere() { 
+        var sphere = new Sphere();
+        this.addObject(sphere);
+    }
+    createCone(radius,height) { 
+        var cone = new Cone(radius,height);
+        this.addObject(cone);
+    }
+    createPyramid(degree,height,radius){ 
+        var pyramid = new Pyramid(degree,height,radius);
+        this.addObject(pyramid);
+    }
+    createPrism(degree,height,radius) { 
+        var prism = new Prism(degree,height,radius);
+        this.addObject(prism);
+    }
+    createRing(r, R) { 
+        var ring = new Ring(r, R);
+        this.addObject(ring);
+    }
+    createPrismoid(degree,height,radius) { 
+        var prismoid = new Prismoid(degree,height,radius);
+        this.addObject(prismoid);
+
+    }
+    createConecylinder(radius,height) { 
+        var conecylinder = new Conecylinder(radius,height);
+        this.addObject(conecylinder);
+    }
+    createRectangle() { 
+        var rectangle = new Rectangle();
+        this.addObject(rectangle);
+    }
+
 
     CreateNURBS(uControlNum, vControlNum, deg) {
         var nurbs = new NURBSObject(uControlNum, vControlNum, deg);
@@ -382,6 +416,14 @@ class CanvasScene extends Component {
                     CreateNURBS={this.CreateNURBS.bind(this)}
                     OpenOBJFile={this.openOBJ.bind(this)}
                     changeLight={this.changeLight.bind(this)}
+                    createSphere={this.createSphere.bind(this)}
+                    createCone={this.createCone.bind(this)}
+                    createPyramid={this.createPyramid.bind(this)}
+                    createPrism={this.createPrism.bind(this)}
+                    createRing={this.createRing.bind(this)}
+                    createPrismoid={this.createPrismoid.bind(this)}
+                    createConecylinder={this.createConecylinder.bind(this)}
+                    createRectangle={this.createRectangle.bind(this)}
                     tg = {this.state.tg}
 
                 />
