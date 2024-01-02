@@ -175,7 +175,7 @@ class Conecylinder extends Object3D { //圆柱体
         this.name = "Conecylinder";
         // var radius = 0.5;
         // var height = 1.0;
-        var segmentCount = 360;
+        var segmentCount = 100;
         var ySegmentCount = 100;
         // var vertices = [[0, 0, 0]]; // 添加原点
         var bottom = [0, 0, 0]; // 添加底部顶点
@@ -274,7 +274,7 @@ class Cone extends Object3D { //圆锥体
         this.name = "Cone";
         // var radius = 0.5;
         // var height = 1.0;
-        var segmentCount = 360;
+        var segmentCount = 100;
         var ySegmentCount = 100;
         // var vertices = [[0, 0, 0]]; // 添加原点
         var bottom = [0, 0, 0]; // 添加底部顶点
@@ -295,7 +295,7 @@ class Cone extends Object3D { //圆锥体
         //底面圆
         for (let i = 0; i <= segmentCount; i++) {
             this.vertices.push(...[0, 0, 0]); // 圆心
-            this.colors.push(1.0, 1.0, 1.0);
+            this.colors.push(1.0, 0.0, 0.0);
 
             this.vertices.push(...vertices[i]); // 当前顶点
             this.colors.push(1.0, 1.0, 1.0);
@@ -308,7 +308,7 @@ class Cone extends Object3D { //圆锥体
             this.colors.push(1.0, 1.0, 1.0);
         }
     
-        //侧面
+//         //侧面
         for (let i = 0; i < ySegmentCount; i++) {
             for (let j = 0; j <= segmentCount; j++) {
                 var bottomLeft = i * segmentCount + j;
@@ -324,24 +324,24 @@ class Cone extends Object3D { //圆锥体
                 } else {
                     var topRight = (i + 1) * segmentCount + j + 1;
                 }
-                
-                
+//                 
+//                 
                 this.vertices.push(...vertices[bottomLeft]);
                 this.vertices.push(...vertices[bottomRight]);
                 this.vertices.push(...vertices[topLeft]);
                 this.vertices.push(...vertices[topLeft]);
                 this.vertices.push(...vertices[bottomRight]);
                 this.vertices.push(...vertices[topRight]);
-
+// 
                 this.colors.push(1.0, 1.0, 1.0);
                 this.colors.push(1.0, 1.0, 1.0);
                 this.colors.push(1.0, 1.0, 1.0);
                 this.colors.push(1.0, 1.0, 1.0);
                 this.colors.push(1.0, 1.0, 1.0);
                 this.colors.push(1.0, 1.0, 1.0);
-                // this.colors.push(0.4, 0.0, 0.0);
-                // this.colors.push(0.4, 0.0, 0.0);
-                // this.colors.push(0.4, 0.0, 0.0);
+//                 // this.colors.push(0.4, 0.0, 0.0);
+//                 // this.colors.push(0.4, 0.0, 0.0);
+//                 // this.colors.push(0.4, 0.0, 0.0);
             }
         }
         this.computeNormals();
