@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { List, Input, InputNumber, Form, Button, Card, ColorPicker,Upload, Slider } from 'antd';
+import { List, Input, InputNumber, Form, Button, Card, ColorPicker,Select, Slider } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 // 示例对象列表
 
@@ -16,6 +16,15 @@ var zoomToObject = props.zoomToObject
   var objectsList = props.objects
 
   const [selectedObject, setSelectedObject] = useState(objectsList[0]);
+  var files = require.context('../../public', true, /\.png$/);
+  var Images = files.keys().map(key => key.slice(2));
+  // console.log(Images)
+  var options_texture = Images.map((item) => {
+    return {label: item, value: item};
+  });
+  const [textureOptions, setTextureOptions] = useState(options_texture);
+  const [texture, setTexture] = useState("");
+
   // 点击按钮时更新选中的对象
   const handleButtonClick = (object) => {
     setSelectedObject(object);
@@ -86,7 +95,7 @@ var zoomToObject = props.zoomToObject
     deleteObject(selectedObject)
   }
   const onChangeTexture = (texture) => {
-    texture.preventDefault()
+    setTexture(texture)
     changeTexture(selectedObject, texture)
   }
   const onChangeMaterial = (object, propName, axis, value) => {
@@ -108,7 +117,7 @@ var zoomToObject = props.zoomToObject
     }
     changeMaterial(object, material)
   }
-
+  
 
   return (
     <Card bordered style={{ margin: 10,height: "100%"}} size = "small">
@@ -143,6 +152,7 @@ var zoomToObject = props.zoomToObject
         </div>
         </Card >
       <Card title="对象详情" bordered style={{ marginTop: 10 }} size="small">
+        <div style={{overflowY:'auto',height:'475px' }}>
         <Form layout="horizontal" colon={false} size="small" >
           <Form.Item label="名称">
             <Input
@@ -257,12 +267,12 @@ var zoomToObject = props.zoomToObject
             </Input.Group>
           </Form.Item>
           <Form.Item label="贴图">
-          <input type="text" style={{display: 'none'}} />
-          <input
-            type='file'
-            onChange={onChangeTexture}
-            placeholder="请输入贴图"
-          />
+          <Select defaultValue="" 
+          style={{ width: '100%' }} 
+          options={textureOptions}
+          value={texture}
+          onChange={(value) => onChangeTexture(value)}
+          ></Select>
           </Form.Item>
           {/* <Form.Item label="材质"> */}
          <div id='M_Ambient'>
@@ -407,7 +417,9 @@ var zoomToObject = props.zoomToObject
             </Button>
           </Form.Item>
         </Form>
+        </div>
       </Card>
+     
     </Card>
   );
 };
@@ -419,11 +431,13 @@ const ControlPointsEditor = (props) => {
     return null;
   }
   return (
-    <Card title="控制点编辑器" bordered style={{ marginTop: 10 }} size="small">
+    <Card title="控制点编辑器" bordered style={{ marginTop: 10}} size="small">
+      <div style={{overflowY:'auto',height:'100px' }}>
       <Form layout="horizontal" colon={false} size="small">
         <Form.Item label="控制点索引">
           <Input.Group compact>
             <InputNumber
+            addonBefore="U"
               style={{ width: 100, margin: '0 10px' }}
               value={props.object.control_u}
               onChange={(value) => {props.object.control_u = value}}
@@ -432,6 +446,7 @@ const ControlPointsEditor = (props) => {
               max={props.object.uControlNum-1}
             />
             <InputNumber
+            addonBefore="V"
               style={{ width: 100, margin: '0 10px' }}
               value={props.object.control_v}
               onChange={(value) => {props.object.control_v = value}}
@@ -445,19 +460,22 @@ const ControlPointsEditor = (props) => {
         <Form.Item label="控制点">
           <Input.Group compact>
             <InputNumber
-              style={{ width: 100, margin: '0 10px' }}
+            addonBefore="X"
+              style={{ width: 60, margin: '0 10px' }}
               value={props.object.ControlLines[props.object.control_u][props.object.control_v][0]}
               onChange={(value) => props.onChangeControlPoint(props.object,'x', value, props.object.control_u, props.object.control_v)}
               placeholder="X"
             />
             <InputNumber
-              style={{ width: 100, margin: '0 10px' }}
+            addonBefore="Y"
+              style={{ width: 60, margin: '0 10px' }}
               value={props.object.ControlLines[props.object.control_u][props.object.control_v][1]}
               onChange={(value) => props.onChangeControlPoint(props.object,'y', value, props.object.control_u, props.object.control_v)}
               placeholder="Y"
             />
             <InputNumber
-              style={{ width: 100, margin: '0 10px' }}
+            addonBefore="Z"
+              style={{ width: 60, margin: '0 10px' }}
               value={props.object.ControlLines[props.object.control_u][props.object.control_v][2]}
               onChange={(value) => props.onChangeControlPoint(props.object,'z', value, props.object.control_u, props.object.control_v)}
               placeholder="Z"
@@ -545,6 +563,7 @@ const ControlPointsEditor = (props) => {
           </Input.Group>
         </Form.Item>
       </Form>
+      </div>
     </Card>
   );
 }

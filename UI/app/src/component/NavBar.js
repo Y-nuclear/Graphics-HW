@@ -261,8 +261,14 @@ const NavBar = (props) => {
         ></Select>
       </Modal>
       <Modal title="Save OBJ File" open={OBJSaveVisible} onClose={() => setOBJSaveVisible(false)}
-        onCancel={() => setOBJSaveVisible(false)}>
+        onCancel={() => setOBJSaveVisible(false)}
+        onOk={() => {
+          props.SaveOBJFile();
+          setOBJSaveVisible(false);
+        }}>
+        <Select ></Select>
         <Input placeholder="input OBJ file name" />
+        
       </Modal>
      </>
   );

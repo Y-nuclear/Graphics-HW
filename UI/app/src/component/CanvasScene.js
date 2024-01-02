@@ -8,6 +8,7 @@ import { ACamera } from '../GL/Camera';
 import { Sphere ,Triangle,Cube,Circle,Cone,Pyramid,Prism,Ring,Prismoid,Conecylinder,Rectangle } from '../GL/BasicProperty';
 import Toolbar from './ToolBar';
 import NavBar from './NavBar';
+import { saveAs } from 'file-saver';
 
 class CanvasScene extends Component {
     constructor(props) {
@@ -229,17 +230,9 @@ class CanvasScene extends Component {
     }
     
     changeTexture(object,e) {
-        e.preventDefault();
-        
         var tg = this.state.tg;
-        var file = e.target.files[0];
-        var formData = new FormData();
-        
-        formData.append('file', file);
-        if(!file){
-            return;
-        }
-        var filename = file.name;
+        console.log(e)
+        var filename = e;
         
         var change = ()=>{
             var texture = './'+filename;
@@ -260,20 +253,6 @@ class CanvasScene extends Component {
                 objects: objects
             });
             }
-        // var upload =  ()=>{
-        //     axios({
-        //         method: 'POST',
-        //         url: 'http://localhost:5000/api/upload',
-        //         data: formData,
-        //         headers: { 'Content-Type': 'multipart/form-data' }
-        //     }).then((res) => {
-        //         console.log(res);
-        //         change();
-        //     }).catch((err) => {
-        //         console.log(err);
-        //     })
-        // };
-        // upload();
         change();
         
     }
@@ -375,6 +354,12 @@ class CanvasScene extends Component {
         });
     }
 
+    saveOBJ(objobject,filename) {
+        var objText = objobject.saveOBJ();
+        var blob = new Blob([objText], { type: "text/plain;charset=utf-8" });
+        saveAs(blob, filename);
+    }
+
 
 
 
@@ -388,11 +373,12 @@ class CanvasScene extends Component {
                     createCircle={this.createCircle.bind(this)}
                     CreateNURBS={this.CreateNURBS.bind(this)}
                     OpenOBJFile={this.openOBJ.bind(this)}
+                    SaveOBJFile={this.saveOBJ.bind(this)}
                 />
                 <div style={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', padding: '0 auto' }}>
 
                 <>
-                    <canvas id="canvas" width={window.innerWidth * 0.64} height={window.innerHeight * 0.48} style={
+                    <canvas id="canvas" width={window.innerWidth * 0.64} height={window.innerHeight * 0.4} style={
                         {
                             border: '1px solid #000',
                             margin: '10px auto',

@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.11.5",
     "axios": "^1.6.3",
+    "file-saver": "^2.0.5",
     "fs": "^0.0.1-security",
     "gl-matrix": "^3.4.3",
     "path": "^0.12.7",
