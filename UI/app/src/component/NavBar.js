@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
-import { Input, InputNumber, Menu, Select } from 'antd';
+import { Space, InputNumber, Menu, Select } from 'antd';
 import { useEffect } from 'react';
 // 导入对话框
 import { Modal, Button } from 'antd';
@@ -141,21 +141,16 @@ const items = [
       ],
     },
     {
-      label: 'View',
-      key: 'view',
+      label: 'Light',
+      key: 'Light',
       children: [
         {
           type: 'group',
           children: [
             {
-              label: 'Zoom In',
-              key: 'zoomIn',
+              label: 'Light Setting',
+              key: 'l_set',
             },
-            {
-              label: 'Zoom Out',
-              key: 'zoomOut',
-            },
-            // ... 更多 View 子菜单项
           ],
         },
       ],
@@ -186,6 +181,7 @@ const NavBar = (props) => {
   var CreateTriangle = props.createTriangle;
   var CreateSquare = props.createSquare;
   var CreateCircle = props.createCircle;
+
   var files = require.context('../../public', true, /\.obj$/);
   var OBJFiles = files.keys().map(key => key.slice(2));
   var optionsOBJ = OBJFiles.map((item) => {
@@ -197,11 +193,12 @@ const NavBar = (props) => {
   const [NURBSDeg, setNURBSDeg] = useState(3);
 
   const [OBJOpenVisible, setOBJOpenVisible] = useState(false);
-  const [OBJSaveVisible, setOBJSaveVisible] = useState(false);
   const [OBJFileName, setOBJFileName] = useState('');
   const [OBJFileList, setOBJFileList] = useState(optionsOBJ);
 
-
+  const [LightVisible, setLightVisible] = useState(false);
+  const [LightDirection, setLightDirection] = useState([0,0,0]);
+  const [LightColor, setLightColor] = useState([1,1,1]);
 
 
 
@@ -225,8 +222,8 @@ const NavBar = (props) => {
       case 'open':
         setOBJOpenVisible(true);
         break;
-      case 'save':
-        setOBJSaveVisible(true);
+      case 'l_set':
+        setLightVisible(true);
         break;
       default:
         break;
@@ -261,6 +258,36 @@ const NavBar = (props) => {
         onCancel={() => setOBJOpenVisible(false)}>
         <Select defaultValue="" style={{ width: '100%' }} options={OBJFileList} value={OBJFileName} onChange={(value) => setOBJFileName(value)}
         ></Select>
+      </Modal>
+      <Modal title="Light Setting" open={LightVisible} onClose={() => setLightVisible(false)}
+        onOk={() => {
+          props.changeLight(LightDirection, LightColor);
+          console.log(LightDirection, LightColor);
+          setLightVisible(false);
+        }}
+        onCancel={() => setLightVisible(false)}>
+        <Space direction="vertical">
+        <InputNumber
+          addonBefore="Direction X"
+          min={-1} max={1} defaultValue={0} onChange={(value) => setLightDirection([value, LightDirection[1], LightDirection[2]])} />
+        <InputNumber
+          addonBefore="Direction Y"
+          min={-1} max={1} defaultValue={1} onChange={(value) => setLightDirection([LightDirection[0], value, LightDirection[2]])} />
+        <InputNumber
+          addonBefore="Direction Z"
+          min={-1} max={1} defaultValue={0} onChange={(value) => setLightDirection([LightDirection[0], LightDirection[1], value])} />
+        </Space>
+        <Space direction="vertical" style={{marginTop: 10}}>
+        <InputNumber
+          addonBefore="Color R"
+          min={0} max={1} defaultValue={1} onChange={(value) => setLightColor([value, LightColor[1], LightColor[2]])} />
+        <InputNumber
+          addonBefore="Color G"
+          min={0} max={1} defaultValue={1} onChange={(value) => setLightColor([LightColor[0], value, LightColor[2]])} />
+        <InputNumber
+          addonBefore="Color B"
+          min={0} max={1} defaultValue={1} onChange={(value) => setLightColor([LightColor[0], LightColor[1], value])} />
+        </Space>
       </Modal>
      </>
   );

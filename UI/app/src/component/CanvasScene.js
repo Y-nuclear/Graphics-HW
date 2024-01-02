@@ -360,6 +360,13 @@ class CanvasScene extends Component {
         saveAs(blob, filename);
     }
 
+    changeLight(lightDirection, lightColor) {
+        var tg = this.state.tg;
+        tg.setLight(lightDirection, lightColor);
+        this.setState({
+            tg: tg
+        });
+    }
 
 
 
@@ -374,7 +381,9 @@ class CanvasScene extends Component {
                     createCircle={this.createCircle.bind(this)}
                     CreateNURBS={this.CreateNURBS.bind(this)}
                     OpenOBJFile={this.openOBJ.bind(this)}
-                    SaveOBJFile={this.saveOBJ.bind(this)}
+                    changeLight={this.changeLight.bind(this)}
+                    tg = {this.state.tg}
+
                 />
                 <div style={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', padding: '0 auto' }}>
 
