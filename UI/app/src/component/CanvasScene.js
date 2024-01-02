@@ -290,15 +290,15 @@ class CanvasScene extends Component {
         });
     }
 
-    onChangeKnot(object, axis,value,index) {
+    onChangeKnot(object, axis,value,index_) {
         var objects = this.state.objects;
         var index = objects.indexOf(object);
         if (index !== -1) {
             if(axis == 'u'){    
-                objects[index].uknots[index] = value;
+                objects[index].uknots[index_] = value;
             }
             else if(axis == 'v'){
-                objects[index].vknots[index] = value;
+                objects[index].vknots[index_] = value;
             }
             objects[index].calculateSurface();
         }
@@ -307,15 +307,15 @@ class CanvasScene extends Component {
         });
     }
 
-    onChangeWeight(object, axis,value,index) {
+    onChangeWeight(object, axis,value,index_) {
         var objects = this.state.objects;
         var index = objects.indexOf(object);
         if (index !== -1) {
             if(axis == 'u'){    
-                objects[index].uweights[index] = value;
+                objects[index].uweights[index_] = value;
             }
             else if(axis == 'v'){
-                objects[index].vweights[index] = value;
+                objects[index].vweights[index_] = value;
             }
             objects[index].calculateSurface();
         }
