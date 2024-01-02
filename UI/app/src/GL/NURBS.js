@@ -76,9 +76,9 @@ class NURBSObject extends Object3D{
             }
         }
         for(let i =0;i<this.vertices.length;i++){
-            this.colors.push(0.8)
-            this.colors.push(0.8)
-            this.colors.push(0.8)
+            this.colors.push(1.0)
+            this.colors.push(1.0)
+            this.colors.push(1.0)
         }
     }
 

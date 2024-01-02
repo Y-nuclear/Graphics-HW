@@ -235,7 +235,7 @@ class CanvasScene extends Component {
         var filename = e;
         
         var change = ()=>{
-            var texture = ''+filename;
+            var texture = filename;
             console.log(texture);
             var objects = this.state.objects;
             var index = objects.indexOf(object);
