@@ -14,12 +14,6 @@ class CanvasScene extends Component {
     constructor(props) {
         super(props);
         var objects = [];
-        var obj3d = new OBJobject();
-        obj3d.loadOBJ('./obj/obj.obj');
-        objects.push(...obj3d.geometries);//1
-        let nurbs = new NURBSObject();
-        console.log(nurbs)
-        objects.push(nurbs)
         this.state = {
             frame: 0,
             canvas: null,

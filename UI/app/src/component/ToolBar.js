@@ -14,8 +14,21 @@ const Toolbar = (props) => {
   var deleteObject = props.deleteObject
 var zoomToObject = props.zoomToObject
   var objectsList = props.objects
-
-  const [selectedObject, setSelectedObject] = useState(objectsList[0]);
+  var fakeObject = {
+    name: '',
+    position: [0, 0, 0],
+    rotation: [0, 0, 0],
+    scale: [1, 1, 1],
+    materials: {
+      ambient: [0.2, 0.2, 0.2],
+      diffuse: [0.8, 0.8, 0.8],
+      specular: [0, 0, 0],
+      shininess: 0,
+      strength: 0,
+    },
+    type: 'Mesh',
+  };
+  const [selectedObject, setSelectedObject] = useState(fakeObject);
   var files = require.context('../../public', true, /\.png$/);
   var Images = files.keys().map(key => key.slice(2));
   // console.log(Images)
