@@ -37,11 +37,7 @@ class CanvasScene extends Component {
         window.addEventListener('keydown', (event) => {
             if (event.key == 'x' || event.key == 'X') {
                 tg.shot();
-            } else if (event.key == 'c' || event.key == 'C') {
-                tg.startCapture();
-            } else if (event.key == 'v' || event.key == 'V') {
-                tg.endCapture();
-            }
+            } 
         });
 
         // console.log(objects);
@@ -323,7 +319,15 @@ class CanvasScene extends Component {
             objects: objects
         });
     }
+    start(){
+        var tg = this.state.tg;
+        tg.startCapture();
+    }
+    pause(){
+        var tg = this.state.tg;
+        tg.endCapture();
 
+    }
 
     //创建物体
     createTriangle() {
@@ -425,6 +429,8 @@ class CanvasScene extends Component {
                     createConecylinder={this.createConecylinder.bind(this)}
                     createRectangle={this.createRectangle.bind(this)}
                     tg = {this.state.tg}
+                    start = {this.start.bind(this)}
+                    pause = {this.pause.bind(this)}
 
                 />
                 <div style={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', padding: '0 auto' }}>

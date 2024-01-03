@@ -177,18 +177,20 @@ class TG {
             };
 
             this.mediaRecorder.onstop = () => {
-                const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-
+                const recordedBlob = new Blob(recordedChunks);
+                console.log(recordedBlob);
                 const downloadLink = document.createElement('a');
                 downloadLink.href = URL.createObjectURL(recordedBlob);
-                downloadLink.download = 'canvas-recording.webm';
+                downloadLink.download = 'canvas-recording.mp4';
                 document.body.appendChild(downloadLink);
+                console.log(downloadLink);
                 downloadLink.click();
+                document.body.removeChild(downloadLink);
 
-                recordedChunks = [];
+                recordedChunks.length = 0;
                 this.mediaRecorder = null;
             };
-            this.mediaRecorder.start();
+            this.mediaRecorder.start(10);
         } else {
             console.error('captureStream is not supported in this browser.');
         }
