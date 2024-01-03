@@ -115,10 +115,21 @@ class TG {
         this.cameraPosition = position;
         var gl = this.gl;
 
-        var viewMatrix = mat4.create();
-        mat4.lookAt(viewMatrix, position, target, [0, 1, 0]);
-        var projectionMatrix = mat4.create();
-        mat4.perspective(projectionMatrix, fov * Math.PI / 180, gl.canvas.width / gl.canvas.height, near, far);
+        if (mode == 'orthographic') {
+            var viewMatrix = mat4.create();
+            mat4.lookAt(viewMatrix, position, target, [0, 1, 0]);
+            var projectionMatrix = mat4.create();
+            mat4.ortho(projectionMatrix, -1, 1, -1, 1, near, far);
+        }
+        else if (mode == 'perspective') {
+            var viewMatrix = mat4.create();
+            mat4.lookAt(viewMatrix, position, target, [0, 1, 0]);
+            var projectionMatrix = mat4.create();
+            mat4.perspective(projectionMatrix, fov * Math.PI / 180, gl.canvas.width / gl.canvas.height, near, far);
+        }
+        else {
+            throw 'Invalid camera mode!';
+        }
 
         this.setViewMatrix(viewMatrix);
         this.setProjectionMatrix(projectionMatrix);
