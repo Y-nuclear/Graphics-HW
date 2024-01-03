@@ -22,26 +22,6 @@ const items = [
       ],
     },
     {
-      label: 'Edit',
-      key: 'edit',
-      children: [
-        {
-          type: 'group',
-          children: [
-            {
-              label: 'Undo',
-              key: 'undo',
-            },
-            {
-              label: 'Redo',
-              key: 'redo',
-            },
-            // ... 更多 Edit 子菜单项
-          ],
-        },
-      ],
-    },
-    {
       label: 'Add',
       key: 'add',
       children: [
@@ -121,26 +101,6 @@ const items = [
       ],
     },
     {
-      label: 'Examples',
-      key: 'examples',
-      children: [
-        {
-          type: 'group',
-          children: [
-            {
-              label: 'Example 1',
-              key: 'example1',
-            },
-            {
-              label: 'Example 2',
-              key: 'example2',
-            },
-            // ... 更多 Examples 子菜单项
-          ],
-        },
-      ],
-    },
-    {
       label: 'Light',
       key: 'Light',
       children: [
@@ -151,26 +111,6 @@ const items = [
               label: 'Light Setting',
               key: 'l_set',
             },
-          ],
-        },
-      ],
-    },
-    {
-      label: 'Help',
-      key: 'help',
-      children: [
-        {
-          type: 'group',
-          children: [
-            {
-              label: 'Documentation',
-              key: 'documentation',
-            },
-            {
-              label: 'About',
-              key: 'about',
-            },
-            // ... 更多 Help 子菜单项
           ],
         },
       ],
@@ -271,8 +211,12 @@ const NavBar = (props) => {
       case 'NURBS':
         setNURBSVisible(true);
         break;
-
-
+      case 'start':
+        props.start();
+        break;
+      case 'pause':
+        props.pause();
+        break;
       case 'open':
         setOBJOpenVisible(true);
         break;
